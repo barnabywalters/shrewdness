@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+error_reporting(E_ALL ^ E_STRICT);
+set_time_limit(0);
+
+ob_start();
+require_once __DIR__.'/vendor/autoload.php';
+ob_end_clean();
+
+use Symfony\Component\Console\Input\ArgvInput;
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+
+$app = require __DIR__.'/src/app.php';
+require __DIR__.'/config/'.$env.'.php';
+require __DIR__.'/src/controllers.php';
+$console = require __DIR__.'/src/console.php';
+$console->run();

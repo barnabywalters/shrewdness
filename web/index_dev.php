@@ -17,6 +17,8 @@ ob_start();
 require_once __DIR__.'/../vendor/autoload.php';
 ob_end_clean();
 
+date_default_timezone_set('UTC');
+
 error_reporting(-1);
 DebugClassLoader::enable();
 ErrorHandler::register();

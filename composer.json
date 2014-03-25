@@ -13,7 +13,10 @@
 		"mf2/mf2": "~0.2",
 		"mf2/shim": "~0.2",
 		"doctrine/cache": "*",
-		"monolog/monolog": "*"
+		"monolog/monolog": "*",
+		"guzzle/guzzle": "*",
+		"psy/psysh": "*",
+		"symfony/console": "~2.2"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.*",
