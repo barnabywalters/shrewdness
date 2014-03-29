@@ -67,7 +67,8 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 		}
 	} else {
 		$app['db']->prepare('INSERT INTO shrewdness_subscriptions (topic, hub) VALUES (:topic, :hub);')->execute($subscription);
-		$subscription = $existingSubscription->execute($subscription);
+		$existingSubscription->execute($subscription);
+		$subscription = $existingSubscription->fetch();
 	}
 	
 	// Regardless of the state of the database beforehand, $subscription now has an ID and a mode of “subscribe”.
