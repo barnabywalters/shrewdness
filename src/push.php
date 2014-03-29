@@ -81,6 +81,10 @@ class PushHub {
 			return $e;
 		}
 	}
+	
+	public function __toString() {
+		return "Hub @ {$this->url}";
+	}
 }
 
 class SuperfeedrHub extends PushHub {

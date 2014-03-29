@@ -76,6 +76,11 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
 	if ($result instanceof Exception) {
 		//return $app->abort('Exception when creating a subscription')
+		$app['logger']->error('Subscription: subscription POST request to hub failed', [
+			'hub' => $hub,
+			'exception' => $result,
+			'content' => $result->getResponse()->getBody(true)
+		]);
 		throw $result;
 	}
 	
