@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation as Http;
 use Guzzle;
 use Mf2;
 use Exception;
+use Taproot;
 
 $app->get('/', function (Http\Request $request) use ($app) {
 	return 'Hello world!';
@@ -40,12 +41,14 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 		return [null, $e];
 	}
 	
-	list($topic, $hubs) = pushLinksForResponse($resp);
+	$links = Taproot\pushLinksForResponse($resp);
+	$topic = $links['self'];
+	$hubs = $links['hub'];
 	
 	// If hub exists, subscribe at that hub.
 	if (!empty($hubs)) {
 		$hubUrl = $hubs[0];
-		$hub = new PushHub($hubUrl);
+		$hub = new Taproot\PushHub($hubUrl);
 	} else {
 		$hub = $app['push.defaulthub'];
 	}
@@ -58,9 +61,9 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	$existingSubscription = $app['db']->prepare('SELECT * FROM shrewdness_subscriptions WHERE topic = :topic AND hub = :hub;');
 	$existingSubscription->execute($subscription);
 	if ($existingSubscription->rowCount() !== 0) {
-		$s = $existingSubscription->fetch();
-		if ($s['mode'] !== 'subscribe') {
-			$app['db']->prepare("UPDATE shrewdness_subscriptions SET mode='subscribe' WHERE id = :id;")->execute($s);
+		$subscription = $existingSubscription->fetch();
+		if ($subscription['mode'] !== 'subscribe') {
+			$app['db']->prepare("UPDATE shrewdness_subscriptions SET mode='subscribe' WHERE id = :id;")->execute($subscription);
 		}
 	} else {
 		$app['db']->prepare('INSERT INTO shrewdness_subscriptions (topic, hub) VALUES (:topic, :hub);')->execute($subscription);

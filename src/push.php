@@ -3,6 +3,7 @@
 namespace Taproot;
 
 use Guzzle;
+use Mf2;
 
 function pushLinksForResponse(Guzzle\Http\Message\Response $resp) {
 	$self = null;
@@ -57,7 +58,7 @@ class PushHub {
 	
 	public function subscribe($url, $callback) {
 		try {
-			$response = $client->post($this->url)->addPostFields([
+			$response = $this->client->post($this->url)->addPostFields([
 				'hub.mode' => 'subscribe',
 				'hub.topic' => $url,
 				'hub.callback' => $callback
@@ -70,7 +71,7 @@ class PushHub {
 	
 	public function unsubscribe($url, $callback) {
 		try {
-			$response = $client->post($this->url)->addPostFields([
+			$response = $this->client->post($this->url)->addPostFields([
 				'hub.mode' => 'unsubscribe',
 				'hub.topic' => $url,
 				'hub.callback' => $callback
