@@ -1,7 +1,7 @@
 <h1>Subscriptions</h1>
 
 <form action="<?= $newSubscriptionUrl ?>" method="post">
-	<p><label>URL: <input type="url" /></label> <button type="submit">Subscribe</button></p>
+	<p><label>URL: <input type="url" name="url" /></label> <button type="submit">Subscribe</button></p>
 </form>
 
 <table>
