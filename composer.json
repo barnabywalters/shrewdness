@@ -22,5 +22,11 @@
 		"phpunit/phpunit": "3.*",
 		"symfony/browser-kit": "~2.2",
 		"symfony/class-loader": "~2.2"
+	},
+	"autoload": {
+		"files": [
+			"src/hacks.php",
+			"src/push.php"
+		]
 	}
 }
