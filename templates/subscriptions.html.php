@@ -23,7 +23,7 @@
 		<td><a href="<?= $subscription['url'] ?>"><?= $subscription['id'] ?></a></td>
 		<td><?= $subscription['topic'] ?></td>
 		<td><?= $subscription['hub'] ?></td>
-		<td><?= $subscription['mode'] ?> (<?= $subscription['intent_verified'] ? 'yup' : 'nope' ?></td>
+		<td><?= $subscription['mode'] ?> (<?= $subscription['intent_verified'] ? 'yup' : 'nope' ?>)</td>
 		<td><?= $subscription['last_pinged'] ?></td>
 		<td><?= $subscription['last_updated'] ?></td>
 		<td><?= $subscription['created'] ?></td>

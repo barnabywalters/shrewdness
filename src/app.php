@@ -13,7 +13,7 @@ $app = new Application();
 $app->register(new UrlGeneratorServiceProvider());
 
 $app['db'] = $app->share(function () use ($app) {
-	return new PDO($app['db.dsn']);
+	return new PDO($app['db.dsn'], $app['db.username'], $app['db.password'], $app['db.options']);
 });
 
 $app['push.defaulthub'] = function () use ($app) {

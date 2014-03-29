@@ -14,7 +14,7 @@ $app->get('/', function (Http\Request $request) use ($app) {
 $app->get('/subscriptions/', function (Http\Request $request) use ($app) {
 	$subscriptions = $app['db']->query('SELECT * FROM shrewdness_subscriptions;')->fetchAll();
 	
-	foreach ($subscriptions as $subscription) {
+	foreach ($subscriptions as &$subscription) {
 		$subscription['url'] = $app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]);
 	}
 	
