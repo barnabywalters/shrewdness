@@ -45,6 +45,11 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	$topic = $links['self'];
 	$hubs = $links['hub'];
 	
+	$app['logger']->info('Subscription: discovered links', [
+		'topic' => $url,
+		'links' => $links
+	]);
+	
 	// If hub exists, subscribe at that hub.
 	if (!empty($hubs)) {
 		$hubUrl = $hubs[0];
@@ -77,7 +82,7 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	if ($result instanceof Exception) {
 		//return $app->abort('Exception when creating a subscription')
 		$app['logger']->error('Subscription: subscription POST request to hub failed', [
-			'hub' => $hub,
+			'hub' => (string) $hub,
 			'exception' => $result,
 			'content' => $result->getResponse()->getBody(true)
 		]);
