@@ -93,8 +93,11 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 		return $app->abort(404, 'No such subscription found!');
 	}
 	
+	$pings = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 20;")->fetchAll();
+	
 	return render('subscription.html', [
-		'subscription' => $subscription
+		'subscription' => $subscription,
+		'pings' => $pings
 	]);
 })->bind('subscriptions.id.get');
 
@@ -109,7 +112,7 @@ $app->get('/subscriptions/{id}/ping/', function (Http\Request $reqest, $id) use 
 	if ($request->query->has('hub.mode')) {
 		$p = $request->query->all();
 		if ($p['hub.mode'] === $subscription['mode'] and $p['hub.mode'] === $subscription['mode'] and $p['topic'] === $subscription['topic']) {
-			$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = true WHERE id = {$app['db']->quote($id)}");
+			$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = 1 WHERE id = {$app['db']->quote($id)}");
 			return $p['hub.challenge'];
 		} else {
 			return $app->abort(404, 'No such intent!');
