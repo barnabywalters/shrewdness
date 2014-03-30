@@ -38,7 +38,7 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 		$resp = $client->get($url)->send();
 	} catch (Guzzle\Common\Exception\GuzzleException $e) {
 		// Resource does not exist, return exception
-		return [null, $e];
+		return $app->abort(400, "The given topic, {$url}, could not be fetched.");
 	}
 	
 	$links = Taproot\pushLinksForResponse($resp);
@@ -50,13 +50,7 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 		'links' => $links
 	]);
 	
-	// If hub exists, subscribe at that hub.
-	if (!empty($hubs)) {
-		$hubUrl = $hubs[0];
-		$hub = new Taproot\PushHub($hubUrl);
-	} else {
-		$hub = $app['push.defaulthub'];
-	}
+	$hub = empty($hubs) ? $app['push.defaulthub'] : new Taproot\PushHub($hubs[0]);
 	
 	$subscription = [
 		'topic' => $topic,
@@ -76,7 +70,7 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 		$subscription = $existingSubscription->fetch();
 	}
 	
-	// Regardless of the state of the database beforehand, $subscription now has an ID and a mode of “subscribe”.
+	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
 	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
 	if ($result instanceof Exception) {
@@ -105,7 +99,7 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 })->bind('subscriptions.id.get');
 
 
-$app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
+$app->get('/subscriptions/{id}/ping/', function (Http\Request $reqest, $id) use ($app) {
 	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)}")->fetch();
 	if (empty($subscription)) {
 		return $app->abort(404, 'No such subscription found!');
@@ -122,7 +116,16 @@ $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) us
 		}
 	}
 	
-	// Otherwise, create a new ping row and dispatch event.
+	return $app->abort(400, 'GET requests to subscription callbacks must be verifications of intent, i.e. have hub.mode parameters');
+});
+
+
+$app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
+	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)}")->fetch();
+	if (empty($subscription)) {
+		return $app->abort(404, 'No such subscription found!');
+	}
+	
 	$insertPing = $app['db']->prepare('INSERT INTO shrewdness_pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content)');
 	$ping = [
 		'subscription' => $subscription['id'],

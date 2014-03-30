@@ -87,6 +87,7 @@ class PushHub {
 	}
 }
 
+// TODO: authenticate requests using credentials. Probably easiest to alter the client in the constructor.
 class SuperfeedrHub extends PushHub {
 	protected $username;
 	protected $token;
