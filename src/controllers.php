@@ -102,18 +102,19 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 })->bind('subscriptions.id.get');
 
 
-$app->get('/subscriptions/{id}/ping/', function (Http\Request $reqest, $id) use ($app) {
-	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)}")->fetch();
+$app->get('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
+	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
 	if (empty($subscription)) {
 		return $app->abort(404, 'No such subscription found!');
 	}
 	
 	// If this is a verification of intent, deal with it.
-	if ($request->query->has('hub.mode')) {
+	// For some reason the periods are converted into underscores by PHP.
+	if ($request->query->has('hub_mode')) {
 		$p = $request->query->all();
-		if ($p['hub.mode'] === $subscription['mode'] and $p['hub.mode'] === $subscription['mode'] and $p['topic'] === $subscription['topic']) {
+		if ($p['hub_mode'] === $subscription['mode'] and $p['hub_topic'] === $subscription['topic']) {
 			$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = 1 WHERE id = {$app['db']->quote($id)};");
-			return $p['hub.challenge'];
+			return $p['hub_challenge'];
 		} else {
 			return $app->abort(404, 'No such intent!');
 		}
@@ -124,7 +125,7 @@ $app->get('/subscriptions/{id}/ping/', function (Http\Request $reqest, $id) use 
 
 
 $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
-	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)}")->fetch();
+	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
 	if (empty($subscription)) {
 		return $app->abort(404, 'No such subscription found!');
 	}
