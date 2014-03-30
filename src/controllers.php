@@ -112,7 +112,7 @@ $app->get('/subscriptions/{id}/ping/', function (Http\Request $reqest, $id) use 
 	if ($request->query->has('hub.mode')) {
 		$p = $request->query->all();
 		if ($p['hub.mode'] === $subscription['mode'] and $p['hub.mode'] === $subscription['mode'] and $p['topic'] === $subscription['topic']) {
-			$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = 1 WHERE id = {$app['db']->quote($id)}");
+			$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = 1 WHERE id = {$app['db']->quote($id)};");
 			return $p['hub.challenge'];
 		} else {
 			return $app->abort(404, 'No such intent!');
@@ -129,10 +129,10 @@ $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) us
 		return $app->abort(404, 'No such subscription found!');
 	}
 	
-	$insertPing = $app['db']->prepare('INSERT INTO shrewdness_pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content)');
+	$insertPing = $app['db']->prepare('INSERT INTO shrewdness_pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
 	$ping = [
 		'subscription' => $subscription['id'],
-		'content_type' => $request->getContentType(),
+		'content_type' => $request->headers->get('Content-type'),
 		'content' => $request->getContent()
 	];
 	$insertPing->execute($ping);
