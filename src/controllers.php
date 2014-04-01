@@ -99,6 +99,9 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 	}
 	
 	$pings = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 20;")->fetchAll();
+	foreach ($pings as &$ping) {
+		$ping['url'] = $app['url_generator']->generate('subscriptions.id.ping.datetime', ['id' => $id, 'timestamp' => $ping['datetime']]);
+	}
 	
 	return render('subscription.html', [
 		'subscription' => $subscription,
@@ -152,8 +155,8 @@ $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) us
 
 // Individual ping content view.
 $app->get('/subscriptions/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app) {
-	$fetchPing = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = :subscription AND datetime = :timestamp;");
-	$fetchPing->execute(['subscription' => $subscription, 'timestamp' => $timestamp]);
+	$fetchPing = $app['db']->prepare("SELECT * FROM shrewdness_pings WHERE subscription = :subscription AND datetime = :timestamp;");
+	$fetchPing->execute(['subscription' => $id, 'timestamp' => $timestamp]);
 	$ping = $fetchPing->fetch();
 	if (empty($ping)) {
 		$app->abort(404, 'No such ping found!');
@@ -165,4 +168,4 @@ $app->get('/subscriptions/{id}/{timestamp}/', function (Http\Request $request, $
 		// Probably a bunch of potential attacks here, but for the moment it’s adequate.
 		return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
 	}
-})->bind('subscriptions.id.ping.id');
+})->bind('subscriptions.id.ping.datetime');

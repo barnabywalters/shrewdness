@@ -23,7 +23,7 @@
 	<tbody>
 		<?php foreach ($pings as $ping): ?>
 		<tr>
-			<td><?= $ping['id'] ?></td>
+			<td><a href="<?= $ping['url'] ?>"><?= $ping['id'] ?></a></td>
 			<td><?= $ping['datetime'] ?></td>
 			<td><?= $ping['content_type'] ?></td>
 			<td>
