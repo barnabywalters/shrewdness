@@ -163,7 +163,7 @@ $app->get('/subscriptions/{id}/{timestamp}/', function (Http\Request $request, $
 	}
 	
 	if (strstr($ping['content_type'], 'html') !== false) {
-		return new Http\Response(htmlspecialchars($ping['content']), 200, ['Content-type' => 'text/plain']);
+		return new Http\Response($ping['content'], 200, ['Content-type' => 'text/plain']);
 	} else {
 		// Probably a bunch of potential attacks here, but for the moment it’s adequate.
 		return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
