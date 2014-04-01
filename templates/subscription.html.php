@@ -3,9 +3,9 @@
 <ul>
 	<li>Topic: <?= $subscription['topic'] ?></li>
 	<li>Hub: <?= $subscription['hub'] ?></li>
-	<li>Mode: <?= $subscription['mode'] ?> (<?= $subscription['intent_verified'] ? 'verified' : 'unverified' ?></li>
-	<li>Last pinged: <?= $subscription['last_pinged'] ?></li>
-	<li>Last updated: <?= $subscription['last_updated'] ?></li>
+	<li>Mode: <?= $subscription['mode'] ?> (<?= $subscription['intent_verified'] ? 'verified' : 'unverified' ?>)</li>
+	<!--<li>Last pinged: <?= $subscription['last_pinged'] ?></li>
+	<li>Last updated: <?= $subscription['last_updated'] ?></li>-->
 	<li>Created: <?= $subscription['created'] ?></li>
 </ul>
 
@@ -26,9 +26,7 @@
 			<td><a href="<?= $ping['url'] ?>"><?= $ping['id'] ?></a></td>
 			<td><?= $ping['datetime'] ?></td>
 			<td><?= $ping['content_type'] ?></td>
-			<td>
-				<pre><?= strlen($ping['content']) ?> bytes of content</pre>
-			</td>
+			<td><?= strlen($ping['content']) ?> bytes of content</td>
 		</tr>
 		<?php endforeach ?>
 	</tbody>

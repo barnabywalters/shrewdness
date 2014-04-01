@@ -100,7 +100,7 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 	
 	$pings = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 20;")->fetchAll();
 	foreach ($pings as &$ping) {
-		$ping['url'] = $app['url_generator']->generate('subscriptions.id.ping.datetime', ['id' => $id, 'timestamp' => $ping['datetime']]);
+		$ping['url'] = $app['url_generator']->generate('subscriptions.id.ping.datetime', ['id' => $id, 'timestamp' => (new Datetime($ping['datetime']))->format('Y-m-d\TH:i:s')]);
 	}
 	
 	return render('subscription.html', [

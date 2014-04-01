@@ -87,14 +87,19 @@ class PushHub {
 	}
 }
 
-// TODO: authenticate requests using credentials. Probably easiest to alter the client in the constructor.
 class SuperfeedrHub extends PushHub {
 	protected $username;
 	protected $token;
 	
-	public function __construct($username, $token) {
+	public function __construct($username, $token, $client = null) {
 		parent::__construct('https://push.superfeedr.com');
 		$this->username = $username;
 		$this->token = $token;
+		
+		if ($client === null) {
+			$client = new Guzzle\Http\Client();
+		}
+		$client->setAuth($username, $token);
+		$this->client = $client;
 	}
 }
