@@ -99,7 +99,7 @@ class SuperfeedrHub extends PushHub {
 		if ($client === null) {
 			$client = new Guzzle\Http\Client();
 		}
-		$client->setAuth($username, $token);
+		$client->getConfig()->setPath('request.options/auth', [$username, $token]);
 		$this->client = $client;
 	}
 }
