@@ -26,7 +26,8 @@
 	"autoload": {
 		"files": [
 			"src/hacks.php",
-			"src/push.php"
+			"src/push.php",
+			"src/subscriptions.php"
 		]
 	}
 }
