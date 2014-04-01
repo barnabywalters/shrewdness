@@ -27,11 +27,8 @@
 			<td><?= $ping['datetime'] ?></td>
 			<td><?= $ping['content_type'] ?></td>
 			<td>
-				<details>
-					<summary>Show Content…</summary>
-					<pre><?= htmlspecialchars($ping['content']) ?></pre>
-				</details>
-				</td>
+				<pre><?= strlen($ping['content']) ?> bytes of content</pre>
+			</td>
 		</tr>
 		<?php endforeach ?>
 	</tbody>

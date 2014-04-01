@@ -12,6 +12,8 @@ $app->get('/', function (Http\Request $request) use ($app) {
 	return 'Hello world!';
 });
 
+
+// Subscription list.
 $app->get('/subscriptions/', function (Http\Request $request) use ($app) {
 	$subscriptions = $app['db']->query('SELECT * FROM shrewdness_subscriptions;')->fetchAll();
 	
@@ -25,6 +27,8 @@ $app->get('/subscriptions/', function (Http\Request $request) use ($app) {
 	]);
 });
 
+
+// Subscription creation.
 $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	if (!$request->request->has('url')) {
 		return $app->abort(400, 'Subscription requests must have a url parameter.');
@@ -42,7 +46,7 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 	}
 	
 	$links = Taproot\pushLinksForResponse($resp);
-	$topic = $links['self'];
+	$topic = $links['self'] ?: $url;
 	$hubs = $links['hub'];
 	
 	$app['logger']->info('Subscription: discovered links', [
@@ -87,8 +91,9 @@ $app->post('/subscriptions/', function (Http\Request $request) use ($app) {
 })->bind('subscriptions.post');
 
 
+// Subscription summary, list of recent pings.
 $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($app) {
-	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)}")->fetch();
+	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
 	if (empty($subscription)) {
 		return $app->abort(404, 'No such subscription found!');
 	}
@@ -102,13 +107,13 @@ $app->get('/subscriptions/{id}/', function (Http\Request $request, $id) use ($ap
 })->bind('subscriptions.id.get');
 
 
+// Verification of intent.
 $app->get('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
 	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
 	if (empty($subscription)) {
 		return $app->abort(404, 'No such subscription found!');
 	}
 	
-	// If this is a verification of intent, deal with it.
 	// For some reason the periods are converted into underscores by PHP.
 	if ($request->query->has('hub_mode')) {
 		$p = $request->query->all();
@@ -124,6 +129,7 @@ $app->get('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use
 });
 
 
+// New content update.
 $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) use ($app) {
 	$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
 	if (empty($subscription)) {
@@ -142,3 +148,21 @@ $app->post('/subscriptions/{id}/ping/', function (Http\Request $request, $id) us
 	
 	return '';
 })->bind('subscriptions.id.ping');
+
+
+// Individual ping content view.
+$app->get('/subscriptions/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app) {
+	$fetchPing = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = :subscription AND datetime = :timestamp;");
+	$fetchPing->execute(['subscription' => $subscription, 'timestamp' => $timestamp]);
+	$ping = $fetchPing->fetch();
+	if (empty($ping)) {
+		$app->abort(404, 'No such ping found!');
+	}
+	
+	if (strstr($ping['content_type'], 'html') !== false) {
+		return new Http\Response(htmlspecialchars($ping['content']), 200, ['Content-type' => 'text/plain']);
+	} else {
+		// Probably a bunch of potential attacks here, but for the moment it’s adequate.
+		return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
+	}
+})->bind('subscriptions.id.ping.id');
