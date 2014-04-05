@@ -9,8 +9,12 @@ use Exception;
 use Taproot;
 use DateTime;
 
-function controllers($app) {
+function controllers($app, $authFunction=null) {
 	$subscriptions = $app['controllers_factory'];
+	
+	if ($authFunction === null) {
+		$authFunction = function ($request) { return; };
+	}
 	
 	// Subscription list.
 	$subscriptions->get('/', function (Http\Request $request) use ($app) {
@@ -24,7 +28,8 @@ function controllers($app) {
 			'subscriptions' => $subscriptions,
 			'newSubscriptionUrl' => $app['url_generator']->generate('subscriptions.post')
 		]);
-	});
+	})->bind('subscriptions')
+		->before($authFunction);
 	
 	
 	// Subscription creation.
@@ -106,7 +111,8 @@ function controllers($app) {
 			'subscription' => $subscription,
 			'pings' => $pings
 		]);
-	})->bind('subscriptions.id.get');
+	})->bind('subscriptions.id.get')
+		->before($authFunction);
 	
 	
 	// Verification of intent.
@@ -138,6 +144,14 @@ function controllers($app) {
 			return $app->abort(404, 'No such subscription found!');
 		}
 		
+		// Compare content with most recent ping, if it exists.
+		$latestPing = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 1;")->fetch();
+		
+		if (!empty($latestPing) and $latestPing['content'] == $request->getContent()) {
+			$app['logger']->info("Not adding new ping for subscription {$id} as content is the same as previous ping.");
+			return '';
+		}
+		
 		$insertPing = $app['db']->prepare('INSERT INTO shrewdness_pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
 		$ping = [
 			'subscription' => $subscription['id'],
@@ -167,7 +181,8 @@ function controllers($app) {
 			// Probably a bunch of potential attacks here, but for the moment it’s adequate.
 			return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
 		}
-	})->bind('subscriptions.id.ping.datetime');
+	})->bind('subscriptions.id.ping.datetime')
+		->before($authFunction);
 	
 	return $subscriptions;
 }
