@@ -53,4 +53,4 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 	// Also note relation(s), derived from mf2/rel values, store those as space-separated.
 });
 
-return $app
+return $app;
