@@ -3,13 +3,77 @@
 namespace Taproot\Shrewdness\Subscriptions;
 
 use Symfony\Component\HttpFoundation as Http;
+use Symfony\Component\EventDispatcher;
 use Guzzle;
 use Mf2;
 use Exception;
 use Taproot;
 use DateTime;
 
-function controllers($app, $authFunction=null) {
+class PdoSubscriptionStorage {
+	protected $db;
+	protected $prefix;
+	
+	public function __construct(PDO $pdo, $tablePrefix = 'shrewdness_') {
+		$this->db = $pdo;
+		$this->prefix = $tablePrefix;
+	}
+	
+	public function getSubscriptions() {
+		return $this->db->query('SELECT * FROM ' . $this->prefix . 'subscriptions;')->fetchAll();
+	}
+	
+	public function createSubscription($topic, $hub) {
+		$subscription = [
+			'topic' => $topic,
+			'hub' => $hub->getUrl()
+		];
+		
+		$existingSubscription = $this->db->prepare('SELECT * FROM ' . $this->prefix . 'subscriptions WHERE topic = :topic AND hub = :hub;');
+		$existingSubscription->execute($subscription);
+		if ($existingSubscription->rowCount() !== 0) {
+			$subscription = $existingSubscription->fetch();
+			if ($subscription['mode'] !== 'subscribe') {
+				$this->db->prepare("UPDATE {$this->prefix}subscriptions SET mode='subscribe' WHERE id = :id;")->execute($subscription);
+			}
+		} else {
+			$this->db->prepare('INSERT INTO ' . $this->prefix . 'subscriptions (topic, hub) VALUES (:topic, :hub);')->execute($subscription);
+			$existingSubscription->execute($subscription);
+			$subscription = $existingSubscription->fetch();
+		}
+		
+		return $subscription;
+	}
+	
+	public function getSubscription($id) {
+		return $this->db->query("SELECT * FROM {$this->prefix}subscriptions WHERE id = {$this->db->quote($id)};")->fetch();
+	}
+	
+	public function getPingsForSubscription($id, $limit=20, $offset=0) {
+		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT {$this->db->quote($offset)} OFFSET {$this->db->quote($offset)};")->fetchAll();
+	}
+	
+	public function subscriptionIntentVerified($id) {
+		$this->db->exec("UPDATE {$this->prefix}subscriptions SET intent_verified = 1 WHERE id = {$this->db->quote($id)};");
+	}
+	
+	public function getLatestPingForSubscription($id) {
+		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT 1;")->fetch();
+	}
+	
+	public function createPing(array $ping) {
+		$insertPing = $this->db->prepare('INSERT INTO {$this->prefix}pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
+		$insertPing->execute($ping);
+	}
+	
+	public function getPing($subscriptionId, $timestamp) {
+		$fetchPing = $this->db->prepare("SELECT * FROM {$this->prefix}pings WHERE subscription = :subscription AND datetime = :timestamp;");
+		$fetchPing->execute(['subscription' => $id, 'timestamp' => $timestamp]);
+		return $fetchPing->fetch();
+	}
+}
+
+function controllers($app, $storage, $authFunction=null) {
 	$subscriptions = $app['controllers_factory'];
 	
 	if ($authFunction === null) {
@@ -17,8 +81,8 @@ function controllers($app, $authFunction=null) {
 	}
 	
 	// Subscription list.
-	$subscriptions->get('/', function (Http\Request $request) use ($app) {
-		$subscriptions = $app['db']->query('SELECT * FROM shrewdness_subscriptions;')->fetchAll();
+	$subscriptions->get('/', function (Http\Request $request) use ($app, $storage) {
+		$subscriptions = $storage->getSubscriptions();
 		
 		foreach ($subscriptions as &$subscription) {
 			$subscription['url'] = $app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]);
@@ -33,7 +97,7 @@ function controllers($app, $authFunction=null) {
 	
 	
 	// Subscription creation.
-	$subscriptions->post('/', function (Http\Request $request) use ($app) {
+	$subscriptions->post('/', function (Http\Request $request) use ($app, $storage) {
 		if (!$request->request->has('url')) {
 			return $app->abort(400, 'Subscription requests must have a url parameter.');
 		}
@@ -60,23 +124,7 @@ function controllers($app, $authFunction=null) {
 		
 		$hub = empty($hubs) ? $app['push.defaulthub'] : new Taproot\PushHub($hubs[0]);
 		
-		$subscription = [
-			'topic' => $topic,
-			'hub' => $hub->getUrl()
-		];
-		
-		$existingSubscription = $app['db']->prepare('SELECT * FROM shrewdness_subscriptions WHERE topic = :topic AND hub = :hub;');
-		$existingSubscription->execute($subscription);
-		if ($existingSubscription->rowCount() !== 0) {
-			$subscription = $existingSubscription->fetch();
-			if ($subscription['mode'] !== 'subscribe') {
-				$app['db']->prepare("UPDATE shrewdness_subscriptions SET mode='subscribe' WHERE id = :id;")->execute($subscription);
-			}
-		} else {
-			$app['db']->prepare('INSERT INTO shrewdness_subscriptions (topic, hub) VALUES (:topic, :hub);')->execute($subscription);
-			$existingSubscription->execute($subscription);
-			$subscription = $existingSubscription->fetch();
-		}
+		$subscription = $storage->createSubscription($topic, $hub->getUrl());
 		
 		// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 		
@@ -96,13 +144,13 @@ function controllers($app, $authFunction=null) {
 	
 	
 	// Subscription summary, list of recent pings.
-	$subscriptions->get('/{id}/', function (Http\Request $request, $id) use ($app) {
-		$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
+	$subscriptions->get('/{id}/', function (Http\Request $request, $id) use ($app, $storage) {
+		$subscription = $storage->getSubscription($id);
 		if (empty($subscription)) {
 			return $app->abort(404, 'No such subscription found!');
 		}
 		
-		$pings = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 20;")->fetchAll();
+		$pings = $storage->getPingsForSubscription($id);
 		foreach ($pings as &$ping) {
 			$ping['url'] = $app['url_generator']->generate('subscriptions.id.ping.datetime', ['id' => $id, 'timestamp' => (new Datetime($ping['datetime']))->format('Y-m-d\TH:i:s')]);
 		}
@@ -116,8 +164,8 @@ function controllers($app, $authFunction=null) {
 	
 	
 	// Verification of intent.
-	$subscriptions->get('/{id}/ping/', function (Http\Request $request, $id) use ($app) {
-		$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
+	$subscriptions->get('/{id}/ping/', function (Http\Request $request, $id) use ($app, $storage) {
+		$subscription = $storage->getSubscription($id);
 		if (empty($subscription)) {
 			return $app->abort(404, 'No such subscription found!');
 		}
@@ -126,7 +174,7 @@ function controllers($app, $authFunction=null) {
 		if ($request->query->has('hub_mode')) {
 			$p = $request->query->all();
 			if ($p['hub_mode'] === $subscription['mode'] and $p['hub_topic'] === $subscription['topic']) {
-				$app['db']->exec("UPDATE shrewdness_subscriptions SET intent_verified = 1 WHERE id = {$app['db']->quote($id)};");
+				$storage->subscriptionIntentVerified($id);
 				return $p['hub_challenge'];
 			} else {
 				return $app->abort(404, 'No such intent!');
@@ -138,27 +186,27 @@ function controllers($app, $authFunction=null) {
 	
 	
 	// New content update.
-	$subscriptions->post('/{id}/ping/', function (Http\Request $request, $id) use ($app) {
-		$subscription = $app['db']->query("SELECT * FROM shrewdness_subscriptions WHERE id = {$app['db']->quote($id)};")->fetch();
+	$subscriptions->post('/{id}/ping/', function (Http\Request $request, $id) use ($app, $storage) {
+		$subscription = $storage->getSubscription($id);
 		if (empty($subscription)) {
 			return $app->abort(404, 'No such subscription found!');
 		}
 		
 		// Compare content with most recent ping, if it exists.
-		$latestPing = $app['db']->query("SELECT * FROM shrewdness_pings WHERE subscription = {$app['db']->quote($id)} ORDER BY datetime DESC LIMIT 1;")->fetch();
+		$latestPing = $storage->getLatestPingForSubscription($id);
 		
 		if (!empty($latestPing) and $latestPing['content'] == $request->getContent()) {
 			$app['logger']->info("Not adding new ping for subscription {$id} as content is the same as previous ping.");
 			return '';
 		}
 		
-		$insertPing = $app['db']->prepare('INSERT INTO shrewdness_pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
 		$ping = [
 			'subscription' => $subscription['id'],
 			'content_type' => $request->headers->get('Content-type'),
 			'content' => $request->getContent()
 		];
-		$insertPing->execute($ping);
+		
+		$storage->createPing($ping);
 		
 		$app['dispatcher']->dispatch('subscription.ping');
 		
@@ -167,10 +215,8 @@ function controllers($app, $authFunction=null) {
 	
 	
 	// Individual ping content view.
-	$subscriptions->get('/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app) {
-		$fetchPing = $app['db']->prepare("SELECT * FROM shrewdness_pings WHERE subscription = :subscription AND datetime = :timestamp;");
-		$fetchPing->execute(['subscription' => $id, 'timestamp' => $timestamp]);
-		$ping = $fetchPing->fetch();
+	$subscriptions->get('/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app, $storage) {
+		$ping = $storage->getPing($id, $timestamp);
 		if (empty($ping)) {
 			$app->abort(404, 'No such ping found!');
 		}

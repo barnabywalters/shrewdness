@@ -40,9 +40,19 @@
 		<string>Rosario-Regular</string>
 		<string>Rosario-Regular</string>
 		<string>Rosario-Bold</string>
+		<string>Rosario-Regular</string>
+		<string>Rosario-Regular</string>
+		<string>AndaleMono</string>
+		<string>Rosario-Regular</string>
+		<string>AndaleMono</string>
+		<string>Rosario-Regular</string>
+		<string>AndaleMono</string>
+		<string>Rosario-Regular</string>
+		<string>AndaleMono</string>
+		<string>Rosario-Regular</string>
 	</array>
 	<key>length</key>
-	<integer>256500</integer>
+	<integer>262853</integer>
 	<key>version</key>
 	<integer>18</integer>
 </dict>

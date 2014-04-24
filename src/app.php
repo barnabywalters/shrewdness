@@ -16,6 +16,10 @@ $app['db'] = $app->share(function () use ($app) {
 	return new PDO($app['db.dsn'], $app['db.username'], $app['db.password'], $app['db.options']);
 });
 
+$app['subscriptionstorage'] = $app->share(function () use ($app) {
+	return new Subscriptions\PdoSubscriptionStorage($app['db']);
+});
+
 $app['push.defaulthub'] = function () use ($app) {
 	return new Taproot\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
 };
@@ -39,4 +43,14 @@ $app['render'] = $app->protect(function ($template, $__templateData=array()) {
 	return $render($template, $__templateData);
 });
 
-return $app;
+$app['indexResource'] = $app->protect(function ($resource) use ($app) {
+	// Find all links not tagged with rel=nofollow.
+	
+	// For each link, ensure there is a row linking this authority to the links’s authority/origin (find good name here).
+	// Where “authority” ≈ domain, with some special cases for silos like Twitter.
+	// E.G. authority of http://waterpigs.co.uk/notes/1000 is waterpigs.co.uk
+	// authority of https://twitter.com/aaronpk/status/1234567890 is twitter.com/aaronpk
+	// Also note relation(s), derived from mf2/rel values, store those as space-separated.
+});
+
+return $app
