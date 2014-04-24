@@ -51,7 +51,7 @@ class PdoSubscriptionStorage {
 	}
 	
 	public function getPingsForSubscription($id, $limit=20, $offset=0) {
-		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT {$this->db->quote($offset)}, {$this->db->quote($limit)};")->fetchAll();
+		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT {$limit} OFFSET {$offset};")->fetchAll();
 	}
 	
 	public function subscriptionIntentVerified($id) {
@@ -63,7 +63,7 @@ class PdoSubscriptionStorage {
 	}
 	
 	public function createPing(array $ping) {
-		$insertPing = $this->db->prepare('INSERT INTO {$this->prefix}pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
+		$insertPing = $this->db->prepare('INSERT INTO ' . $this->prefix . 'pings (subscription, content_type, content) VALUES (:subscription, :content_type, :content);');
 		$insertPing->execute($ping);
 	}
 	
@@ -73,6 +73,7 @@ class PdoSubscriptionStorage {
 		return $fetchPing->fetch();
 	}
 }
+
 
 function controllers($app, $storage, $authFunction=null) {
 	$subscriptions = $app['controllers_factory'];
