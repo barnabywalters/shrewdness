@@ -51,7 +51,7 @@ class PdoSubscriptionStorage {
 	}
 	
 	public function getPingsForSubscription($id, $limit=20, $offset=0) {
-		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT {$this->db->quote($offset)} OFFSET {$this->db->quote($offset)};")->fetchAll();
+		return $this->db->query("SELECT * FROM {$this->prefix}pings WHERE subscription = {$this->db->quote($id)} ORDER BY datetime DESC LIMIT {$this->db->quote($offset)}, {$this->db->quote($offset)};")->fetchAll();
 	}
 	
 	public function subscriptionIntentVerified($id) {
