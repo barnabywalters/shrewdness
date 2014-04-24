@@ -9,6 +9,7 @@ use Mf2;
 use Exception;
 use Taproot;
 use DateTime;
+use PDO;
 
 class PdoSubscriptionStorage {
 	protected $db;
