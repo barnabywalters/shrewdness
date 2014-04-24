@@ -44,6 +44,21 @@ $app['render'] = $app->protect(function ($template, $__templateData=array()) {
 });
 
 $app['indexResource'] = $app->protect(function ($resource) use ($app) {
+	$app['logger']->info('Indexing Resource', [
+		'resource' => $resource
+	]);
+	
+	// Archive the response
+	
+	// Feed Reader Subscription
+	// If there are h-entries on the page, for each of them:
+	// * use comment-presentation algorithm to clean up, index those values for result presentation
+	// * index full content as well, for searching
+	// If there are no h-entries
+	// * Index the page as an ordinary webpage
+	
+	
+	// Anti-spam measures
 	// Find all links not tagged with rel=nofollow.
 	
 	// For each link, ensure there is a row linking this authority to the links’s authority/origin (find good name here).

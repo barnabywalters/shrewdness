@@ -75,6 +75,92 @@ class PdoSubscriptionStorage {
 }
 
 
+// Returns [array $subscription|null, Exception $error|null]
+function subscribe($storage, $defaultHub, $client, $url) {
+	// Discover Hub.
+	try {
+		$resp = $client->get($url)->send();
+	} catch (Guzzle\Common\Exception\GuzzleException $e) {
+		// Resource does not exist, return exception
+		return $app->abort(400, "The given topic, {$url}, could not be fetched.");
+	}
+	
+	$links = Taproot\pushLinksForResponse($resp);
+	$topic = $links['self'] ?: $url;
+	$hubs = $links['hub'];
+	
+	$hub = empty($hubs) ? $defaultHub : new Taproot\PushHub($hubs[0]);
+	
+	$subscription = $storage->createSubscription($topic, $hub->getUrl());
+	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
+	
+	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
+	if ($result instanceof Exception) {
+		return [null, $result];
+	}
+	
+	return [$subscription, null];
+}
+
+
+// Crawl
+// Given a URL, recursively fetches rel=prev[ious], calling $callback at each stage.
+// returns Exception $error | null on success
+// $callback is passed one argument, an array with: url, mf2, response, content, dondocument, parser
+// If $callback returns false, crawl is halted.
+//
+// TODO: make this function check for duplicate content (pass previousResponse on recurse) and halt if duplicated.
+function crawl($url, $callback, $timeout=null, $client=null) {
+	if ($timeout !== null) {
+		$timeStarted = microtime(true);
+	} elseif ($timeout <= 0) {
+		// Crawl timed out but was successful.
+		return null;
+	}
+	
+	if ($client == null) {
+		$client = new Guzzle\Http\Client();
+	}
+	
+	$fetch = function ($url) use ($client) {
+		try {
+			return [$client->get($url)->send(), null];
+		} catch (Guzzle\Common\Exception\GuzzleException $e) {
+			return [null, $e];
+		}
+	};
+	
+	list($resp, $err) = $fetch($url);
+	if ($err !== null) {
+		return $err;
+	}
+	
+	$parser = new Mf2\Parser($resp->getBody(1), $resp->getEffectiveUrl());
+	$mf2 = $parser->parse();
+	
+	$result = $callback([
+		'url' => $resp->getEffectiveUrl(),
+		'mf2' => $mf2,
+		'response' => $resp,
+		'content' => $resp->getBody(1),
+		'domdocument' => $parser->doc,
+		'parser' => $parser
+	]);
+	
+	$prevUrl = !empty($mf['rels']['prev']) ? $mf['rels']['prev'][0] : !empty($mf['rels']['previous']) ? $mf['rels']['previous'][0] : null;
+	
+	if ($prevUrl === null or $result === false) {
+		return null;
+	}
+	
+	if ($timeout !== null) {
+		$timeout = $timeout - (microtime(true) - $timeStarted);
+	}
+	
+	return crawl($prevUrl, $callback, $timeout, $client);
+}
+
+
 function controllers($app, $storage, $authFunction=null) {
 	$subscriptions = $app['controllers_factory'];
 	
@@ -107,40 +193,8 @@ function controllers($app, $storage, $authFunction=null) {
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		// Discover Hub.
-		try {
-			$resp = $client->get($url)->send();
-		} catch (Guzzle\Common\Exception\GuzzleException $e) {
-			// Resource does not exist, return exception
-			return $app->abort(400, "The given topic, {$url}, could not be fetched.");
-		}
-		
-		$links = Taproot\pushLinksForResponse($resp);
-		$topic = $links['self'] ?: $url;
-		$hubs = $links['hub'];
-		
-		$app['logger']->info('Subscription: discovered links', [
-			'topic' => $url,
-			'links' => $links
-		]);
-		
-		$hub = empty($hubs) ? $app['push.defaulthub'] : new Taproot\PushHub($hubs[0]);
-		
-		$subscription = $storage->createSubscription($topic, $hub->getUrl());
-		
-		// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
-		
-		$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
-		if ($result instanceof Exception) {
-			//return $app->abort('Exception when creating a subscription')
-			$app['logger']->error('Subscription: subscription POST request to hub failed', [
-				'hub' => (string) $hub,
-				'exception' => $result,
-				'content' => $result->getResponse()->getBody(true)
-			]);
-			throw $result;
-		}
-		
+		$subscription = subscribe($storage, $app['push.defaulthub'], $client, $url);
+				
 		return $app->redirect($app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]));
 	})->bind('subscriptions.post');
 	
@@ -231,6 +285,37 @@ function controllers($app, $storage, $authFunction=null) {
 		}
 	})->bind('subscriptions.id.ping.datetime')
 		->before($authFunction);
+	
+	// Crawl(+ensure subscription)
+	$subscriptions->post('/crawl/', function (Http\Request $request) use ($app, $storage) {
+		$url = $request->request->get('url');
+		$client = $app['http.client'];
+		
+		// Subscribe to URL with $app['indexResource'] as the callback.
+		list($subscription, $error) = Subscriptions\subscribe($storage, $app['defaulthub'], $client, $url);
+		if ($error !== null) {
+			$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
+				'url' => $url,
+				'exceptionClass' => get_class($error),
+				'message' => $error->getMessage()
+			]);
+			$app->abort(400, "Subscribing to {$url} failed.");
+		}
+		
+		// Recursively fetch $url, applying $app['indexResource'] to each page until no more rel=prev[ious] is found,
+		// yields duplicate content, a HTTP error, or some timeout is reached.
+		$error = Subscriptions\crawl($url, $app['indexResource'], null, $app['http.client']);
+		if ($error !== null) {
+			$app['logger']->warn('Crawl: Crawling failed', [
+				'url' => $url,
+				'exceptionClass' => get_class($error),
+				'message' => $error->getMessage()
+			]);
+			$app->abort(500, "Crawling {$url} failed");
+		}
+		
+		return '';
+	})->bind('subscriptions.crawl');
 	
 	return $subscriptions;
 }

@@ -13,16 +13,6 @@ $app->get('/', function (Http\Request $request) use ($app) {
 	return 'Hello world!';
 })->bind('homepage');
 
-$app->post('/crawl/', function (Http\Request $request) use ($app) {
-	$url = $request->request->get('url');
-	
-	// Check for existing subscription — if there’s already one then do nothing.
-	
-	// Subscribe to URL with $app['indexResource'] as the callback.
-	
-	// Recursively fetch $url, applying $app['indexResource'] to each page until no more rel=prev[ious] is found,
-	// yields duplicate content, a HTTP error, or some timeout is reached.
-})->bind('crawl');
 
 $ensureIsOwner = function (Http\Request $request) use ($app) {
 	if (!$request->attributes->has('me') or $request->attributes->get('me') != $app['owner.url']) {
