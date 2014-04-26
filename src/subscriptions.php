@@ -91,7 +91,7 @@ function subscribe($storage, $defaultHub, $client, $url) {
 	
 	$hub = empty($hubs) ? $defaultHub : new Taproot\PushHub($hubs[0]);
 	
-	$subscription = $storage->createSubscription($topic, $hub->getUrl());
+	$subscription = $storage->createSubscription($topic, $hub);
 	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
 	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
