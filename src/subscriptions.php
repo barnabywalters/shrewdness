@@ -319,7 +319,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$client = $app['http.client'];
 		
 		// Subscribe to URL.
-		list($subscription, $error) = Subscriptions\subscribe($storage, $app['defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
+		list($subscription, $error) = subscribe($storage, $app['defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
 		if ($error !== null) {
 			$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
 				'url' => $url,
