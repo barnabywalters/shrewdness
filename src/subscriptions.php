@@ -334,7 +334,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 			// yields duplicate content, a HTTP error, or some timeout is reached.
 			$error = crawl($url, function ($resource) use ($app) {
 				$app['dispatcher']->dispatch('subscription.ping', new EventDispatcher\GenericEvent($resource['response'], $resource));
-				echo "{$resource['topic']}\n";
+				echo "{$resource['url']}\n";
 				ob_flush();
 				flush();
 			}, null, $app['http.client']);
