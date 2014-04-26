@@ -161,11 +161,15 @@ function crawl($url, $callback, $timeout=null, $client=null) {
 }
 
 
-function controllers($app, $storage, $authFunction=null) {
+function controllers($app, $storage, $authFunction=null, $contentCallbackFunction=null) {
 	$subscriptions = $app['controllers_factory'];
 	
 	if ($authFunction === null) {
 		$authFunction = function ($request) { return; };
+	}
+	
+	if ($contentCallbackFunction !== null) {
+		$app['dispatcher']->addListener('subscription.ping', $contentCallbackFunction);
 	}
 	
 	// Subscription list.
@@ -264,7 +268,17 @@ function controllers($app, $storage, $authFunction=null) {
 		
 		$storage->createPing($ping);
 		
-		$app['dispatcher']->dispatch('subscription.ping');
+		$response = new Guzzle\Http\Message\Response(200, $request->headers->all(), $request->getContent());
+		$parser = new Mf2\Parser($request->getContent(), $subscription['topic']);
+		$event = new GenericEvent($response, [
+			'url' => $subscription['topic'],
+			'mf2' => $mf2,
+			'response' => $response,
+			'content' => $request->getContent(),
+			'domdocument' => $parser->doc,
+			'parser' => $parser
+		]);
+		$app['dispatcher']->dispatch('subscription.ping', $event);
 		
 		return '';
 	})->bind('subscriptions.id.ping');

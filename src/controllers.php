@@ -20,7 +20,7 @@ $ensureIsOwner = function (Http\Request $request) use ($app) {
 	}
 };
 
-$app->mount('/subscriptions', Subscriptions\controllers($app, $app['subscriptionstorage']));
+$app->mount('/subscriptions', Subscriptions\controllers($app, $app['subscriptionstorage'], null, $app['indexResource']));
 
 // Authentication
 $app->before(function (Http\Request $request) use ($app) {
