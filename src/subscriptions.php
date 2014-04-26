@@ -113,7 +113,7 @@ function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 function crawl($url, $callback, $timeout=null, $client=null) {
 	if ($timeout !== null) {
 		$timeStarted = microtime(true);
-	} elseif ($timeout <= 0) {
+	} elseif ($timeout !== null and $timeout <= 0) {
 		// Crawl timed out but was successful.
 		return null;
 	}
@@ -147,7 +147,7 @@ function crawl($url, $callback, $timeout=null, $client=null) {
 		'parser' => $parser
 	]);
 	
-	$prevUrl = !empty($mf['rels']['prev']) ? $mf['rels']['prev'][0] : !empty($mf['rels']['previous']) ? $mf['rels']['previous'][0] : null;
+	$prevUrl = !empty($mf2['rels']['prev']) ? $mf2['rels']['prev'][0] : !empty($mf2['rels']['previous']) ? $mf2['rels']['previous'][0] : null;
 	
 	if ($prevUrl === null or $result === false) {
 		return null;
@@ -332,7 +332,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		return new Http\StreamedResponse(function () use ($url, $app) {
 			// Recursively fetch $url, dispatcjing the ping event for each page and echoing the page’s URL until no more rel=prev[ious] is found,
 			// yields duplicate content, a HTTP error, or some timeout is reached.
-			$error = Subscriptions\crawl($url, function ($resource) use ($app) {
+			$error = crawl($url, function ($resource) use ($app) {
 				$app['dispatcher']->dispatch('subscription.ping', new EventDispatcher\GenericEvent($resource['response'], $resource));
 				echo "{$resource['topic']}\n";
 				ob_flush();
