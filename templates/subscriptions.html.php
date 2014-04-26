@@ -4,6 +4,10 @@
 	<p><label>URL: <input type="url" name="url" /></label> <button type="submit">Subscribe</button></p>
 </form>
 
+<form action="<?= $crawlUrl ?>" method="post">
+	<p><label>URL: <input type="url" name="url" /></label> <button type="submit">Subscribe and Crawl</button></p>
+</form>
+
 <table>
 	<thead>
 		<tr>

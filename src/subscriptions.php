@@ -186,7 +186,8 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		
 		return $app['render']('subscriptions.html', [
 			'subscriptions' => $subscriptions,
-			'newSubscriptionUrl' => $app['url_generator']->generate('subscriptions.post')
+			'newSubscriptionUrl' => $app['url_generator']->generate('subscriptions.post'),
+			'crawlUrl' => $app['url_generator']->generate('subscriptions.crawl')
 		]);
 	})->bind('subscriptions')
 		->before($authFunction);
@@ -211,7 +212,8 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		}
 				
 		return $app->redirect($app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]));
-	})->bind('subscriptions.post');
+	})->bind('subscriptions.post')
+		->before($authFunction);
 	
 	
 	// Subscription summary, list of recent pings.
@@ -316,7 +318,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		// Subscribe to URL with $app['indexResource'] as the callback.
+		// Subscribe to URL.
 		list($subscription, $error) = Subscriptions\subscribe($storage, $app['defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
 		if ($error !== null) {
 			$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
@@ -327,20 +329,27 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 			$app->abort(400, "Subscribing to {$url} failed.");
 		}
 		
-		// Recursively fetch $url, applying $app['indexResource'] to each page until no more rel=prev[ious] is found,
-		// yields duplicate content, a HTTP error, or some timeout is reached.
-		$error = Subscriptions\crawl($url, $app['indexResource'], null, $app['http.client']);
-		if ($error !== null) {
-			$app['logger']->warn('Crawl: Crawling failed', [
-				'url' => $url,
-				'exceptionClass' => get_class($error),
-				'message' => $error->getMessage()
-			]);
-			$app->abort(500, "Crawling {$url} failed");
-		}
-		
-		return '';
-	})->bind('subscriptions.crawl');
+		return new Http\StreamedResponse(function () use ($url, $app) {
+			// Recursively fetch $url, dispatcjing the ping event for each page and echoing the page’s URL until no more rel=prev[ious] is found,
+			// yields duplicate content, a HTTP error, or some timeout is reached.
+			$error = Subscriptions\crawl($url, function ($resource) use ($app) {
+				$app['dispatcher']->dispatch('subscription.ping', new EventDispatcher\GenericEvent($resource['response'], $resource));
+				echo "{$resource['topic']}\n";
+				ob_flush();
+				flush();
+			}, null, $app['http.client']);
+			
+			if ($error !== null) {
+				$app['logger']->warn('Crawl: Crawling failed', [
+					'url' => $url,
+					'exceptionClass' => get_class($error),
+					'message' => $error->getMessage()
+				]);
+				$app->abort(500, "Crawling {$url} failed");
+			}
+		});
+	})->bind('subscriptions.crawl')
+		->before($authFunction);
 	
 	return $subscriptions;
 }
