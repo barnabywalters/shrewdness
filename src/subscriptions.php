@@ -94,7 +94,7 @@ function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 	$subscription = $storage->createSubscription($topic, $hub);
 	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
-	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']), true);
+	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']));
 	if ($result instanceof Exception) {
 		return [null, $result];
 	}
@@ -201,7 +201,14 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		$subscription = subscribe($storage, $app['push.defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
+		list($subscription, $error) = subscribe($storage, $app['push.defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
+		if ($error !== null) {
+			$app['logger']->warn('Ran into an error whilst creating a subscription', [
+				'exception' => get_class($error),
+				'message' => $error->getMessage()
+			]);
+			$app->abort(400, 'Ran into an error whilst trying to subscribe (see logs)');
+		}
 				
 		return $app->redirect($app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]));
 	})->bind('subscriptions.post');
