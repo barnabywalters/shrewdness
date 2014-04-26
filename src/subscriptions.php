@@ -94,7 +94,7 @@ function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 	$subscription = $storage->createSubscription($topic, $hub);
 	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
-	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']), true));
+	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']), true);
 	if ($result instanceof Exception) {
 		return [null, $result];
 	}
