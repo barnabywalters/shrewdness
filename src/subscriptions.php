@@ -76,7 +76,7 @@ class PdoSubscriptionStorage {
 
 
 // Returns [array $subscription|null, Exception $error|null]
-function subscribe($storage, $defaultHub, $client, $url) {
+function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 	// Discover Hub.
 	try {
 		$resp = $client->get($url)->send();
@@ -94,7 +94,7 @@ function subscribe($storage, $defaultHub, $client, $url) {
 	$subscription = $storage->createSubscription($topic, $hub);
 	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
-	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
+	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']), true));
 	if ($result instanceof Exception) {
 		return [null, $result];
 	}
@@ -164,6 +164,10 @@ function crawl($url, $callback, $timeout=null, $client=null) {
 function controllers($app, $storage, $authFunction=null, $contentCallbackFunction=null) {
 	$subscriptions = $app['controllers_factory'];
 	
+	$app['subscriptions.callbackurlgenerator'] = $app->protect(function ($id) use ($app) {
+		return $app['url_generator']->generate('subscriptions.id.ping', ['id' => $id], true);
+	});
+	
 	if ($authFunction === null) {
 		$authFunction = function ($request) { return; };
 	}
@@ -197,7 +201,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		$subscription = subscribe($storage, $app['push.defaulthub'], $client, $url);
+		$subscription = subscribe($storage, $app['push.defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
 				
 		return $app->redirect($app['url_generator']->generate('subscriptions.id.get', ['id' => $subscription['id']]));
 	})->bind('subscriptions.post');
@@ -306,7 +310,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$client = $app['http.client'];
 		
 		// Subscribe to URL with $app['indexResource'] as the callback.
-		list($subscription, $error) = Subscriptions\subscribe($storage, $app['defaulthub'], $client, $url);
+		list($subscription, $error) = Subscriptions\subscribe($storage, $app['defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
 		if ($error !== null) {
 			$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
 				'url' => $url,
