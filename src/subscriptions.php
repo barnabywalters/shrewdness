@@ -281,7 +281,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		
 		$response = new Guzzle\Http\Message\Response(200, $request->headers->all(), $request->getContent());
 		$parser = new Mf2\Parser($request->getContent(), $subscription['topic']);
-		$event = new GenericEvent($response, [
+		$event = new EventDispatcher\GenericEvent($response, [
 			'url' => $subscription['topic'],
 			'mf2' => $mf2,
 			'response' => $response,
