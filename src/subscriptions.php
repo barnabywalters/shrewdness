@@ -329,7 +329,11 @@ function controllers($app, $authFunction = null, $contentCallbackFunction = null
 					'exceptionClass' => get_class($error),
 					'message' => $error->getMessage()
 				]);
-				$app->abort(400, "Subscribing to {$url} failed.");
+				echo "Subscribing and/or crawling {$url} failed.\n";
+				echo get_class($error) . "\n";
+				echo $error->getMessage() . "\n";
+				ob_flush();
+				flush();
 			}
 		}, 200, ['Content-type' => 'text/plain']);
 	})->bind('subscriptions.crawl')
