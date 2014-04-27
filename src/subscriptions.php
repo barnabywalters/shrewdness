@@ -208,7 +208,7 @@ function crawl($url, $callback, $timeout=null, $client=null) {
  * Given a loaded app, a URL and an optional callback to run over each page (in addition to subscriptions.ping event listeners)
  * subscribe to that URL and crawl rel=prev[ious] until the end, $timeout (in seconds) or an error is reached.
  * 
- * $app needs push.defaulthub and url_generator.
+ * $app needs subscriptions.defaulthub and url_generator.
  * 
  * Example usage:
  * 
@@ -232,15 +232,15 @@ function subscribeAndCrawl($app, $url, $crawlCallback = null, $timeout = null, $
 		$client = new Guzzle\Http\Client();
 	}
 	
+	if ($crawlCallback === null) {
+		$crawlCallback = function () {};
+	}
+	
 	// Subscribe to URL.
-	list($subscription, $error) = subscribe($app, $app['push.defaulthub'], $client, $url);
+	list($subscription, $error) = subscribe($app, $url, $client);
 	
 	if ($error !== null) {
 		return [null, $error];
-	}
-	
-	if ($crawlCallback === null) {
-		$crawlCallback = function () {};
 	}
 	
 	$error = crawl($url, function ($resource) use ($app, $crawlCallback) {
@@ -349,7 +349,7 @@ function controllers($app, $authFunction = null, $contentCallbackFunction = null
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		list($subscription, $error) = subscribe($app, $app['push.defaulthub'], $client, $url);
+		list($subscription, $error) = subscribe($app, $url, $client);
 		if ($error !== null) {
 			$app['logger']->warn('Ran into an error whilst creating a subscription', [
 				'exception' => get_class($error),

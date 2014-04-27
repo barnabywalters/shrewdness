@@ -20,7 +20,7 @@ $app['subscriptions.storage'] = $app->share(function () use ($app) {
 	return new Subscriptions\PdoSubscriptionStorage($app['db']);
 });
 
-$app['push.defaulthub'] = function () use ($app) {
+$app['subscriptions.defaulthub'] = function () use ($app) {
 	return new Taproot\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
 };
 
