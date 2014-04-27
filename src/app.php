@@ -16,7 +16,7 @@ $app['db'] = $app->share(function () use ($app) {
 	return new PDO($app['db.dsn'], $app['db.username'], $app['db.password'], $app['db.options']);
 });
 
-$app['subscriptionstorage'] = $app->share(function () use ($app) {
+$app['subscriptions.storage'] = $app->share(function () use ($app) {
 	return new Subscriptions\PdoSubscriptionStorage($app['db']);
 });
 

@@ -11,7 +11,25 @@ use Taproot;
 use DateTime;
 use PDO;
 
-class PdoSubscriptionStorage {
+interface SubscriptionStorage {
+	public function getSubscriptions();
+	public function createSubscription($topic, $hub);
+	public function getSubscription($id);
+	public function getPingsForSubscription($id, $limit=20, $offset=0);
+	public function subscriptionIntentVerified($id);
+	public function getLatestPingForSubscription($id);
+	public function createPing(array $ping);
+	public function getPing($subscriptionId, $timestamp);
+}
+
+/**
+ * PDO Subscription Storage
+ * 
+ * Implements a basic Subscription creation/retrieval interface using PDO for persistance.
+ * 
+ * @todo document table structures required for this to work, maybe check for them and create/upgrade on creation
+ */
+class PdoSubscriptionStorage implements SubscriptionStorage {
 	protected $db;
 	protected $prefix;
 	
@@ -75,8 +93,28 @@ class PdoSubscriptionStorage {
 }
 
 
-// Returns [array $subscription|null, Exception $error|null]
-function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
+/**
+ * Subscribe
+ * 
+ * Given a loaded app and a URL, subscribe to that URL at its hub, or
+ * $defaultHub/$app['subscriptions.defaulthub'] if it doesn’t support PuSH.
+ * 
+ * Unlike crawl(), this function requires a loaded app due to the need for storage and
+ * dynamic callback URL generation.
+ * 
+ * @return [array $subscription|null, Exception $error|null]
+ */
+function subscribe($app, $url, $client = null, $defaultHub = null) {
+	if ($client === null) {
+		$client = new Guzzle\Http\Client();
+	}
+	
+	if ($defaultHub === null) {
+		$defaultHub = $app['subscriptions.defaulthub'];
+	}
+	
+	$storage = $app['subscriptions.storage'];
+	
 	// Discover Hub.
 	try {
 		$resp = $client->get($url)->send();
@@ -94,7 +132,7 @@ function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 	$subscription = $storage->createSubscription($topic, $hub);
 	// Regardless of the state of the database beforehand, $subscription now exists, has an ID and a mode of “subscribe”.
 	
-	$result = $hub->subscribe($topic, $callbackUrlCreator($subscription['id']));
+	$result = $hub->subscribe($topic, $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true));
 	if ($result instanceof Exception) {
 		return [null, $result];
 	}
@@ -103,13 +141,16 @@ function subscribe($storage, $defaultHub, $client, $url, $callbackUrlCreator) {
 }
 
 
-// Crawl
-// Given a URL, recursively fetches rel=prev[ious], calling $callback at each stage.
-// returns Exception $error | null on success
-// $callback is passed one argument, an array with: url, mf2, response, content, dondocument, parser
-// If $callback returns false, crawl is halted.
-//
-// TODO: make this function check for duplicate content (pass previousResponse on recurse) and halt if duplicated.
+/**
+ * Crawl
+ * 
+ * Given a URL, recursively fetches rel=prev[ious], calling $callback at each stage.
+ * returns Exception $error | null on success
+ * $callback is passed one argument, an array with: url, mf2, response, content, dondocument, parser
+ * If $callback returns false, crawl is halted.
+ *
+ * @TODO: make this function check for duplicate content (pass previousResponse on recurse) and halt if duplicated.
+ */
 function crawl($url, $callback, $timeout=null, $client=null) {
 	if ($timeout !== null) {
 		$timeStarted = microtime(true);
@@ -161,19 +202,97 @@ function crawl($url, $callback, $timeout=null, $client=null) {
 }
 
 
-function controllers($app, $storage, $authFunction=null, $contentCallbackFunction=null) {
-	$subscriptions = $app['controllers_factory'];
+/**
+ * Subscribe And Crawl
+ * 
+ * Given a loaded app, a URL and an optional callback to run over each page (in addition to subscriptions.ping event listeners)
+ * subscribe to that URL and crawl rel=prev[ious] until the end, $timeout (in seconds) or an error is reached.
+ * 
+ * $app needs push.defaulthub and url_generator.
+ * 
+ * Example usage:
+ * 
+ *     list($subscription, $error) = subscribeAndCrawl($app, 'http://waterpigs.co.uk', function ($response) {
+ *       echo "Crawled {$response['url']}\n";
+ *     }, 60);
+ *     if ($error !== null) {
+ *       // There was a problem, either with subscribing or crawling.
+ *       // $error is an Exception subclass, do whatever logging/reporting you want to with it.
+ *     }
+ *
+ * @param \Silex\Application $app
+ * @param string $url The URL to subscribe to, and the base from which to crawl
+ * @param callable $crawlCallback (optional) a function to be run over each page whilst crawling. Passed standard $response.
+ * @param int $timeout (optional) the maximum number of seconds to crawl for. Default null, meaning infinity
+ * @param Guzzle\Http\Client $client (optional) a HTTP client to use. One will be created if none passed.
+ * @return array [$subscription|null, $error|null]
+ */
+function subscribeAndCrawl($app, $url, $crawlCallback = null, $timeout = null, $client = null) {
+	if ($client === null) {
+		$client = new Guzzle\Http\Client();
+	}
 	
-	$app['subscriptions.callbackurlgenerator'] = $app->protect(function ($id) use ($app) {
-		return $app['url_generator']->generate('subscriptions.id.ping', ['id' => $id], true);
-	});
+	// Subscribe to URL.
+	list($subscription, $error) = subscribe($app, $app['push.defaulthub'], $client, $url);
+	
+	if ($error !== null) {
+		return [null, $error];
+	}
+	
+	if ($crawlCallback === null) {
+		$crawlCallback = function () {};
+	}
+	
+	$error = crawl($url, function ($resource) use ($app, $crawlCallback) {
+		$app['dispatcher']->dispatch('subscriptions.ping', new EventDispatcher\GenericEvent($resource['response'], $resource));
+		$crawlCallback($resource);
+	}, $timeout, $client);
+	
+	if ($error !== null) {
+		return [null, $error];
+	}
+	
+	return [$subscription, null];
+}
+
+
+/**
+ * Subscription Controllers
+ * 
+ * Given a loaded application and optionally authentication and new-content callback functions,
+ * create a bunch of routes and return them.
+ * 
+ * Required dependencies in $app:
+ * 
+ * * subscriptions.storage: An instance implementing SubscriptionStorage
+ * * subscriptions.defaulthub: An instance of PushHub (probably actually SuperfeedrHub) to use for subscribing if content doesn’t support PuSH
+ * * url_generator: A UrlGenerator service
+ * * http.client: A Guzzle HTTP client.
+ * 
+ * Example usage:
+ * 
+ *     $app->mount('/subscriptions', controllers($app, function (Symfony\Component\HttpFoundation\Request $request) {
+ *       // If the request is not authenticated, $app->abort(401, 'Reason');
+ *     }, function ($response) {
+ *       // $response is an array-accessible object or array with a bunch of keys as documented elsewhere.
+ *       // In here, do whatever you want to (e.g. indexing, storage, processing) with the new/crawled content.
+ *     });
+ * 
+ * @param \Silex\Application $app
+ * @param callable $authFunction (optional) a function (passed $request) run before any non-public routes.
+ * @param callable $contentCallbackFunction (optional) shortcut for adding a function which is called for each bit of new content
+ * @return RouteCollection
+ */
+function controllers($app, $authFunction = null, $contentCallbackFunction = null) {
+	$subscriptions = $app['controllers_factory'];
+	$storage = $app['subscriptions.storage'];
 	
 	if ($authFunction === null) {
 		$authFunction = function ($request) { return; };
 	}
 	
 	if ($contentCallbackFunction !== null) {
-		$app['dispatcher']->addListener('subscription.ping', $contentCallbackFunction);
+		$app['dispatcher']->addListener('subscriptions.ping', $contentCallbackFunction);
 	}
 	
 	// Subscription list.
@@ -193,6 +312,30 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		->before($authFunction);
 	
 	
+	// Crawl(+ensure subscription).
+	$subscriptions->post('/crawl/', function (Http\Request $request) use ($app, $storage) {
+		$url = $request->request->get('url');
+		$client = $app['http.client'];
+		
+		return new Http\StreamedResponse(function () use ($url, $app, $client) {
+			list($subscription, $error) = subscribeAndCrawl($app, $url, function ($resource) {
+				echo "{$resource['url']}\n";
+				ob_flush();
+				flush();
+			}, null, $client);
+			if ($error !== null) {
+				$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
+					'url' => $url,
+					'exceptionClass' => get_class($error),
+					'message' => $error->getMessage()
+				]);
+				$app->abort(400, "Subscribing to {$url} failed.");
+			}
+		}, 200, ['Content-type' => 'text/plain']);
+	})->bind('subscriptions.crawl')
+		->before($authFunction);
+	
+	
 	// Subscription creation.
 	$subscriptions->post('/', function (Http\Request $request) use ($app, $storage) {
 		if (!$request->request->has('url')) {
@@ -202,7 +345,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		$url = $request->request->get('url');
 		$client = $app['http.client'];
 		
-		list($subscription, $error) = subscribe($storage, $app['push.defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
+		list($subscription, $error) = subscribe($app, $app['push.defaulthub'], $client, $url);
 		if ($error !== null) {
 			$app['logger']->warn('Ran into an error whilst creating a subscription', [
 				'exception' => get_class($error),
@@ -236,7 +379,24 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 		->before($authFunction);
 	
 	
-	// Verification of intent.
+	// Individual ping content view.
+	$subscriptions->get('/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app, $storage) {
+		$ping = $storage->getPing($id, $timestamp);
+		if (empty($ping)) {
+			$app->abort(404, 'No such ping found!');
+		}
+		
+		if (strstr($ping['content_type'], 'html') !== false) {
+			return new Http\Response($ping['content'], 200, ['Content-type' => 'text/plain']);
+		} else {
+			// Probably a bunch of potential attacks here, but for the moment it’s adequate.
+			return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
+		}
+	})->bind('subscriptions.id.ping.datetime')
+		->before($authFunction);
+	
+	
+	// Verification of intent (public).
 	$subscriptions->get('/{id}/ping/', function (Http\Request $request, $id) use ($app, $storage) {
 		$subscription = $storage->getSubscription($id);
 		if (empty($subscription)) {
@@ -258,7 +418,7 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 	});
 	
 	
-	// New content update.
+	// New content update (public).
 	$subscriptions->post('/{id}/ping/', function (Http\Request $request, $id) use ($app, $storage) {
 		$subscription = $storage->getSubscription($id);
 		if (empty($subscription)) {
@@ -291,65 +451,10 @@ function controllers($app, $storage, $authFunction=null, $contentCallbackFunctio
 			'domdocument' => $parser->doc,
 			'parser' => $parser
 		]);
-		$app['dispatcher']->dispatch('subscription.ping', $event);
+		$app['dispatcher']->dispatch('subscriptions.ping', $event);
 		
 		return '';
 	})->bind('subscriptions.id.ping');
-	
-	
-	// Individual ping content view.
-	$subscriptions->get('/{id}/{timestamp}/', function (Http\Request $request, $id, $timestamp) use ($app, $storage) {
-		$ping = $storage->getPing($id, $timestamp);
-		if (empty($ping)) {
-			$app->abort(404, 'No such ping found!');
-		}
-		
-		if (strstr($ping['content_type'], 'html') !== false) {
-			return new Http\Response($ping['content'], 200, ['Content-type' => 'text/plain']);
-		} else {
-			// Probably a bunch of potential attacks here, but for the moment it’s adequate.
-			return new Http\Response($ping['content'], 200, ['Content-type' => $ping['content_type']]);
-		}
-	})->bind('subscriptions.id.ping.datetime')
-		->before($authFunction);
-	
-	// Crawl(+ensure subscription)
-	$subscriptions->post('/crawl/', function (Http\Request $request) use ($app, $storage) {
-		$url = $request->request->get('url');
-		$client = $app['http.client'];
-		
-		// Subscribe to URL.
-		list($subscription, $error) = subscribe($storage, $app['push.defaulthub'], $client, $url, $app['subscriptions.callbackurlgenerator']);
-		if ($error !== null) {
-			$app['logger']->warn('Crawl: Subscribing to a URL failed:', [
-				'url' => $url,
-				'exceptionClass' => get_class($error),
-				'message' => $error->getMessage()
-			]);
-			$app->abort(400, "Subscribing to {$url} failed.");
-		}
-		
-		return new Http\StreamedResponse(function () use ($url, $app) {
-			// Recursively fetch $url, dispatcjing the ping event for each page and echoing the page’s URL until no more rel=prev[ious] is found,
-			// yields duplicate content, a HTTP error, or some timeout is reached.
-			$error = crawl($url, function ($resource) use ($app) {
-				$app['dispatcher']->dispatch('subscription.ping', new EventDispatcher\GenericEvent($resource['response'], $resource));
-				echo "{$resource['url']}\n";
-				ob_flush();
-				flush();
-			}, null, $app['http.client']);
-			
-			if ($error !== null) {
-				$app['logger']->warn('Crawl: Crawling failed', [
-					'url' => $url,
-					'exceptionClass' => get_class($error),
-					'message' => $error->getMessage()
-				]);
-				$app->abort(500, "Crawling {$url} failed");
-			}
-		});
-	})->bind('subscriptions.crawl')
-		->before($authFunction);
 	
 	return $subscriptions;
 }
