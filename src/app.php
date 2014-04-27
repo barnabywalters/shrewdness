@@ -6,6 +6,7 @@ use Silex\Application;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Guzzle;
 use Taproot;
+use Taproot\Subscriptions;
 use PDO;
 
 $app = new Application();
@@ -21,7 +22,7 @@ $app['subscriptions.storage'] = $app->share(function () use ($app) {
 });
 
 $app['subscriptions.defaulthub'] = function () use ($app) {
-	return new Taproot\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
+	return new Subscriptions\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
 };
 
 $app['http.client'] = function () use ($app) {

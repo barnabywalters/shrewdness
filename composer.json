@@ -16,7 +16,8 @@
 		"monolog/monolog": "*",
 		"guzzle/guzzle": "*",
 		"psy/psysh": "*",
-		"symfony/console": "~2.2"
+		"symfony/console": "~2.2",
+		"taproot/subscriptions": "*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.*",
@@ -25,9 +26,7 @@
 	},
 	"autoload": {
 		"files": [
-			"src/hacks.php",
-			"src/push.php",
-			"src/subscriptions.php"
+			"src/hacks.php"
 		]
 	}
 }

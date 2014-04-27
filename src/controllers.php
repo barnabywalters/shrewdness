@@ -7,6 +7,7 @@ use Guzzle;
 use Mf2;
 use Exception;
 use Taproot;
+use Taproot\Subscriptions;
 use DateTime;
 
 $app->get('/', function (Http\Request $request) use ($app) {
