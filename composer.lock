@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "987fa3eec0bbe0f00da775f493cb8d52",
+    "hash": "915b1da8f59f94637926ca22fc64878f",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -85,12 +85,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle3.git",
-                "reference": "e4d12d7d6acccf75a5e504114e2df9195e494108"
+                "reference": "92d9934f2fca1da15178c91239576ae26e505e60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/e4d12d7d6acccf75a5e504114e2df9195e494108",
-                "reference": "e4d12d7d6acccf75a5e504114e2df9195e494108",
+                "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/92d9934f2fca1da15178c91239576ae26e505e60",
+                "reference": "92d9934f2fca1da15178c91239576ae26e505e60",
                 "shasum": ""
             },
             "require": {
@@ -169,7 +169,90 @@
                 "rest",
                 "web service"
             ],
-            "time": "2014-04-23 21:43:40"
+            "time": "2014-05-07 17:04:22"
+        },
+        {
+            "name": "indieauth/client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/indieweb/indieauth-client-php.git",
+                "reference": "d0a9748aa643d826616ec1b02fb121f4aba0c9fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/indieweb/indieauth-client-php/zipball/d0a9748aa643d826616ec1b02fb121f4aba0c9fc",
+                "reference": "d0a9748aa643d826616ec1b02fb121f4aba0c9fc",
+                "shasum": ""
+            },
+            "require": {
+                "indieweb/link-rel-parser": "0.1.1",
+                "php": ">5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "IndieAuth": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Parecki",
+                    "homepage": "http://aaronparecki.com"
+                }
+            ],
+            "description": "IndieAuth Client Library",
+            "time": "2014-03-02 21:07:38"
+        },
+        {
+            "name": "indieweb/link-rel-parser",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/indieweb/link-rel-parser-php.git",
+                "reference": "9e0e635fd301a8b1da7bc181f651f029c531dbb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/indieweb/link-rel-parser-php/zipball/9e0e635fd301a8b1da7bc181f651f029c531dbb6",
+                "reference": "9e0e635fd301a8b1da7bc181f651f029c531dbb6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/IndieWeb/link_rel_parser.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Parecki",
+                    "homepage": "http://aaronparecki.com"
+                },
+                {
+                    "name": "Tantek Çelik",
+                    "homepage": "http://tantek.com"
+                }
+            ],
+            "description": "Parse rel values from HTTP headers",
+            "homepage": "https://github.com/indieweb/link-rel-parser-php",
+            "keywords": [
+                "http",
+                "indieweb",
+                "microformats2"
+            ],
+            "time": "2013-12-23 00:14:58"
         },
         {
             "name": "mf2/mf2",
@@ -226,16 +309,16 @@
         },
         {
             "name": "mf2/shim",
-            "version": "v0.2.3",
+            "version": "v0.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2-shim.git",
-                "reference": "af3da82c56f15b3e7f89177775a38349768bed51"
+                "reference": "8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2-shim/zipball/af3da82c56f15b3e7f89177775a38349768bed51",
-                "reference": "af3da82c56f15b3e7f89177775a38349768bed51",
+                "url": "https://api.github.com/repos/indieweb/php-mf2-shim/zipball/8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c",
+                "reference": "8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c",
                 "shasum": ""
             },
             "require": {
@@ -277,7 +360,7 @@
                 "semantic",
                 "twitter"
             ],
-            "time": "2014-04-07 23:18:36"
+            "time": "2014-04-29 17:50:56"
         },
         {
             "name": "monolog/monolog",
@@ -285,12 +368,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "65026b610f8c19e61d7242f600530677b0466aac"
+                "reference": "467e30a9c9fa22395608cc515cd45a60ecc84c4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/65026b610f8c19e61d7242f600530677b0466aac",
-                "reference": "65026b610f8c19e61d7242f600530677b0466aac",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/467e30a9c9fa22395608cc515cd45a60ecc84c4e",
+                "reference": "467e30a9c9fa22395608cc515cd45a60ecc84c4e",
                 "shasum": ""
             },
             "require": {
@@ -345,7 +428,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-04-24 13:29:03"
+            "time": "2014-05-01 15:55:56"
         },
         {
             "name": "nikic/php-parser",
@@ -546,16 +629,16 @@
         },
         {
             "name": "silex/silex",
-            "version": "dev-master",
+            "version": "1.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "4f6a41431f87b600a62b4d81a86e8f78bb255a97"
+                "reference": "6fdeeba82d2ccd33f5d498cbd080735604eab935"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/4f6a41431f87b600a62b4d81a86e8f78bb255a97",
-                "reference": "4f6a41431f87b600a62b4d81a86e8f78bb255a97",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/6fdeeba82d2ccd33f5d498cbd080735604eab935",
+                "reference": "6fdeeba82d2ccd33f5d498cbd080735604eab935",
                 "shasum": ""
             },
             "require": {
@@ -628,7 +711,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2014-04-15 20:53:07"
+            "time": "2014-05-04 16:34:35"
         },
         {
             "name": "symfony/console",
@@ -637,12 +720,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "b95e9cb9a73988853d51d6e35d18d032b8760877"
+                "reference": "55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/b95e9cb9a73988853d51d6e35d18d032b8760877",
-                "reference": "b95e9cb9a73988853d51d6e35d18d032b8760877",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3",
+                "reference": "55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3",
                 "shasum": ""
             },
             "require": {
@@ -685,7 +768,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:54:24"
+            "time": "2014-05-12 09:28:39"
         },
         {
             "name": "symfony/debug",
@@ -694,12 +777,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Debug.git",
-                "reference": "79bb38a3607d8a4fe17497881b71aca54b9ca58c"
+                "reference": "d167d2b2489de7dc61fb57f0e2ccc49950d06c65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/79bb38a3607d8a4fe17497881b71aca54b9ca58c",
-                "reference": "79bb38a3607d8a4fe17497881b71aca54b9ca58c",
+                "url": "https://api.github.com/repos/symfony/Debug/zipball/d167d2b2489de7dc61fb57f0e2ccc49950d06c65",
+                "reference": "d167d2b2489de7dc61fb57f0e2ccc49950d06c65",
                 "shasum": ""
             },
             "require": {
@@ -742,7 +825,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-24 15:48:28"
+            "time": "2014-04-30 06:24:35"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -751,12 +834,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "133627e57441b50128807702bea0d395129809ad"
+                "reference": "cb62ec8dd05893fc8e4f0e6e21e326e1fc731fe8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/133627e57441b50128807702bea0d395129809ad",
-                "reference": "133627e57441b50128807702bea0d395129809ad",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/cb62ec8dd05893fc8e4f0e6e21e326e1fc731fe8",
+                "reference": "cb62ec8dd05893fc8e4f0e6e21e326e1fc731fe8",
                 "shasum": ""
             },
             "require": {
@@ -764,6 +847,7 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
+                "symfony/config": "~2.0",
                 "symfony/dependency-injection": "~2.0",
                 "symfony/stopwatch": "~2.2"
             },
@@ -800,7 +884,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-16 10:36:21"
+            "time": "2014-04-29 10:13:57"
         },
         {
             "name": "symfony/http-foundation",
@@ -809,12 +893,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "566e2bf9ecfe4ee0b08f78a57399749482eb6a2b"
+                "reference": "8fa350478681c3ee707106afbe04be80add2b3ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/566e2bf9ecfe4ee0b08f78a57399749482eb6a2b",
-                "reference": "566e2bf9ecfe4ee0b08f78a57399749482eb6a2b",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/8fa350478681c3ee707106afbe04be80add2b3ff",
+                "reference": "8fa350478681c3ee707106afbe04be80add2b3ff",
                 "shasum": ""
             },
             "require": {
@@ -855,7 +939,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 21:02:40"
+            "time": "2014-04-28 17:44:51"
         },
         {
             "name": "symfony/http-kernel",
@@ -864,12 +948,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "c3cc3cac49aa27519bc3d683a8d09dd3883280ed"
+                "reference": "59c4dcd156820a4291da869fb37448768c340768"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/c3cc3cac49aa27519bc3d683a8d09dd3883280ed",
-                "reference": "c3cc3cac49aa27519bc3d683a8d09dd3883280ed",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/59c4dcd156820a4291da869fb37448768c340768",
+                "reference": "59c4dcd156820a4291da869fb37448768c340768",
                 "shasum": ""
             },
             "require": {
@@ -928,7 +1012,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-19 08:12:20"
+            "time": "2014-04-29 10:38:03"
         },
         {
             "name": "symfony/routing",
@@ -999,17 +1083,61 @@
             "time": "2014-04-23 14:08:54"
         },
         {
-            "name": "taproot/subscriptions",
-            "version": "dev-master",
+            "name": "taproot/authentication",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/taproot/subscriptions.git",
-                "reference": "ee1efb8bebe1a33fd0b33c48fdedad2c824c5e22"
+                "url": "https://github.com/taproot/authentication.git",
+                "reference": "c96636ce22f6dc7436b383e9cd1738fe6ab40ad1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/ee1efb8bebe1a33fd0b33c48fdedad2c824c5e22",
-                "reference": "ee1efb8bebe1a33fd0b33c48fdedad2c824c5e22",
+                "url": "https://api.github.com/repos/taproot/authentication/zipball/c96636ce22f6dc7436b383e9cd1738fe6ab40ad1",
+                "reference": "c96636ce22f6dc7436b383e9cd1738fe6ab40ad1",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "*",
+                "indieauth/client": "*",
+                "psr/log": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.*",
+                "silex/silex": "1.*",
+                "symfony/browser-kit": "~2.2",
+                "symfony/class-loader": "~2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/authentication.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barnaby Walters",
+                    "email": "barnaby@waterpigs.co.uk"
+                }
+            ],
+            "description": "Makes adding indieauth login (client app) and token generation (server app) to your Silex/Symfony app as easy as it should be.",
+            "time": "2014-05-09 16:51:39"
+        },
+        {
+            "name": "taproot/subscriptions",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/taproot/subscriptions.git",
+                "reference": "66e6de0f0185594b31a71e562d08dbe7a0d51b96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/66e6de0f0185594b31a71e562d08dbe7a0d51b96",
+                "reference": "66e6de0f0185594b31a71e562d08dbe7a0d51b96",
                 "shasum": ""
             },
             "require": {
@@ -1045,7 +1173,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-04-27 21:09:58"
+            "time": "2014-04-27 22:09:13"
         }
     ],
     "packages-dev": [
@@ -1249,12 +1377,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32"
+                "reference": "955c24b708f8bfd6a05f303217a8dac3a443d531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/ad4e1e23ae01b483c16f600ff1bebec184588e32",
-                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/955c24b708f8bfd6a05f303217a8dac3a443d531",
+                "reference": "955c24b708f8bfd6a05f303217a8dac3a443d531",
                 "shasum": ""
             },
             "require": {
@@ -1291,7 +1419,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2014-03-03 05:10:30"
+            "time": "2014-05-12 05:34:42"
         },
         {
             "name": "phpunit/phpunit",
@@ -1299,12 +1427,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a702318e713e482a746bc15cea01b61403d7dcdb"
+                "reference": "ae6cefd7cc84586a5ef27e04bae11ee940ec63dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a702318e713e482a746bc15cea01b61403d7dcdb",
-                "reference": "a702318e713e482a746bc15cea01b61403d7dcdb",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ae6cefd7cc84586a5ef27e04bae11ee940ec63dc",
+                "reference": "ae6cefd7cc84586a5ef27e04bae11ee940ec63dc",
                 "shasum": ""
             },
             "require": {
@@ -1364,7 +1492,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-04-26 05:26:20"
+            "time": "2014-04-30 12:24:19"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

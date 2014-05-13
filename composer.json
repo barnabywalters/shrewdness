@@ -17,7 +17,8 @@
 		"guzzle/guzzle": "*",
 		"psy/psysh": "*",
 		"symfony/console": "~2.2",
-		"taproot/subscriptions": "*"
+		"taproot/subscriptions": "~0.1",
+		"taproot/authentication": "~0.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.*",
