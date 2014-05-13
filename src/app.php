@@ -8,6 +8,8 @@ use Guzzle;
 use Taproot;
 use Taproot\Subscriptions;
 use PDO;
+use Illuminate\Encryption\Encrypter;
+use Elasticsearch;
 
 $app = new Application();
 
@@ -29,6 +31,14 @@ $app['http.client'] = function () use ($app) {
 	return new Guzzle\Http\Client();
 };
 
+$app['encryption'] = function () use ($app) {
+	return new Encrypter($app['encryption.secret']);
+};
+
+$app['elasticsearch'] = $app->share(function () use ($app) {
+	return new Elasticsearch\Client();
+});
+
 $app['render'] = $app->protect(function ($template, $__templateData=array()) {
 	$__basedir = __DIR__;
 	$render = function ($__path, $__templateData) use ($__basedir) {
@@ -38,7 +48,9 @@ $app['render'] = $app->protect(function ($template, $__templateData=array()) {
 		ob_start();
 		extract($__templateData);
 		unset($__templateData);
+		include $__basedir . '/../templates/header.html.php';
 		include $__basedir . '/../templates/' . $__path . '.php';
+		include $__basedir . '/../templates/footer.html.php';
 		return ob_get_clean();
 	};
 	return $render($template, $__templateData);
