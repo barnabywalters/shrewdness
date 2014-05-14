@@ -11,6 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 use Psy;
 
+/** @var $app \Silex\Application */
+
 $console = new Application("Shrewdness", '0.0.1');
 $console->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
 

@@ -9,6 +9,8 @@ use Taproot;
 use Taproot\Subscriptions;
 use Taproot\Authentication;
 
+/** @var $app \Silex\Application */
+
 $app->get('/', function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token !== null) {
@@ -17,7 +19,6 @@ $app->get('/', function (Http\Request $request) use ($app) {
 		return $app['render']('index.html');
 	}
 })->bind('homepage');
-
 
 $ensureIsOwner = function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');

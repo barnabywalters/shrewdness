@@ -26,6 +26,8 @@ if ('cli' !== php_sapi_name()) {
     ExceptionHandler::register();
 }
 
+/** @var $app \Silex\Application */
+
 $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/dev.php';
 require __DIR__.'/../src/controllers.php';

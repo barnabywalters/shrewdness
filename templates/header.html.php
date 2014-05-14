@@ -93,5 +93,6 @@
 			color: #727272;
 		}
 	</style>
+	<script src="/js/require.js" data-main="js/app"></script>
 </head>
 <body>
