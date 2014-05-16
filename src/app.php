@@ -41,19 +41,13 @@ $app['elasticsearch'] = $app->share(function () use ($app) {
 
 $app['render'] = $app->protect(function ($template, $__templateData=array()) {
 	$__basedir = __DIR__;
-	$render = function ($__path, $__templateData) use ($__basedir) {
-		$render = function ($template, $data) use ($__basedir) {
-			return render($__basedir, $template, $data);
-		};
-		ob_start();
-		extract($__templateData);
-		unset($__templateData);
-		include $__basedir . '/../templates/header.html.php';
-		include $__basedir . '/../templates/' . $__path . '.php';
-		include $__basedir . '/../templates/footer.html.php';
-		return ob_get_clean();
-	};
-	return $render($template, $__templateData);
+
+	$out = array(
+		renderTemplate($__basedir, 'header.html', $__templateData),
+		renderTemplate($__basedir, $template, $__templateData),
+		renderTemplate($__basedir, 'footer.html', $__templateData)
+	);
+	return implode('', $out);
 });
 
 $app['indexResource'] = $app->protect(function ($resource) use ($app) {

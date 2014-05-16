@@ -8,13 +8,38 @@ use Mf2;
 use Taproot;
 use Taproot\Subscriptions;
 use Taproot\Authentication;
+use Elasticsearch;
+
+function ensureElasticsearchIndexExists(Elasticsearch\Client $es, $indexName) {
+	if (!$es->indices()->exists(['index' => $indexName])) {
+		$es->indices()->create(['index' => $indexName]);
+	}
+}
 
 /** @var $app \Silex\Application */
 
 $app->get('/', function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token !== null) {
-		return $app['render']('dashboard.html');
+		/** @var $es \Elasticsearch\Client $es */
+		$es = $app['elasticsearch'];
+
+		ensureElasticsearchIndexExists($es, 'shrewdness');
+
+		$results = $es->search([
+			'index' => 'shrewdness',
+			'type' => 'column',
+			'body' => [
+				'query' => [
+					'match_all' => []
+				]
+			]
+		]);
+		$columns = $results['hits']['hits'];
+
+		return $app['render']('dashboard.html', [
+			'columns' => $columns
+		]);
 	} else {
 		return $app['render']('index.html');
 	}

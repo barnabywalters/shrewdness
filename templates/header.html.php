@@ -51,6 +51,10 @@
 			background: rgba(255,255,255,0.08);
 		}
 
+		.column.dragged {
+			opacity: 0.7;
+		}
+
 		.column-header {
 			padding: 0.4em;
 		}
@@ -91,6 +95,11 @@
 		.source-domain {
 			font-size: 0.875em;
 			color: #727272;
+		}
+
+		.new-column-cta {
+			font-size: 1.25em;
+			color: #9B9B9B;
 		}
 	</style>
 	<script src="/js/require.js" data-main="js/app"></script>
