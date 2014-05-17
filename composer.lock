@@ -3,8 +3,48 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "6375bc96b67c85a1a98b8fcd6570c99a",
+    "hash": "137e64bbbfed71cc4efd8aadbbf20b81",
     "packages": [
+        {
+            "name": "barnabywalters/mf-cleaner",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barnabywalters/php-mf-cleaner.git",
+                "reference": "4ecbfc5a2893a5140b07afafb0bb00619e853809"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barnabywalters/php-mf-cleaner/zipball/4ecbfc5a2893a5140b07afafb0bb00619e853809",
+                "reference": "4ecbfc5a2893a5140b07afafb0bb00619e853809",
+                "shasum": ""
+            },
+            "require-dev": {
+                "php": ">=5.3",
+                "phpunit/phpunit": "*"
+            },
+            "suggest": {
+                "mf2/mf2": "To parse microformats2 structures from (X)HTML"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/BarnabyWalters/Mf2/Functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barnaby Walters",
+                    "email": "barnaby@waterpigs.co.uk"
+                }
+            ],
+            "description": "Cleans up microformats2 array structures",
+            "time": "2014-05-16 15:25:47"
+        },
         {
             "name": "doctrine/cache",
             "version": "dev-master",
@@ -790,12 +830,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "6fdeeba82d2ccd33f5d498cbd080735604eab935"
+                "reference": "0a4d5c05ea00ffe7770f71dd00e6d71cc3c6d63f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/6fdeeba82d2ccd33f5d498cbd080735604eab935",
-                "reference": "6fdeeba82d2ccd33f5d498cbd080735604eab935",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/0a4d5c05ea00ffe7770f71dd00e6d71cc3c6d63f",
+                "reference": "0a4d5c05ea00ffe7770f71dd00e6d71cc3c6d63f",
                 "shasum": ""
             },
             "require": {
@@ -868,7 +908,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2014-05-04 16:34:35"
+            "time": "2014-05-16 06:12:27"
         },
         {
             "name": "symfony/console",
@@ -877,12 +917,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3"
+                "reference": "50be4f30d0a93404e5d62b05fd7294492cf64c4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3",
-                "reference": "55ba7eb2543f95cc93f26b1a4c2fc618d2a01cc3",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/50be4f30d0a93404e5d62b05fd7294492cf64c4f",
+                "reference": "50be4f30d0a93404e5d62b05fd7294492cf64c4f",
                 "shasum": ""
             },
             "require": {
@@ -925,7 +965,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-12 09:28:39"
+            "time": "2014-05-15 08:56:35"
         },
         {
             "name": "symfony/debug",
@@ -934,12 +974,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Debug.git",
-                "reference": "d167d2b2489de7dc61fb57f0e2ccc49950d06c65"
+                "reference": "b293ddb67ab4ecfd92b76539f37b1242226e8365"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/d167d2b2489de7dc61fb57f0e2ccc49950d06c65",
-                "reference": "d167d2b2489de7dc61fb57f0e2ccc49950d06c65",
+                "url": "https://api.github.com/repos/symfony/Debug/zipball/b293ddb67ab4ecfd92b76539f37b1242226e8365",
+                "reference": "b293ddb67ab4ecfd92b76539f37b1242226e8365",
                 "shasum": ""
             },
             "require": {
@@ -982,7 +1022,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-30 06:24:35"
+            "time": "2014-05-08 08:31:54"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1105,12 +1145,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "59c4dcd156820a4291da869fb37448768c340768"
+                "reference": "fa75273d3ef25848dc98313999eb23fd0419e6e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/59c4dcd156820a4291da869fb37448768c340768",
-                "reference": "59c4dcd156820a4291da869fb37448768c340768",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/fa75273d3ef25848dc98313999eb23fd0419e6e9",
+                "reference": "fa75273d3ef25848dc98313999eb23fd0419e6e9",
                 "shasum": ""
             },
             "require": {
@@ -1126,6 +1166,7 @@
                 "symfony/config": "~2.0",
                 "symfony/console": "~2.2",
                 "symfony/dependency-injection": "~2.0",
+                "symfony/filesystem": "~2.4",
                 "symfony/finder": "~2.0",
                 "symfony/process": "~2.0",
                 "symfony/routing": "~2.2",
@@ -1138,6 +1179,7 @@
                 "symfony/config": "",
                 "symfony/console": "",
                 "symfony/dependency-injection": "",
+                "symfony/filesystem": "",
                 "symfony/finder": ""
             },
             "type": "library",
@@ -1169,7 +1211,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-29 10:38:03"
+            "time": "2014-05-17 20:48:44"
         },
         {
             "name": "symfony/routing",
@@ -1353,12 +1395,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/taproot/subscriptions.git",
-                "reference": "4e8c0f5c9c4704a22f406a1f04b38734e7c29f5c"
+                "reference": "c9b110b439125a27d955f97f465923e3c2d05150"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/4e8c0f5c9c4704a22f406a1f04b38734e7c29f5c",
-                "reference": "4e8c0f5c9c4704a22f406a1f04b38734e7c29f5c",
+                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/c9b110b439125a27d955f97f465923e3c2d05150",
+                "reference": "c9b110b439125a27d955f97f465923e3c2d05150",
                 "shasum": ""
             },
             "require": {
@@ -1394,7 +1436,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-04-29 16:53:14"
+            "time": "2014-05-17 21:49:44"
         }
     ],
     "packages-dev": [
@@ -1888,12 +1930,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "9e807943a9de9f8716868a7d7a4ddf1c18e88729"
+                "reference": "b3842390c7d64e92409d7c9c88f433a2626c55c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/9e807943a9de9f8716868a7d7a4ddf1c18e88729",
-                "reference": "9e807943a9de9f8716868a7d7a4ddf1c18e88729",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/b3842390c7d64e92409d7c9c88f433a2626c55c8",
+                "reference": "b3842390c7d64e92409d7c9c88f433a2626c55c8",
                 "shasum": ""
             },
             "require": {
@@ -1934,7 +1976,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:40:13"
+            "time": "2014-05-17 20:50:45"
         },
         {
             "name": "symfony/yaml",
@@ -1943,12 +1985,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "e9525fc511a51e7bfa214c6c420515c580fda35a"
+                "reference": "2158ca824145bd01877f58c987aff828bccddefa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/e9525fc511a51e7bfa214c6c420515c580fda35a",
-                "reference": "e9525fc511a51e7bfa214c6c420515c580fda35a",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2158ca824145bd01877f58c987aff828bccddefa",
+                "reference": "2158ca824145bd01877f58c987aff828bccddefa",
                 "shasum": ""
             },
             "require": {
@@ -1983,20 +2025,15 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:40:13"
+            "time": "2014-05-16 14:25:18"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "taproot/subscriptions": 20,
         "taproot/authentication": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "platform": [],
+    "platform-dev": []
 }

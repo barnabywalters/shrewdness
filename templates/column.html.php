@@ -1,12 +1,15 @@
-<div class="column orderable-column">
+<div class="column orderable-column editable-column" data-column-id="<?= $column['_id'] ?>">
 	<div class="column-header">
-		<h1 class="column-name"><?= isset($column['name']) ? $column['name'] : 'New Column' ?></h1>
+		<h1 class="column-name"><?= isset($column['_source']['name']) ? $column['_source']['name'] : 'New Column' ?></h1>
 		<button class="column-settings-button">Settings</button>
 
 		<div class="column-settings">
 			<p class="column-settings-name">Sources:</p>
 			<div class="column-sources">
-				<p class="column-source"><img class="column-source-photo" src="http://waterpigs.co.uk/photo.jpg" /> Barnaby Walters <span class="source-domain">waterpigs.co.uk</span></p>
+				<div class="source-container">
+					<?= $render('sources.html', ['sources' => $column['_source']['sources']]) ?>
+				</div>
+				<p><input class="new-source-url" /><button class="add-source">+</button></p>
 			</div>
 		</div>
 	</div>

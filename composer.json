@@ -8,6 +8,7 @@
 	}],
 	"minimum-stability": "dev",
 	"require": {
+		"barnabywalters/mf-cleaner": "*",
 		"silex/silex": "1.*",
 		"psr/log": "*",
 		"mf2/mf2": "~0.2",
@@ -17,7 +18,7 @@
 		"guzzle/guzzle": "*",
 		"psy/psysh": "*",
 		"symfony/console": "~2.2",
-		"taproot/subscriptions": "*",
+		"taproot/subscriptions": "dev-master",
 		"taproot/authentication": "dev-master",
 		"illuminate/encryption": "*",
 		"elasticsearch/elasticsearch": "~1.0"

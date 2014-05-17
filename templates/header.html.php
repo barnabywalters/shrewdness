@@ -97,6 +97,10 @@
 			color: #727272;
 		}
 
+		.column-sources progress {
+			width: 1.8em;
+		}
+
 		.new-column-cta {
 			font-size: 1.25em;
 			color: #9B9B9B;

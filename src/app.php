@@ -39,15 +39,21 @@ $app['elasticsearch'] = $app->share(function () use ($app) {
 	return new Elasticsearch\Client();
 });
 
-$app['render'] = $app->protect(function ($template, $__templateData=array()) {
+$app['render'] = $app->protect(function ($template, $__templateData = array(), $pad = true) {
 	$__basedir = __DIR__;
 
-	$out = array(
-		renderTemplate($__basedir, 'header.html', $__templateData),
-		renderTemplate($__basedir, $template, $__templateData),
-		renderTemplate($__basedir, 'footer.html', $__templateData)
-	);
-	return implode('', $out);
+	$result = renderTemplate($__basedir, $template, $__templateData);
+
+	if ($pad) {
+		$out = array(
+				renderTemplate($__basedir, 'header.html', $__templateData),
+				$result,
+				renderTemplate($__basedir, 'footer.html', $__templateData)
+		);
+		return implode('', $out);
+	} else {
+		return $result;
+	}
 });
 
 $app['indexResource'] = $app->protect(function ($resource) use ($app) {
