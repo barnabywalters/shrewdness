@@ -39,19 +39,10 @@ $app->get('/', function (Http\Request $request) use ($app) {
 
 		ensureElasticsearchIndexExists($es, 'shrewdness');
 
-		$results = $es->search([
-			'index' => 'shrewdness',
-			'type' => 'column',
-			'body' => [
-				'query' => [
-					'match_all' => []
-				]
-			]
-		]);
-		$columns = $results['hits']['hits'];
+		$columns = loadJson('columns');
 
 		return $app['render']('dashboard.html', [
-			'columns' => $columns
+			'columns' => $columns['columns']
 		]);
 	} else {
 		return $app['render']('index.html');
@@ -60,14 +51,8 @@ $app->get('/', function (Http\Request $request) use ($app) {
 
 
 $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use ($app) {
-	/** @var $es \Elasticsearch\Client $es */
-	$es = $app['elasticsearch'];
-
-	$column = $es->get([
-		'index' => 'shrewdness',
-		'type' => 'column',
-		'id' => $id
-	]);
+	$columns = loadJson('columns');
+	$column = firstWith($columns['columns'], ['id' => $id]);
 
 	$url = $request->request->get('url');
 	if ($url === null) {
@@ -94,7 +79,7 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	];
 
 	$found = false;
-	foreach ($column['_source']['sources'] as $s) {
+	foreach ($column['sources'] as $s) {
 		if ($s['topic'] == $source['topic']) {
 			$found = true;
 			break;
@@ -102,29 +87,42 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	}
 
 	if (!$found) {
-		$column['_source']['sources'][] = $source;
+		$column['sources'][] = $source;
 	}
 
-	$es->index([
-		'index' => 'shrewdness',
-		'type' => 'column',
-		'id' => $column['_id'],
-		'body' => $column['_source']
-	]);
+	$columns = replaceFirstWith($columns, ['id' => $id], $column);
+	saveJson('columns', $columns);
 
 	// Add post-response crawl task.
-	$app['dispatcher']->addListener('kernel.terminate', function (HttpKernel\Event\PostResponseEvent $event) use ($request, $url, $app) {
+	$app['dispatcher']->addListener('kernel.terminate', function (HttpKernel\Event\PostResponseEvent $event) use ($request, $s, $app) {
 		if ($event->getRequest() !== $request) {
 			// Only execute this code after the request it was started from, not other requests.
 			return;
 		}
 
-		list($subscription, $err) = Subscriptions\subscribeAndCrawl($app, $url);
+		// If this topic isn’t already being crawled, start a crawl, maintaining a cache key to prevent duplicate crawls.
+		$crawlingKey = "crawling_{$s['topic']}";
+		if (!$app['cache']->contains($crawlingKey)) {
+			$refreshCache = function () use ($app, $crawlingKey) {
+				$app['cache']->save($crawlingKey, true, 10);
+			};
+
+			list($subscription, $err) = Subscriptions\subscribeAndCrawl($app, $s['topic'], $refreshCache);
+			if ($err !== null) {
+				$app['logger']->warn('Subscriptions\\subscribeAndCrawl produced an error:', [
+					'subscription' => $s,
+					'error class' => get_class($err),
+					'error' => $err
+				]);
+			}
+
+			$app['cache']->delete($crawlingKey);
+		}
 	});
 
 	// Build the HTML to add to the sources list. Explicitly calculating Content-length to satisfy XMLHttpRequest, which
 	// stays in “Downloading” mode until the number of bytes received equals Content-length.
-	$html = $app['render']('sources.html', ['sources' => $column['_source']['sources']], false);
+	$html = $app['render']('sources.html', ['sources' => $column['sources']], false);
 	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
 })->bind('column.sources')
 	->before($ensureIsOwner);

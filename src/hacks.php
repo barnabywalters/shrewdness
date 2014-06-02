@@ -37,3 +37,52 @@ function firstHCard(array $mf, $defaultPhoto = null) {
 		'url' => M\getPlaintext($h, 'url', null)
 	];
 }
+
+function dataPath($path) {
+	return __DIR__ . "/../data/{$path}.json";
+}
+
+// Loads a JSON file in data/, or returns an empty array.
+function loadJson($path) {
+	if (file_exists(dataPath($path))) {
+		return json_decode(file_get_contents(dataPath($path)), true) ?: [];
+	}
+	return [];
+}
+
+function saveJson($path, $json) {
+	return file_put_contents(__DIR__ . "/../data/{$path}.json", json_encode($json, JSON_PRETTY_PRINT));
+}
+
+
+function firstWith(array $array, array $parameters) {
+	foreach ($array as $item) {
+		$matches = true;
+		foreach ($parameters as $key => $value) {
+			if ($item[$key] != $value) {
+				$matches = false;
+			}
+		}
+		if ($matches) {
+			return $item;
+		}
+	}
+
+	return null;
+}
+
+function replaceFirstWith(array $array, array $parameters, array $replacement) {
+	foreach ($array as $i => $item) {
+		$matches = true;
+		foreach ($parameters as $key => $value) {
+			if ($item[$key] != $value) {
+				$matches = false;
+			}
+		}
+		if ($matches) {
+			$array[$i] = $replacement;
+		}
+	}
+
+	return $array;
+}

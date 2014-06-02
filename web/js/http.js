@@ -12,7 +12,7 @@ define({
 		return new Promise(function (resolve, reject) {
 			xhr.onload = function () {
 				// Success if status in 2XX.
-				if (xhr.status - 200 <= 99 && xhr.status > -1) {
+				if (xhr.status - 200 <= 99 && xhr.status - 200 > -1) {
 					resolve(xhr);
 				} else {
 					reject(xhr);

@@ -10,6 +10,7 @@ use Taproot\Subscriptions;
 use PDO;
 use Illuminate\Encryption\Encrypter;
 use Elasticsearch;
+use Doctrine\Common\Cache;
 
 $app = new Application();
 
@@ -39,6 +40,14 @@ $app['elasticsearch'] = $app->share(function () use ($app) {
 	return new Elasticsearch\Client();
 });
 
+$app['cache'] = $app->share(function () use ($app) {
+	return new Cache\ApcCache();
+});
+
+$app['archive'] = $app->share(function () use ($app) {
+	return new Taproot\Archive(__DIR__ . '/../data/archive/');
+});
+
 $app['render'] = $app->protect(function ($template, $__templateData = array(), $pad = true) {
 	$__basedir = __DIR__;
 
@@ -62,14 +71,16 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 	]);
 	
 	// Archive the response
-	
+
 	// Feed Reader Subscription
 	// If there are h-entries on the page, for each of them:
 	// * use comment-presentation algorithm to clean up, index those values for result presentation
 	// * index full content as well, for searching
 	// If there are no h-entries
 	// * Index the page as an ordinary webpage
-	
+
+	/** @var Elasticsearch\Client $es */
+	$es = $app['elasticsearch'];
 	
 	// Anti-spam measures
 	// Find all links not tagged with rel=nofollow.

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "137e64bbbfed71cc4efd8aadbbf20b81",
+    "hash": "04692f15c11b8643af39457d85e8a25d",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -267,6 +267,50 @@
                 "web service"
             ],
             "time": "2014-05-07 17:04:22"
+        },
+        {
+            "name": "icap/html-diff",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iCAPLyon1/HtmlDiff.git",
+                "reference": "c9477e69ac9db15eb3a7a34c0053b80b8daf88d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iCAPLyon1/HtmlDiff/zipball/c9477e69ac9db15eb3a7a34c0053b80b8daf88d0",
+                "reference": "c9477e69ac9db15eb3a7a34c0053b80b8daf88d0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Icap\\HtmlDiff\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Panagiotis Tsavdaris",
+                    "email": "ptsavdar@gmail.com"
+                },
+                {
+                    "name": "ICAP development team",
+                    "homepage": "https://github.com/iCAPLyon1"
+                }
+            ],
+            "description": "A PHP5 library that diffs (compares) HTML files.",
+            "keywords": [
+                "daisy diff",
+                "html diff"
+            ],
+            "time": "2014-01-16 16:31:34"
         },
         {
             "name": "illuminate/encryption",
@@ -1346,6 +1390,48 @@
             "time": "2014-04-23 14:08:54"
         },
         {
+            "name": "taproot/archive",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Taproot/archive.git",
+                "reference": "09a65775f42170ff121d9c215d8feb612a8cbbb3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Taproot/archive/zipball/09a65775f42170ff121d9c215d8feb612a8cbbb3",
+                "reference": "09a65775f42170ff121d9c215d8feb612a8cbbb3",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "~3",
+                "icap/html-diff": "~1",
+                "mf2/mf2": "~0.2.4",
+                "mf2/shim": "~0.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Archive.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barnaby Walters",
+                    "email": "barnaby@waterpigs.co.uk"
+                }
+            ],
+            "description": "Your personal opinionated indieweb- and microformats-oriented HTML archiver.",
+            "time": "2014-02-03 11:02:58"
+        },
+        {
             "name": "taproot/authentication",
             "version": "dev-master",
             "source": {
@@ -2031,8 +2117,10 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "doctrine/cache": 20,
         "taproot/subscriptions": 20,
-        "taproot/authentication": 20
+        "taproot/authentication": 20,
+        "taproot/archive": 20
     },
     "platform": [],
     "platform-dev": []

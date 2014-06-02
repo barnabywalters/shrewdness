@@ -13,7 +13,7 @@
 		"psr/log": "*",
 		"mf2/mf2": "~0.2",
 		"mf2/shim": "~0.2",
-		"doctrine/cache": "*",
+		"doctrine/cache": "1.4.x-dev",
 		"monolog/monolog": "*",
 		"guzzle/guzzle": "*",
 		"psy/psysh": "*",
@@ -21,7 +21,8 @@
 		"taproot/subscriptions": "dev-master",
 		"taproot/authentication": "dev-master",
 		"illuminate/encryption": "*",
-		"elasticsearch/elasticsearch": "~1.0"
+		"elasticsearch/elasticsearch": "~1.0",
+		"taproot/archive": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.*",
