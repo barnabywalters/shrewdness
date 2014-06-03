@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "04692f15c11b8643af39457d85e8a25d",
+    "hash": "71d02c329931fd214d4242fed42383a8",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -175,6 +175,51 @@
                 "search"
             ],
             "time": "2014-05-07 15:54:46"
+        },
+        {
+            "name": "ezyang/htmlpurifier",
+            "version": "v4.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezyang/htmlpurifier.git",
+                "reference": "6f389f0f25b90d0b495308efcfa073981177f0fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/6f389f0f25b90d0b495308efcfa073981177f0fd",
+                "reference": "6f389f0f25b90d0b495308efcfa073981177f0fd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "HTMLPurifier": "library/"
+                },
+                "files": [
+                    "library/HTMLPurifier.composer.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Edward Z. Yang",
+                    "email": "admin@htmlpurifier.org",
+                    "homepage": "http://ezyang.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Standards compliant HTML filter written in PHP",
+            "homepage": "http://htmlpurifier.org/",
+            "keywords": [
+                "html"
+            ],
+            "time": "2013-11-30 08:25:19"
         },
         {
             "name": "guzzle/guzzle",
@@ -448,6 +493,45 @@
             ],
             "description": "IndieAuth Client Library",
             "time": "2014-03-02 21:07:38"
+        },
+        {
+            "name": "indieweb/comments",
+            "version": "0.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/indieweb/php-comments.git",
+                "reference": "4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/indieweb/php-comments/zipball/4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba",
+                "reference": "4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba",
+                "shasum": ""
+            },
+            "require": {
+                "tantek/cassis": "0.1.16124"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/indieweb/comments.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Parecki",
+                    "homepage": "http://aaronparecki.com"
+                }
+            ],
+            "keywords": [
+                "comments",
+                "indieweb"
+            ],
+            "time": "2014-02-26 03:24:19"
         },
         {
             "name": "indieweb/link-rel-parser",
@@ -1388,6 +1472,29 @@
             "description": "Symfony Security Component - Core Library",
             "homepage": "http://symfony.com",
             "time": "2014-04-23 14:08:54"
+        },
+        {
+            "name": "tantek/cassis",
+            "version": "v0.1.16124",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tantek/cassis.git",
+                "reference": "b9ec7142179950010c896ec3894aece0a56b0029"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tantek/cassis/zipball/b9ec7142179950010c896ec3894aece0a56b0029",
+                "reference": "b9ec7142179950010c896ec3894aece0a56b0029",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "cassis-loader.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2014-02-18 20:17:32"
         },
         {
             "name": "taproot/archive",

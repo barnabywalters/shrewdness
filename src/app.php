@@ -11,6 +11,10 @@ use PDO;
 use Illuminate\Encryption\Encrypter;
 use Elasticsearch;
 use Doctrine\Common\Cache;
+use IndieWeb\comments;
+use HTMLPurifier, HTMLPurifier_Config;
+use BarnabyWalters\Mf2 as M;
+use Mf2;
 
 $app = new Application();
 
@@ -48,6 +52,11 @@ $app['archive'] = $app->share(function () use ($app) {
 	return new Taproot\Archive(__DIR__ . '/../data/archive/');
 });
 
+$app['purifier'] = function () use ($app) {
+	$config = HTMLPurifier_Config::createDefault();
+	return new HTMLPurifier($config);
+};
+
 $app['render'] = $app->protect(function ($template, $__templateData = array(), $pad = true) {
 	$__basedir = __DIR__;
 
@@ -65,19 +74,64 @@ $app['render'] = $app->protect(function ($template, $__templateData = array(), $
 	}
 });
 
+
 $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 	$app['logger']->info('Indexing Resource', [
 		'resource' => $resource
 	]);
 	
-	// Archive the response
+	// TODO: Archive the response when taproot/archive allows us to do so without fetching it again.
+
+	$url = $resource['url'];
 
 	// Feed Reader Subscription
-	// If there are h-entries on the page, for each of them:
-	// * use comment-presentation algorithm to clean up, index those values for result presentation
-	// * index full content as well, for searching
-	// If there are no h-entries
-	// * Index the page as an ordinary webpage
+	if (!empty($resource['mf2'])) {
+		$mf = $resource['mf2'];
+
+		// If there are h-entries on the page, for each of them:
+		$hEntries = M\findMicroformatsByType($mf, 'h-entry');
+		foreach ($hEntries as $hEntry) {
+			// Use comment-presentation algorithm to clean up.
+			$cleansed = comments\parse($hEntry);
+
+			$indexedContent = M\getPlaintext($hEntry, 'content', $cleansed['text']);
+
+			if ($indexedContent !== $cleansed['text']) {
+				$displayContent = $app['purifier']->purify(M\getHtml($hEntry, 'content'));
+			} else {
+				$displayContent = htmlentities($indexedContent);
+			}
+
+			$cleansed['content'] = $indexedContent;
+			$cleansed['displayContent'] = $displayContent;
+
+			if (M\hasProp($hEntry, 'in-reply-to')) {
+				$cleansed['in-reply-to'] = array_unique($hEntry['properties']['in-reply-to']);
+			}
+
+			// TODO: this will be M\getLocation when it’s ported to the other library.
+			if (($location = getLocation($mf)) !== null) {
+				$cleansed['location'] = $location;
+
+				if (!empty($location['latitude']) and !empty($location['longitude'])) {
+					// If this is a valid point, add a point with mashed names for elasticsearch to index.
+					$cleansed['location-point'] = [
+						'lat' => $location['latitude'],
+						'lon' => $location['longitude']
+					];
+				}
+			}
+
+			// TODO: figure out what other properties need storing/indexing, and whether anything else needs mashing for
+			// elasticsearch to index more easily.
+
+			// TODO: actually index $cleansed.
+		}
+	} else {
+		// If there are no h-entries, but the page is still valid HTML, index the page as an ordinary webpage.
+
+		// If the page is not HTML, log as a bad request.
+	}
 
 	/** @var Elasticsearch\Client $es */
 	$es = $app['elasticsearch'];

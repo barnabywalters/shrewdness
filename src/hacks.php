@@ -55,6 +55,64 @@ function saveJson($path, $json) {
 }
 
 
+// TODO: put this in mf-cleaner with tests.
+function getLocation(array $mf) {
+	$location = [];
+
+	$locationDataSources = [$mf];
+	if (M\hasProp($mf, 'location') and M\isMicroformat($mf['properties']['location'][0])) {
+		$locationDataSources[] = $mf['properties']['location'][0];
+	}
+	if (M\hasProp($mf, 'adr') and M\isMicroformat($mf['properties']['adr'][0])) {
+		$locationDataSources[] = $mf['properties']['adr'][0];
+	}
+	if (M\hasProp($mf, 'geo')) {
+		$geo = $mf['properties']['geo'][0];
+		if (M\isMicroformat($geo)) {
+			$locationDataSources[] = $geo;
+		} elseif (is_string($geo)) {
+			$parts = parse_url($geo);
+			if (!empty($parts['scheme']) and $parts['scheme'] == 'geo' and !empty($parts['path'])) {
+				$geoParts = explode(',', $parts['path']);
+				$derivedGeo = [
+					'latitude' => $geoParts[0],
+					'longitude' => $geoParts[1]
+				];
+				if (count($geoParts) > 2) {
+					$derivedGeo['altitude'] = $geoParts[2];
+				}
+				$locationDataSources[] = $derivedGeo;
+			}
+		}
+	}
+
+	$locationProperties = [
+		'street-address',
+		'extended-address',
+		'post-office-box',
+		'locality',
+		'region',
+		'postal-code',
+		'country-name',
+		'label',
+		'latitude',
+		'longitude',
+		'altitude'
+	];
+
+	// Search all the location data sources for each property, storing the first one we come across.
+	foreach ($locationProperties as $propName) {
+		foreach ($locationDataSources as $mf) {
+			if (M\hasProp($mf, $propName)) {
+				$location[$propName] = M\getPlaintext($mf, $propName);
+			}
+		}
+	}
+
+	return empty($location) ? null : $location;
+}
+
+
 function firstWith(array $array, array $parameters) {
 	foreach ($array as $item) {
 		$matches = true;
