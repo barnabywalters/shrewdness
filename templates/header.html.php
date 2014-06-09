@@ -55,6 +55,7 @@
 			margin-right: 0.2em;
 			background: rgba(255,255,255,0.08);
 			vertical-align: top;
+			overflow-y: scroll;
 		}
 
 		.column.double-width {
@@ -120,7 +121,46 @@
 			color: #9B9B9B;
 		}
 
+		/* Item styles, pasted from intertubes */
+		.item {
+			padding: 0.5em;
+			background: #ccc;
+			font-size: 0.9em;
+			margin: 1px 0.5em;
+		}
 
+		.item a, .item a:visited { color: #005885; text-decoration: none; border-bottom: 1px #777 solid; }
+		.item a:hover, .item a:active { color: #0094DE; }
+
+		.item .item-author-photo {
+			vertical-align: middle;
+			height: 1.2em;
+		}
+
+		.item .item-published {
+			color: #555;
+			font-size: 0.8em;
+		}
+
+		.item-foot {
+			margin: 0.5em 0;
+		}
+
+		.item-foot .item-actions {
+			display: inline;
+			float: right;
+		}
+
+		.item-foot .reply-content {
+			width: 100%;
+			height: 3em;
+		}
+
+		.item-foot .post-reply-button {
+			float: right;
+		}
+
+		/* Testing UI Styles */
 		.test-columns .codemirror,
 		.test-columns .CodeMirror {
 			height: 50%;

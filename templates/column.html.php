@@ -14,6 +14,8 @@
 		</div>
 	</div>
 	<div class="column-body">
-
+		<?php foreach ($column['items'] as $item): ?>
+		<?= $render('item.html', ['item' => $item]) ?>
+		<?php endforeach ?>
 	</div>
 </div>

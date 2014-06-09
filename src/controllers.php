@@ -11,6 +11,8 @@ use Taproot;
 use Taproot\Subscriptions;
 use Taproot\Authentication;
 use Elasticsearch;
+use DateTime;
+use Exception;
 
 /** @var $app \Silex\Application */
 
@@ -139,6 +141,19 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 	/* @var $resp Guzzle\Http\Message\Response */
 	$resp = $app['http.client']->get($url)->send();
 	$resource = Subscriptions\contextFromResponse($resp->getBody(true), $resp->getEffectiveUrl(), $resp->getHeaders(), $resp->getEffectiveUrl());
+	$indexResourceResult = $app['indexResource']($resource, false);
+	$cleansed = array_map(function ($item) {
+		$item['published'] = new DateTime($item['published']);
+		if (!empty($item['updated'])) {
+			try {
+				$item['updated'] = new DateTime($item['updated']);
+			} catch (Exception $e) {
+				// Meh.
+			}
+		}
+		return $item;
+	}, $indexResourceResult['feed-parse']['posts']);
+
 	$column = [
 		'id' => '_test',
 		'name' => 'Test Column',
@@ -149,16 +164,15 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 				'photo' => '',
 				'url' => 'INSERT AUTHOR URL'
 			]
-		]]
+		]],
+		'items' => $cleansed
 	];
-
-	$cleansed = $app['indexResource']($resource, false);
 
 	return $app['render']('test.html', [
 		'column' => $column,
 		'html' => $resp->getBody(true),
 		'mf' => $resource['mf2'],
-		'cleansed' => $cleansed['feed-parse']['posts'],
+		'cleansed' => $cleansed,
 		'url' => $url
 	]);
 });
