@@ -11,10 +11,23 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 	var all = function (selector, context) { return (context || document).querySelectorAll(selector); };
 	var each = function (els, callback) { return Array.prototype.forEach.call(els, callback); };
 	var map = function (els, callback) { return Array.prototype.map.call(els, callback); };
+	var enhanceEach = function (selector, dependencies, callback) {
+		var elements = all(selector);
+		if (elements.length > 0) {
+			require(dependencies, function () {
+				var args = Array.prototype.slice.call(arguments);
+				each(elements, function (element) {
+					var innerArgs = args.slice();
+					innerArgs.unshift(element);
+					callback.apply(callback, innerArgs);
+				});
+			});
+		}
+	};
 
 	// Ensure that the column container is wide enough to contain all the columns.
 	// TODO: this needs to be called whenever there is a new column.
-	document.querySelector('.columns').style.width = document.querySelectorAll('.column').length * (document.querySelector('.column').offsetWidth + 10) + 'px';
+	document.querySelector('.columns').style.width = Array.prototype.reduce.call(document.querySelectorAll('.column'), function (total, el) { return el.offsetWidth + total + 10; }, 0) + 'px';
 
 	var columnsEl = first('.columns');
 
@@ -77,5 +90,18 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 		onUpdate: function (event) {
 			// In here, figure out the new order of the columns on the dashboard and save it.
 		}
+	});
+
+	// Set up any Codemirror instances which need creating.
+	enhanceEach('textarea.codemirror', ['codemirror/lib/codemirror', 'codemirror/mode/htmlmixed/htmlmixed'], function (el, CodeMirror) {
+		var config = {
+			indentUnit: 1,
+			tabSize: 2
+		};
+
+		if (el.hasAttribute('data-codemirror-mode')) {
+			config['mode'] = el.getAttribute('data-codemirror-mode');
+		}
+		var codemirror = CodeMirror.fromTextArea(el, config);
 	});
 });

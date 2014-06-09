@@ -56,6 +56,7 @@ function saveJson($path, $json) {
 
 
 // TODO: put this in mf-cleaner with tests.
+// TODO: should all location/adr/geo properties be added to the stack instead of just the first of each?
 function getLocation(array $mf) {
 	$location = [];
 
@@ -75,11 +76,14 @@ function getLocation(array $mf) {
 			if (!empty($parts['scheme']) and $parts['scheme'] == 'geo' and !empty($parts['path'])) {
 				$geoParts = explode(',', $parts['path']);
 				$derivedGeo = [
-					'latitude' => $geoParts[0],
-					'longitude' => $geoParts[1]
+					'type' => ['h-geo'],
+					'properties' => [
+						'latitude' => [$geoParts[0]],
+						'longitude' => [$geoParts[1]]
+					]
 				];
 				if (count($geoParts) > 2) {
-					$derivedGeo['altitude'] = $geoParts[2];
+					$derivedGeo['properties']['altitude'] = [$geoParts[2]];
 				}
 				$locationDataSources[] = $derivedGeo;
 			}

@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Shrewdness</title>
+	<link rel="stylesheet" href="/js/codemirror/lib/codemirror.css" />
 	<style>
 		* {
 			box-sizing: border-box;
@@ -34,9 +35,13 @@
 		.x-scroll-wrapper {
 			width: 100%;
 			height: 100%;
-			padding: 2em;
-			padding-bottom: 0;
 			overflow-x: scroll;
+		}
+
+		.y-scroll-wrapper {
+			width: 100%;
+			height: 100%;
+			overflow-y: scroll;
 		}
 
 		.columns {
@@ -49,6 +54,15 @@
 			width: 20.3em;
 			margin-right: 0.2em;
 			background: rgba(255,255,255,0.08);
+			vertical-align: top;
+		}
+
+		.column.double-width {
+			width: 40em;
+		}
+
+		.column.light-column {
+			background: rgba(255,255,255,0.7);
 		}
 
 		.column.dragged {
@@ -105,7 +119,24 @@
 			font-size: 1.25em;
 			color: #9B9B9B;
 		}
+
+
+		.test-columns .codemirror,
+		.test-columns .CodeMirror {
+			height: 50%;
+			width: 100%;
+			margin-bottom: 0.5em;
+		}
+
+		.properties {
+			font-size: 0.8em;
+		}
+
+		.properties ul {
+			padding: 0.5em;
+			list-style: none;
+		}
 	</style>
-	<script src="/js/require.js" data-main="js/app"></script>
+	<script src="/js/require.js" data-main="/js/app"></script>
 </head>
 <body>

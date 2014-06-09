@@ -75,10 +75,16 @@ $app['render'] = $app->protect(function ($template, $__templateData = array(), $
 });
 
 
-$app['indexResource'] = $app->protect(function ($resource) use ($app) {
+/**
+ * @param array $resource The Subscriptions Resource array
+ * @param boolean $persist default: true Whether or not to actually save parsed results, or just return them.
+ */
+$app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($app) {
 	$app['logger']->info('Indexing Resource', [
 		'resource' => $resource
 	]);
+
+	$result = [];
 	
 	// TODO: Archive the response when taproot/archive allows us to do so without fetching it again.
 
@@ -90,6 +96,13 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 
 		// If there are h-entries on the page, for each of them:
 		$hEntries = M\findMicroformatsByType($mf, 'h-entry');
+
+		if (count($hEntries) > 0) {
+			$result['feed-parse'] = [
+				'posts' => []
+			];
+		}
+
 		foreach ($hEntries as $hEntry) {
 			// Use comment-presentation algorithm to clean up.
 			$cleansed = comments\parse($hEntry);
@@ -105,12 +118,13 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 			$cleansed['content'] = $indexedContent;
 			$cleansed['displayContent'] = $displayContent;
 
+			// TODO: these are going to need some cleaning. If they’re strings, fetching; microformats cleaning, authorship etc.
 			if (M\hasProp($hEntry, 'in-reply-to')) {
 				$cleansed['in-reply-to'] = array_unique($hEntry['properties']['in-reply-to']);
 			}
 
 			// TODO: this will be M\getLocation when it’s ported to the other library.
-			if (($location = getLocation($mf)) !== null) {
+			if (($location = getLocation($hEntry)) !== null) {
 				$cleansed['location'] = $location;
 
 				if (!empty($location['latitude']) and !empty($location['longitude'])) {
@@ -125,7 +139,12 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 			// TODO: figure out what other properties need storing/indexing, and whether anything else needs mashing for
 			// elasticsearch to index more easily.
 
+			$result['feed-parse']['posts'][] = $cleansed;
+
 			// TODO: actually index $cleansed.
+			if ($persist) {
+
+			}
 		}
 	} else {
 		// If there are no h-entries, but the page is still valid HTML, index the page as an ordinary webpage.
@@ -144,6 +163,8 @@ $app['indexResource'] = $app->protect(function ($resource) use ($app) {
 	// E.G. authority of http://waterpigs.co.uk/notes/1000 is waterpigs.co.uk
 	// authority of https://twitter.com/aaronpk/status/1234567890 is twitter.com/aaronpk
 	// Also note relation(s), derived from mf2/rel values, store those as space-separated.
+
+	return $result;
 });
 
 return $app;

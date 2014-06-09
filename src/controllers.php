@@ -2,6 +2,7 @@
 
 namespace Taproot\Shrewdness;
 
+use Silex\Application;
 use Symfony\Component\HttpFoundation as Http;
 use Symfony\Component\HttpKernel;
 use Guzzle;
@@ -126,6 +127,41 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
 })->bind('column.sources')
 	->before($ensureIsOwner);
+
+
+$app->get('/test/', function (Http\Request $request) use ($app) {
+	if (!$request->query->has('url')) {
+		return $app['render']('test.html', ['column' => null]);
+	}
+
+	$url = Authentication\ensureUrlHasHttp($request->query->get('url'));
+
+	/* @var $resp Guzzle\Http\Message\Response */
+	$resp = $app['http.client']->get($url)->send();
+	$resource = Subscriptions\contextFromResponse($resp->getBody(true), $resp->getEffectiveUrl(), $resp->getHeaders(), $resp->getEffectiveUrl());
+	$column = [
+		'id' => '_test',
+		'name' => 'Test Column',
+		'sources' => [[
+			'topic' => $resp->getEffectiveUrl(),
+			'profile' => [
+				'name' => 'INSERT AUTHOR',
+				'photo' => '',
+				'url' => 'INSERT AUTHOR URL'
+			]
+		]]
+	];
+
+	$cleansed = $app['indexResource']($resource, false);
+
+	return $app['render']('test.html', [
+		'column' => $column,
+		'html' => $resp->getBody(true),
+		'mf' => $resource['mf2'],
+		'cleansed' => $cleansed['feed-parse']['posts'],
+		'url' => $url
+	]);
+});
 
 $app->mount('/subscriptions', Subscriptions\controllers($app, $ensureIsOwner, $app['indexResource']));
 $app->mount('/', Authentication\client($app));
