@@ -148,3 +148,27 @@ function replaceFirstWith(array $array, array $parameters, array $replacement) {
 
 	return $array;
 }
+
+function flattenHCard($hCard, $url) {
+	$host = parse_url($url, PHP_URL_HOST);
+	$author = [
+		'name' => $host ?: $url,
+		'url' => $host ? "http://{$host}" : null,
+		'photo' => false
+	];
+
+	$authorProperty = $hCard;
+	if(array_key_exists('name', $authorProperty['properties'])) {
+		$author['name'] = $authorProperty['properties']['name'][0];
+	}
+
+	if(array_key_exists('url', $authorProperty['properties'])) {
+		$author['url'] = $authorProperty['properties']['url'][0];
+	}
+
+	if(array_key_exists('photo', $authorProperty['properties'])) {
+		$author['photo'] = $authorProperty['properties']['photo'][0];
+	}
+
+	return $author;
+}

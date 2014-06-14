@@ -123,6 +123,38 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 				$cleansed['in-reply-to'] = array_unique($hEntry['properties']['in-reply-to']);
 			}
 
+			if (!M\hasProp($hEntry, 'author')) {
+				// No authorship data given, we need to find the author!
+				// TODO: proper /authorship implementation.
+				// TODO: wrap proper /authorship implementation in layer which does purification, simplification, fallback.
+				$potentialAuthor = M\getAuthor($hEntry, $mf, $url);
+
+				if ($potentialAuthor !== null) {
+					$cleansed['author'] = flattenHCard($potentialAuthor, $url);
+				} elseif (!empty($mf['rels']['author'])) {
+					// Fetch the first author URL and look for an h-card there.
+					$relAuthorMf = Mf2\fetch($mf['rels']['author'][0]);
+					$relAuthorHCards = M\findMicroformatsByType($relAuthorMf, 'h-card');
+					if (count($relAuthorHCards)) {
+						$cleansed['author'] = flattenHCard($relAuthorHCards[0], $url);
+					}
+				}
+
+				// If after all that there’s still no authorship data, fake some.
+				if ($cleansed['author']['name'] === false) {
+					$cleansed['author'] = flattenHCard(['properties' => []], $url);
+					try {
+						$response = $app['http.client']->head("{$cleansed['author']['url']}/favicon.ico")->send();
+						if (strpos($response->getHeader('content-type'), 'image') !== false) {
+							// This appears to be a valid image!
+							$cleansed['author']['photo'] = $response->getEffectiveUrl();
+						}
+					} catch (Guzzle\Common\Exception\GuzzleException $e) {
+						// No photo fallback could be found.
+					}
+				}
+			}
+
 			// TODO: this will be M\getLocation when it’s ported to the other library.
 			if (($location = getLocation($hEntry)) !== null) {
 				$cleansed['location'] = $location;

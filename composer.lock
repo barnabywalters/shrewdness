@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "71d02c329931fd214d4242fed42383a8",
+    "hash": "7a28b9ce512e18ad1028dabe76839bf8",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -86,7 +87,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan Wage",
+                    "name": "Jonathan H. Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/",
                     "role": "Creator"
@@ -574,16 +575,16 @@
         },
         {
             "name": "mf2/mf2",
-            "version": "v0.2.6",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "e6a063f530ffdb93e241108581e1df41e767e4a4"
+                "reference": "96643a01f763a0ec33c74c1fefd2ce38b6abbdff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/e6a063f530ffdb93e241108581e1df41e767e4a4",
-                "reference": "e6a063f530ffdb93e241108581e1df41e767e4a4",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/96643a01f763a0ec33c74c1fefd2ce38b6abbdff",
+                "reference": "96643a01f763a0ec33c74c1fefd2ce38b6abbdff",
                 "shasum": ""
             },
             "require": {
@@ -623,24 +624,24 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2014-04-07 23:10:46"
+            "time": "2014-06-06 16:20:07"
         },
         {
             "name": "mf2/shim",
-            "version": "v0.2.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2-shim.git",
-                "reference": "8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c"
+                "reference": "2155639f43aaf46cd80864fe26bae5616b4fdf87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2-shim/zipball/8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c",
-                "reference": "8a72b720bf60f0d5ceb2edf2b5e2ffc9f252bf1c",
+                "url": "https://api.github.com/repos/indieweb/php-mf2-shim/zipball/2155639f43aaf46cd80864fe26bae5616b4fdf87",
+                "reference": "2155639f43aaf46cd80864fe26bae5616b4fdf87",
                 "shasum": ""
             },
             "require": {
-                "mf2/mf2": "~0.2.6",
+                "mf2/mf2": "*",
                 "php": ">=5.3.0"
             },
             "require-dev": {
@@ -678,7 +679,7 @@
                 "semantic",
                 "twitter"
             ],
-            "time": "2014-04-29 17:50:56"
+            "time": "2014-06-14 00:21:08"
         },
         {
             "name": "monolog/monolog",
@@ -1038,12 +1039,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "402f7d86b1073498812cfa5466132aa190183575"
+                "reference": "f41913cde27de7073e78d9a41c1299c0315dfe64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/402f7d86b1073498812cfa5466132aa190183575",
-                "reference": "402f7d86b1073498812cfa5466132aa190183575",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/f41913cde27de7073e78d9a41c1299c0315dfe64",
+                "reference": "f41913cde27de7073e78d9a41c1299c0315dfe64",
                 "shasum": ""
             },
             "require": {
@@ -1051,11 +1052,13 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1"
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/process": "~2.1"
             },
             "suggest": {
                 "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": ""
+                "symfony/event-dispatcher": "",
+                "symfony/process": ""
             },
             "type": "library",
             "extra": {
@@ -1086,7 +1089,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-23 14:36:49"
+            "time": "2014-06-11 06:54:52"
         },
         {
             "name": "symfony/debug",
@@ -1095,12 +1098,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Debug.git",
-                "reference": "88fce721305e8391e83452212a56ee98746cf2d6"
+                "reference": "342dc52465f509f4ba5a8312ee1052a2d6f05101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/88fce721305e8391e83452212a56ee98746cf2d6",
-                "reference": "88fce721305e8391e83452212a56ee98746cf2d6",
+                "url": "https://api.github.com/repos/symfony/Debug/zipball/342dc52465f509f4ba5a8312ee1052a2d6f05101",
+                "reference": "342dc52465f509f4ba5a8312ee1052a2d6f05101",
                 "shasum": ""
             },
             "require": {
@@ -1143,7 +1146,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-03 08:31:36"
+            "time": "2014-06-07 15:54:31"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1493,19 +1496,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/archive.git",
-                "reference": "09a65775f42170ff121d9c215d8feb612a8cbbb3"
+                "reference": "5c4519dcb0681657a104919a6f426d387d187ec8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/archive/zipball/09a65775f42170ff121d9c215d8feb612a8cbbb3",
-                "reference": "09a65775f42170ff121d9c215d8feb612a8cbbb3",
+                "url": "https://api.github.com/repos/Taproot/archive/zipball/5c4519dcb0681657a104919a6f426d387d187ec8",
+                "reference": "5c4519dcb0681657a104919a6f426d387d187ec8",
                 "shasum": ""
             },
             "require": {
                 "guzzle/guzzle": "~3",
                 "icap/html-diff": "~1",
-                "mf2/mf2": "~0.2.4",
-                "mf2/shim": "~0.2"
+                "mf2/mf2": "*",
+                "mf2/shim": "*"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7"
@@ -1527,7 +1530,7 @@
                 }
             ],
             "description": "Your personal opinionated indieweb- and microformats-oriented HTML archiver.",
-            "time": "2014-02-03 11:02:58"
+            "time": "2014-06-14 00:21:36"
         },
         {
             "name": "taproot/authentication",
@@ -1579,18 +1582,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/taproot/subscriptions.git",
-                "reference": "cc6e485d254705bd79ed21c9a77acbf500dfe39e"
+                "reference": "33f2ed1b1bfde773a28b7c428f08b4713edfc8ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/cc6e485d254705bd79ed21c9a77acbf500dfe39e",
-                "reference": "cc6e485d254705bd79ed21c9a77acbf500dfe39e",
+                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/33f2ed1b1bfde773a28b7c428f08b4713edfc8ab",
+                "reference": "33f2ed1b1bfde773a28b7c428f08b4713edfc8ab",
                 "shasum": ""
             },
             "require": {
                 "guzzle/guzzle": "*",
-                "mf2/mf2": "~0.2",
-                "mf2/shim": "~0.2",
+                "mf2/mf2": "*",
+                "mf2/shim": "*",
                 "monolog/monolog": "*",
                 "psr/log": "*"
             },
@@ -1620,7 +1623,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-06-02 23:42:41"
+            "time": "2014-06-14 00:33:17"
         }
     ],
     "packages-dev": [
@@ -2114,12 +2117,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "c18697a0775c44b2a08dff0dbae9f6d45e090914"
+                "reference": "e9133c6f7e8a1d547465be1d50f1d99c285ec815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c18697a0775c44b2a08dff0dbae9f6d45e090914",
-                "reference": "c18697a0775c44b2a08dff0dbae9f6d45e090914",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/e9133c6f7e8a1d547465be1d50f1d99c285ec815",
+                "reference": "e9133c6f7e8a1d547465be1d50f1d99c285ec815",
                 "shasum": ""
             },
             "require": {
@@ -2160,7 +2163,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-03 21:06:30"
+            "time": "2014-06-12 10:01:10"
         },
         {
             "name": "symfony/yaml",
@@ -2215,6 +2218,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "mf2/mf2": 20,
+        "mf2/shim": 20,
         "doctrine/cache": 20,
         "taproot/subscriptions": 20,
         "taproot/authentication": 20,

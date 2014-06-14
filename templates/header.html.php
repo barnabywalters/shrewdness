@@ -6,6 +6,7 @@
 	<style>
 		* {
 			box-sizing: border-box;
+			max-width: 100%;
 		}
 
 		html, body {
@@ -53,7 +54,7 @@
 			height: 100%;
 			width: 20.3em;
 			margin-right: 0.2em;
-			background: rgba(255,255,255,0.08);
+			background: rgba(255, 255, 255, 0.08);
 			vertical-align: top;
 			overflow-y: scroll;
 		}
@@ -63,7 +64,7 @@
 		}
 
 		.column.light-column {
-			background: rgba(255,255,255,0.7);
+			background: rgba(255, 255, 255, 0.7);
 		}
 
 		.column.dragged {
@@ -95,7 +96,7 @@
 		}
 
 		.column-sources {
-			background: rgba(255,255,255,0.78);
+			background: rgba(255, 255, 255, 0.78);
 			padding: 0.4em;
 		}
 
