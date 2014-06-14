@@ -15,6 +15,9 @@ use IndieWeb\comments;
 use HTMLPurifier, HTMLPurifier_Config;
 use BarnabyWalters\Mf2 as M;
 use Mf2;
+use DateTime;
+use DateTimeZone;
+use Exception;
 
 $app = new Application();
 
@@ -109,18 +112,80 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 
 			$indexedContent = M\getPlaintext($hEntry, 'content', $cleansed['text']);
 
-			if ($indexedContent !== $cleansed['text']) {
-				$displayContent = $app['purifier']->purify(M\getHtml($hEntry, 'content'));
-			} else {
-				$displayContent = htmlentities($indexedContent);
-			}
+			$displayContent = $app['purifier']->purify(M\getHtml($hEntry, 'content'));
 
 			$cleansed['content'] = $indexedContent;
-			$cleansed['displayContent'] = $displayContent;
+			$cleansed['display_content'] = $displayContent;
+
+			// Handle all datetime cases, as per http://indiewebcamp.com/h-entry#How_to_consume_h-entry
+			try {
+				$published = new DateTime($cleansed['published']);
+				$utcPublished = clone $published;
+				$utcPublished->setTimezone(new DateTimeZone('UTC'));
+			} catch (Exception $e) {
+				$published = $utcPublished = false;
+			}
+
+			$inTheFuture = $utcPublished > new DateTime(null, new DateTimeZone('UTC'));
+
+			// DateTime() accepts “false” as a constructor param for some reason.
+			if ((!$published and !$cleansed['published']) or ($utcPublished > new DateTime(null, new DateTimeZone('UTC')))) {
+				// If there’s absolutely no datetime, our best guess has to be “now”.
+				// Additional heuristics could be used in the bizarre case of having a feed where an item without datetime is
+				// published in between two items with datetimes, allowing us to guess the published datetime is between the two,
+				// but until that actually happens it’s not worth coding for.
+				$cleansed['published'] = gmdate('c');
+				$utcPublished = new DateTime(null, new DateTimeZone('UTC'));
+			} else {
+				// “published” is given and parses correctly, into $published.
+				// Currently it’s not trivial to figure out if a given datetime is floating or not, so assume that the timezone
+				// given here is correct for the moment. When this can be determined, follow http://indiewebcamp.com/datetime#implying_timezone_from_webmentions
+			}
+
+			// Store a string representation of published to be indexed+queried upon.
+			$cleansed['published_utc'] = $utcPublished->format(DateTime::W3C);
+
 
 			// TODO: these are going to need some cleaning. If they’re strings, fetching; microformats cleaning, authorship etc.
+			// We also need to look in rel=in-reply-to. like, repost not used as commonly so are lower priority.
 			if (M\hasProp($hEntry, 'in-reply-to')) {
-				$cleansed['in-reply-to'] = array_unique($hEntry['properties']['in-reply-to']);
+				$cleansedReplyContexts = [];
+				foreach ($hEntry['properties']['in-reply-to'] as $inReplyTo) {
+					if (is_string($inReplyTo)) {
+						// It’s (hopefully) a URL, fetch it and look for a h-entry.
+						$irtMf = Mf2\fetch($inReplyTo);
+						$irtHEntries = M\findMicroformatsByType($irtMf, 'h-entry');
+						if (count($irtHEntries) == 0) {
+							// This page doesn’t have any microformats, so create a dummy one with just the URL.
+							$irtHCite = [
+								'type' => ['h-cite', 'h-x-dummy-cite'],
+								'properties' => [
+									'url' => [$inReplyTo],
+									'name' => [$inReplyTo]
+								]
+							];
+						} else {
+							$irtHCite = $irtHEntries[0];
+						}
+					} elseif (M\isMicroformat($inReplyTo)) {
+						// They’ve provided an h-cite! How considerate.
+						$irtHCite = $inReplyTo;
+					} else {
+						// uh
+						continue;
+					}
+
+					// Perform normalisations to the derived $irtHEntry, regardless of source.
+					// comments\parse only works with h-entries, so add 'h-entry' to the context h-cite
+					$irtHCite['type'][] = 'h-entry';
+					$irtCleansed = comments\parse($irtHCite);
+					// For the moment that will do for reply contexts. In the future, more work should be done:
+					// Authorship, datetime checking, parsing of recursive in-reply-to properties
+
+					$cleansedReplyContexts[] = $irtCleansed;
+				}
+
+				$cleansed['in-reply-to'] = $cleansedReplyContexts;
 			}
 
 			if (!M\hasProp($hEntry, 'author')) {
@@ -132,6 +197,8 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 				if ($potentialAuthor !== null) {
 					$cleansed['author'] = flattenHCard($potentialAuthor, $url);
 				} elseif (!empty($mf['rels']['author'])) {
+					// TODO: look in elasticsearch index for a person with the first rel-author URL then fall back to fetching.
+
 					// Fetch the first author URL and look for an h-card there.
 					$relAuthorMf = Mf2\fetch($mf['rels']['author'][0]);
 					$relAuthorHCards = M\findMicroformatsByType($relAuthorMf, 'h-card');
@@ -159,9 +226,11 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 			if (($location = getLocation($hEntry)) !== null) {
 				$cleansed['location'] = $location;
 
+				// TODO: do additional reverse lookups of address details if none are provided.
+
 				if (!empty($location['latitude']) and !empty($location['longitude'])) {
 					// If this is a valid point, add a point with mashed names for elasticsearch to index.
-					$cleansed['location-point'] = [
+					$cleansed['location_point'] = [
 						'lat' => $location['latitude'],
 						'lon' => $location['longitude']
 					];

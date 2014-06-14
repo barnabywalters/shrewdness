@@ -9,12 +9,12 @@
 	</p>
 
 	<div class="item-content">
-		<?= $item['displayContent'] ?>
+		<?= $item['display_content'] ?>
 	</div>
 
 	<div class="item-foot">
 		<a class="item-url" href="<?= $item['url'] ?>">
-			<time class="item-published" datetime="<?= $item['published']->format(DateTime::W3C) ?>"><?= $item['published']->format('Y-m-d H:i:s Z') ?></time>
+			<time class="item-published" datetime="<?= $item['published']->format(DateTime::W3C) ?>"><?= $item['published']->format('Y-m-d H:i T') ?></time>
 		</a>
 
 		<div class="item-actions">

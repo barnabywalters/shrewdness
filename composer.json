@@ -23,7 +23,7 @@
 		"illuminate/encryption": "*",
 		"elasticsearch/elasticsearch": "~1.0",
 		"taproot/archive": "dev-master",
-		"indieweb/comments": "0.1.6",
+		"indieweb/comments": "dev-master",
 		"ezyang/htmlpurifier": "v4.6.0"
 	},
 	"require-dev": {

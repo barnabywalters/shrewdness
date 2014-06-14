@@ -6,7 +6,6 @@
 	<style>
 		* {
 			box-sizing: border-box;
-			max-width: 100%;
 		}
 
 		html, body {
@@ -57,6 +56,10 @@
 			background: rgba(255, 255, 255, 0.08);
 			vertical-align: top;
 			overflow-y: scroll;
+		}
+
+		.column * {
+			max-width: 100%;
 		}
 
 		.column.double-width {

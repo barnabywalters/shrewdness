@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7a28b9ce512e18ad1028dabe76839bf8",
+    "hash": "663ffd5e258aaa9249897b6dca8c30f0",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -490,16 +490,16 @@
         },
         {
             "name": "indieweb/comments",
-            "version": "0.1.6",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-comments.git",
-                "reference": "4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba"
+                "reference": "3db0035cf6f1ddb881553c9107c3257c980a8fe6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-comments/zipball/4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba",
-                "reference": "4ca98d81d4cd00fe88d4878cad2e1a59fd0d67ba",
+                "url": "https://api.github.com/repos/indieweb/php-comments/zipball/3db0035cf6f1ddb881553c9107c3257c980a8fe6",
+                "reference": "3db0035cf6f1ddb881553c9107c3257c980a8fe6",
                 "shasum": ""
             },
             "require": {
@@ -525,7 +525,7 @@
                 "comments",
                 "indieweb"
             ],
-            "time": "2014-02-26 03:24:19"
+            "time": "2014-06-14 15:13:34"
         },
         {
             "name": "indieweb/link-rel-parser",
@@ -2223,7 +2223,8 @@
         "doctrine/cache": 20,
         "taproot/subscriptions": 20,
         "taproot/authentication": 20,
-        "taproot/archive": 20
+        "taproot/archive": 20,
+        "indieweb/comments": 20
     },
     "platform": [],
     "platform-dev": []

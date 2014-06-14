@@ -157,14 +157,7 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 	$column = [
 		'id' => '_test',
 		'name' => 'Test Column',
-		'sources' => [[
-			'topic' => $resp->getEffectiveUrl(),
-			'profile' => [
-				'name' => 'INSERT AUTHOR',
-				'photo' => '',
-				'url' => 'INSERT AUTHOR URL'
-			]
-		]],
+		'sources' => [],
 		'items' => $cleansed
 	];
 
