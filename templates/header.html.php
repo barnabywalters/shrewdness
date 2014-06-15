@@ -22,8 +22,9 @@
 
 		body {
 			background: url(/background.png) #111;
-			font-family: Actor-Regular, Geneva, sans-serif;
-			font-size: 100%;
+			font-family: Actor, Geneva, sans-serif;
+			font-size: 13px;
+			line-height: 1.3;
 		}
 
 		h1, h2, h3, h4, h5, h6 {
@@ -51,8 +52,8 @@
 		.column {
 			display: inline-block;
 			height: 100%;
-			width: 20.3em;
-			margin-right: 0.2em;
+			width: 25em;
+			margin-right: 0.769em;
 			background: rgba(255, 255, 255, 0.08);
 			vertical-align: top;
 			overflow-y: scroll;
@@ -63,7 +64,7 @@
 		}
 
 		.column.double-width {
-			width: 40em;
+			width: 50em;
 		}
 
 		.column.light-column {
@@ -127,27 +128,70 @@
 
 		/* Item styles, pasted from intertubes */
 		.item {
-			padding: 0.5em;
-			background: #ccc;
-			font-size: 0.9em;
-			margin: 1px 0.5em;
+			padding: 0.384em;
+			background: rgba(246, 246, 246, 96);
+			margin-top: 0.384em;
 		}
 
 		.item a, .item a:visited { color: #005885; text-decoration: none; border-bottom: 1px #777 solid; }
 		.item a:hover, .item a:active { color: #0094DE; }
 
+		.item .item-author {
+			font-size: 1.231em;
+			margin: 0.384em;
+		}
+
+		.item .item-author a {
+			color: #4A4A4A;
+			border-bottom: none;
+		}
+
 		.item .item-author-photo {
 			vertical-align: middle;
-			height: 1.2em;
+			height: 2em;
+			margin-right: 0.384em;
+		}
+
+		.item .item-content {
+			padding: 0.384em;
+		}
+
+		.item-content p:not(:last-child) {
+			margin-bottom: 0.925em;
+		}
+
+		.item-content ins,
+		.item-content ins p {
+			text-decoration: none;
+			background: lightyellow;
+		}
+
+		.item-content blockquote {
+			margin: 0;
+			padding-left: 0.384em;
+			border-left: #ddd solid 0.384em;
+		}
+
+		.item-content pre {
+			overflow-x: auto;
+		}
+
+		.item-content small {
+			font-size: 0.846em;
+			line-height: 1em;
+		}
+
+		.item-foot {
+			padding: 0.384em;
+			font-size: 0.923em;
+		}
+
+		.item-url {
+			border-bottom: none !important;
 		}
 
 		.item .item-published {
 			color: #555;
-			font-size: 0.8em;
-		}
-
-		.item-foot {
-			margin: 0.5em 0;
 		}
 
 		.item-foot .item-actions {
@@ -170,10 +214,6 @@
 			height: 50%;
 			width: 100%;
 			margin-bottom: 0.5em;
-		}
-
-		.properties {
-			font-size: 0.8em;
 		}
 
 		.properties ul {

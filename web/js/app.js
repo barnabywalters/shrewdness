@@ -28,7 +28,7 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 	// Ensure that the column container is wide enough to contain all the columns.
 	// TODO: this needs to be called whenever there is a new column.
 	var expandColumnContainer = function () {
-		document.querySelector('.columns').style.width = Array.prototype.reduce.call(document.querySelectorAll('.column'), function (total, el) { return el.offsetWidth + total + 10; }, 0) + 'px';
+		document.querySelector('.columns').style.width = Array.prototype.reduce.call(document.querySelectorAll('.column'), function (total, el) { return el.offsetWidth + total + 13; }, 0) + 'px';
 	};
 	expandColumnContainer();
 
@@ -106,5 +106,6 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 			config['mode'] = el.getAttribute('data-codemirror-mode');
 		}
 		var codemirror = CodeMirror.fromTextArea(el, config);
+		expandColumnContainer();
 	});
 });
