@@ -152,6 +152,25 @@
 			margin-right: 0.384em;
 		}
 
+		.item.named-item .item-author-photo {
+			height: 2.91em;
+			vertical-align: top;
+		}
+
+		.item.named-item .item-author a {
+			font-size: 0.75em;
+		}
+
+		.item.named-item .item-name-container {
+			display: inline-block;
+			width: 21.7em;
+			vertical-align: top;
+		}
+
+		.item.named-item .item-name {
+			font-size: 1.2307em;
+		}
+
 		.item .item-content {
 			padding: 0.384em;
 		}

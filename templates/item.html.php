@@ -1,12 +1,20 @@
-<div class="item">
-	<p class="item-author">
+<div class="item <?= $item['name'] ? 'named-item' : '' ?>">
+	<div class="item-author">
 		<a href="<?= $item['author']['url'] ?>">
 			<?php if ($item['author']['photo']): ?>
 			<img class="item-author-photo" alt="" src="<?= $item['author']['photo'] ?>">
 			<?php endif ?>
+
+			<?php if ($item['name']): ?>
+			<div class="item-name-container">
+				<span class="author-name"><?= trim($item['author']['name']) ?></span>
+				<h1 class="item-name"><?= trim($item['name']) ?></h1>
+			</div>
+			<?php else: ?>
 			<?= trim($item['author']['name']) ?>
+			<?php endif ?>
 		</a>
-	</p>
+	</div>
 
 	<div class="item-content">
 		<?= trim($item['display_content']) ?>
