@@ -408,12 +408,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "8ba416d18dd7a2ffff5454afd1b94a17b8f37fa1"
+                "reference": "1b2339a459e298dc7b193773c7b655eb39ce196f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/8ba416d18dd7a2ffff5454afd1b94a17b8f37fa1",
-                "reference": "8ba416d18dd7a2ffff5454afd1b94a17b8f37fa1",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/1b2339a459e298dc7b193773c7b655eb39ce196f",
+                "reference": "1b2339a459e298dc7b193773c7b655eb39ce196f",
                 "shasum": ""
             },
             "require": {
@@ -449,7 +449,7 @@
                     "role": "Creator of Laravel"
                 }
             ],
-            "time": "2014-06-06 15:13:48"
+            "time": "2014-06-18 03:59:39"
         },
         {
             "name": "indieauth/client",
@@ -494,12 +494,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-comments.git",
-                "reference": "3db0035cf6f1ddb881553c9107c3257c980a8fe6"
+                "reference": "2d01a5a4bf93fdaa5f3c2cbcd77969e396eb1bcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-comments/zipball/3db0035cf6f1ddb881553c9107c3257c980a8fe6",
-                "reference": "3db0035cf6f1ddb881553c9107c3257c980a8fe6",
+                "url": "https://api.github.com/repos/indieweb/php-comments/zipball/2d01a5a4bf93fdaa5f3c2cbcd77969e396eb1bcf",
+                "reference": "2d01a5a4bf93fdaa5f3c2cbcd77969e396eb1bcf",
                 "shasum": ""
             },
             "require": {
@@ -525,7 +525,7 @@
                 "comments",
                 "indieweb"
             ],
-            "time": "2014-06-14 15:13:34"
+            "time": "2014-06-18 22:35:46"
         },
         {
             "name": "indieweb/link-rel-parser",
@@ -579,12 +579,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "96643a01f763a0ec33c74c1fefd2ce38b6abbdff"
+                "reference": "0c7c6b7267bdfd48d1698ac26f98bb6ba64795de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/96643a01f763a0ec33c74c1fefd2ce38b6abbdff",
-                "reference": "96643a01f763a0ec33c74c1fefd2ce38b6abbdff",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/0c7c6b7267bdfd48d1698ac26f98bb6ba64795de",
+                "reference": "0c7c6b7267bdfd48d1698ac26f98bb6ba64795de",
                 "shasum": ""
             },
             "require": {
@@ -624,7 +624,7 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2014-06-06 16:20:07"
+            "time": "2014-06-18 15:12:25"
         },
         {
             "name": "mf2/shim",
@@ -1098,16 +1098,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Debug.git",
-                "reference": "342dc52465f509f4ba5a8312ee1052a2d6f05101"
+                "reference": "4bd5484d456e6263acc6429fabea7e2fbc74fffc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/342dc52465f509f4ba5a8312ee1052a2d6f05101",
-                "reference": "342dc52465f509f4ba5a8312ee1052a2d6f05101",
+                "url": "https://api.github.com/repos/symfony/Debug/zipball/4bd5484d456e6263acc6429fabea7e2fbc74fffc",
+                "reference": "4bd5484d456e6263acc6429fabea7e2fbc74fffc",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.3",
+                "psr/log": "~1.0"
             },
             "require-dev": {
                 "symfony/http-foundation": "~2.1",
@@ -1146,7 +1147,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-07 15:54:31"
+            "time": "2014-06-16 11:52:56"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1214,12 +1215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "efa2b935a1305a578aef7fc22a28ad5204969927"
+                "reference": "bc23b721ae465a6bb73478e3b13a9eef5d06ef01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/efa2b935a1305a578aef7fc22a28ad5204969927",
-                "reference": "efa2b935a1305a578aef7fc22a28ad5204969927",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/bc23b721ae465a6bb73478e3b13a9eef5d06ef01",
+                "reference": "bc23b721ae465a6bb73478e3b13a9eef5d06ef01",
                 "shasum": ""
             },
             "require": {
@@ -1260,7 +1261,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-06 03:57:03"
+            "time": "2014-06-16 09:30:12"
         },
         {
             "name": "symfony/http-kernel",
@@ -1269,19 +1270,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "e17c6c3d93070c0a3f0469de025d15201ab7d107"
+                "reference": "565dc6789d8e93a3fd1778ccafd7293c35fb4293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/e17c6c3d93070c0a3f0469de025d15201ab7d107",
-                "reference": "e17c6c3d93070c0a3f0469de025d15201ab7d107",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/565dc6789d8e93a3fd1778ccafd7293c35fb4293",
+                "reference": "565dc6789d8e93a3fd1778ccafd7293c35fb4293",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "psr/log": "~1.0",
                 "symfony/debug": "~2.5",
-                "symfony/event-dispatcher": "~2.1",
+                "symfony/event-dispatcher": "~2.5",
                 "symfony/http-foundation": "~2.4"
             },
             "require-dev": {
@@ -1333,7 +1334,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-03 15:24:49"
+            "time": "2014-06-12 17:00:29"
         },
         {
             "name": "symfony/routing",
