@@ -137,7 +137,7 @@ function replaceFirstWith(array $array, array $parameters, array $replacement) {
 	foreach ($array as $i => $item) {
 		$matches = true;
 		foreach ($parameters as $key => $value) {
-			if ($item[$key] != $value) {
+			if (isset($item[$key]) and $item[$key] != $value) {
 				$matches = false;
 			}
 		}

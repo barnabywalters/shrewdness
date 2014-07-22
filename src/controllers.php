@@ -93,7 +93,7 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 		$column['sources'][] = $source;
 	}
 
-	$columns = replaceFirstWith($columns, ['id' => $id], $column);
+	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
 	saveJson('columns', $columns);
 
 	// Add post-response crawl task.

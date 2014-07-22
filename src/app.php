@@ -91,6 +91,9 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 	
 	// TODO: Archive the response when taproot/archive allows us to do so without fetching it again.
 
+	/** @var Elasticsearch\Client $es */
+	$es = $app['elasticsearch'];
+
 	$url = $resource['url'];
 
 	// Feed Reader Subscription
@@ -145,6 +148,9 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 			// Store a string representation of published to be indexed+queried upon.
 			$cleansed['published_utc'] = $utcPublished->format(DateTime::W3C);
 
+			if (M\hasProp($hEntry, 'photo')) {
+				$cleansed['photo'] = $app['purifier']->purify(M\getHtml($hEntry, 'photo'));
+			}
 
 			// TODO: these are going to need some cleaning. If they’re strings, fetching; microformats cleaning, authorship etc.
 			// We also need to look in rel=in-reply-to. like, repost not used as commonly so are lower priority.
@@ -244,7 +250,12 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 
 			// TODO: actually index $cleansed.
 			if ($persist) {
-
+				$es->index([
+					'index' => 'shrewdness',
+					'type' => 'h-entry',
+					'id' => $cleansed['url'],
+					'body' => $cleansed
+				]);
 			}
 		}
 	} else {
@@ -253,9 +264,6 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 		// If the page is not HTML, log as a bad request.
 	}
 
-	/** @var Elasticsearch\Client $es */
-	$es = $app['elasticsearch'];
-	
 	// Anti-spam measures
 	// Find all links not tagged with rel=nofollow.
 	

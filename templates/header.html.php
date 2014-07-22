@@ -76,6 +76,7 @@
 		}
 
 		.column-header {
+			float: left;
 			padding: 0.4em;
 		}
 
@@ -119,6 +120,10 @@
 
 		.column-sources progress {
 			width: 1.8em;
+		}
+
+		.column-body {
+			clear: both;
 		}
 
 		.new-column-cta {
@@ -177,6 +182,10 @@
 
 		.item-content p:not(:last-child) {
 			margin-bottom: 0.925em;
+		}
+
+		.item-content img {
+			height: auto;
 		}
 
 		.item-content ins,
