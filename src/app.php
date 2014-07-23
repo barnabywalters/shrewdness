@@ -113,6 +113,19 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 			// Use comment-presentation algorithm to clean up.
 			$cleansed = comments\parse($hEntry);
 
+			// Merge new topic in with any existing topics if we’ve already seen this piece of content
+			$existingEntryParams = [
+					'index' => 'shrewdness',
+					'type' => 'h-entry',
+					'id' => $cleansed['url']
+			];
+			if ($es->exists($existingEntryParams)) {
+				$existingEntry = $es->get($existingEntryParams);
+				$cleansed['topics'] = array_unique(array_merge(@($existingEntry['_source']['topics'] ?: []), [$resource['topic']]));
+			} else {
+				$cleansed['topics'] = [$resource['topic']];
+			}
+
 			$indexedContent = M\getPlaintext($hEntry, 'content', $cleansed['text']);
 
 			$displayContent = $app['purifier']->purify(M\getHtml($hEntry, 'content'));
