@@ -15,6 +15,34 @@ use Psy;
 
 /** @var $app \Silex\Application */
 
+class LoginableClient extends HttpKernel\Client {
+	protected $credentials;
+
+	public function login($details = null) {
+		if ($details === null) {
+			$this->credentials = ['me' => $this->kernel['owner.url']];
+		} elseif (is_string($details)) {
+			$this->credentials = ['me' => $details];
+		} else {
+			$this->credentials = $details;
+		}
+
+		return $this->credentials;
+	}
+
+	public function logout() {
+		$this->credentials = null;
+	}
+
+	protected function doRequest($request) {
+		if ($this->credentials !== null) {
+			$request->attributes->set('indieauth.client.token', $this->credentials);
+		}
+
+		return parent::doRequest($request);
+	}
+}
+
 $console = new Application("Shrewdness", '0.0.1');
 $console->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
 
@@ -26,7 +54,7 @@ $console->register('shell')
 
 		Psy\Shell::debug([
 			'app' => $app,
-			'client' => new HttpKernel\Client($app)
+			'client' => new LoginableClient($app)
 		]);
 	});
 	
