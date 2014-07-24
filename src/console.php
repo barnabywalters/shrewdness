@@ -9,6 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+use Symfony\Component\HttpKernel;
+
 use Psy;
 
 /** @var $app \Silex\Application */
@@ -19,7 +21,13 @@ $console->getDefinition()->addOption(new InputOption('--env', '-e', InputOption:
 $console->register('shell')
 	->setDescription('PHP Shell with $app loaded for quick scripting')
 	->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
-		Psy\Shell::debug(['app' => $app]);
+		$app['exception_handler']->disable();
+		$app['debug'] = True;
+
+		Psy\Shell::debug([
+			'app' => $app,
+			'client' => new HttpKernel\Client($app)
+		]);
 	});
 	
 return $console;

@@ -34,9 +34,11 @@ $ensureIsOwner = function (Http\Request $request) use ($app) {
 	}
 };
 
-$app->get('/', function (Http\Request $request) use ($app) {
+$app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token !== null) {
+		$ensureIsOwner($request);
+
 		/** @var $es \Elasticsearch\Client $es */
 		$es = $app['elasticsearch'];
 
