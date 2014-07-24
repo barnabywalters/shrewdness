@@ -34,6 +34,10 @@ $ensureIsOwner = function (Http\Request $request) use ($app) {
 	}
 };
 
+$app->error(function (Exception $e, $code) use ($app) {
+	return new Http\Response($e->getMessage(), $code);
+});
+
 $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token !== null) {
@@ -108,7 +112,8 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 		// If this topic isn’t already being crawled, start a crawl, maintaining a cache key to prevent duplicate crawls.
 		$crawlingKey = "crawling_{$s['topic']}";
 		if (!$app['cache']->contains($crawlingKey)) {
-			$refreshCache = function () use ($app, $crawlingKey) {
+			$refreshCache = function ($resource) use ($app, $crawlingKey) {
+				$app['logger']->info("Crawling {$resource['url']}", []);
 				$app['cache']->save($crawlingKey, true, 10);
 			};
 
