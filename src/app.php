@@ -28,7 +28,7 @@ $app['db'] = $app->share(function () use ($app) {
 });
 
 $app['subscriptions.storage'] = $app->share(function () use ($app) {
-	return new Subscriptions\PdoSubscriptionStorage($app['db']);
+	return new Subscriptions\PdoSubscriptionStorage($app['db'], 'shrewdness_');
 });
 
 $app['subscriptions.defaulthub'] = function () use ($app) {
