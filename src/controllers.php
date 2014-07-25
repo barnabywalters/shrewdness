@@ -88,13 +88,14 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	];
 
 	$found = false;
-	foreach ($column['sources'] as $s) {
+	foreach ($column['sources'] as $i => $s) {
 		if ($s['topic'] == $source['topic']) {
 			$found = true;
+			// Update any profile details from re-subscribing.
+			$column['sources'][$i] = $source;
 			break;
 		}
 	}
-
 	if (!$found) {
 		$column['sources'][] = $source;
 	}
