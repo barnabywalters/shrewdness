@@ -55,7 +55,7 @@ function loadJson($path) {
 	if (file_exists(dataPath($path))) {
 		return json_decode(file_get_contents(dataPath($path)), true) ?: [];
 	}
-	return [];
+	return false;
 }
 
 function saveJson($path, $json) {

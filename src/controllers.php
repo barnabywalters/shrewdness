@@ -49,6 +49,13 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 		ensureElasticsearchIndexExists($es, 'shrewdness');
 
 		$columns = loadJson('columns');
+		if ($columns === false) {
+			$columns = ['columns' => [[
+				'id' => 'feed',
+				'sources' => []
+			]]];
+			saveJson('columns', $columns);
+		}
 
 		return $app['render']('dashboard.html', [
 			'columns' => $columns['columns']
