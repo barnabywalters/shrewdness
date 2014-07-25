@@ -24,13 +24,21 @@ function renderTemplate($__basedir, $template, array $__templateData = array()) 
 
 // This really needs to be a representative h-card implementation with purification etc. For the moment, just minimal
 // possible code.
-function firstHCard(array $mf, $defaultPhoto = null) {
-	$hCards = M\findMicroformatsByType($mf, 'h-card');
-	if (count($hCards) == 0) {
+function authorHCard(array $mf, $url, $defaultPhoto = null) {
+	$hEntries = M\findMicroformatsByType($mf, 'h-entry');
+	if (count($hEntries) == 0) {
+		$hEntries[0] = [
+			'type' => ['h-entry'],
+			'properties' => ['name' => '']
+		];
+	}
+
+	$h = M\getAuthor($hEntries[0], $mf, $url);
+
+	if ($h === null) {
 		return null;
 	}
 
-	$h = $hCards[0];
 	return [
 		'name' => M\getPlaintext($h, 'name'),
 		'photo' => M\getPlaintext($h, 'photo', $defaultPhoto),

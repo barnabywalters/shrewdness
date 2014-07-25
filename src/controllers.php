@@ -81,7 +81,7 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 
 	// From the fetched feed index page, find a profile (if any) and build the source to add to the column definition.
 	$mf = $subscription['resource']['mf2'];
-	$profile = firstHCard($mf);
+	$profile = authorHCard($mf, $url);
 	$source = [
 			'topic' => $subscription['topic'],
 			'profile' => $profile
