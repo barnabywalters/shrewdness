@@ -278,6 +278,10 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 
 		// If there are h-entries on the page, for each of them:
 		$hEntries = M\findMicroformatsByType($mf, 'h-entry');
+		$hFeeds = M\findMicroformatsByType($mf, 'h-feed');
+		if (count($hEntries) == 0 and count($hFeeds) > 0) {
+			$hEntries = M\findMicroformatsByType($hFeeds[0]['children'], 'h-entry');
+		}
 
 		$result['feed-parse'] = [
 			'posts' => [],
