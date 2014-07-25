@@ -18,11 +18,11 @@
 		"guzzle/guzzle": "*",
 		"psy/psysh": "*",
 		"symfony/console": "~2.2",
-		"taproot/subscriptions": "dev-master",
-		"taproot/authentication": "dev-master",
 		"illuminate/encryption": "*",
 		"elasticsearch/elasticsearch": "~1.0",
 		"taproot/archive": "dev-master",
+		"taproot/subscriptions": "dev-master",
+		"taproot/authentication": "dev-master",
 		"indieweb/comments": "dev-master",
 		"ezyang/htmlpurifier": "v4.6.0"
 	},

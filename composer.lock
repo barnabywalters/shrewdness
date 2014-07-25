@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "663ffd5e258aaa9249897b6dca8c30f0",
+    "hash": "ff2304bc9daa454ec3b6f4ad05b374ba",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "8d389be3efdc62cb56d35997930299e1a7a7245a"
+                "reference": "feebfd401720f359afed515926e56ee0514fcff8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/8d389be3efdc62cb56d35997930299e1a7a7245a",
-                "reference": "8d389be3efdc62cb56d35997930299e1a7a7245a",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/feebfd401720f359afed515926e56ee0514fcff8",
+                "reference": "feebfd401720f359afed515926e56ee0514fcff8",
                 "shasum": ""
             },
             "require": {
@@ -445,7 +445,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-07-21 18:09:45"
+            "time": "2014-07-24 02:36:36"
         },
         {
             "name": "indieauth/client",
@@ -753,12 +753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "5960ecfc105011b8d1bfedf7647b4b8989dbcb4c"
+                "reference": "ef70767475434bdb3615b43c327e2cae17ef12eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/5960ecfc105011b8d1bfedf7647b4b8989dbcb4c",
-                "reference": "5960ecfc105011b8d1bfedf7647b4b8989dbcb4c",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ef70767475434bdb3615b43c327e2cae17ef12eb",
+                "reference": "ef70767475434bdb3615b43c327e2cae17ef12eb",
                 "shasum": ""
             },
             "require": {
@@ -790,7 +790,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2014-04-19 20:26:05"
+            "time": "2014-07-23 18:24:17"
         },
         {
             "name": "pimple/pimple",
@@ -1211,12 +1211,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55"
+                "reference": "28940dacd5fc9cb96ee4a77e08d8a228136e1a4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/32ca1659e64bff5df61668e137bb3c3f64b7ce55",
-                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/28940dacd5fc9cb96ee4a77e08d8a228136e1a4f",
+                "reference": "28940dacd5fc9cb96ee4a77e08d8a228136e1a4f",
                 "shasum": ""
             },
             "require": {
@@ -1245,19 +1245,17 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:15:12"
+            "time": "2014-07-24 10:44:07"
         },
         {
             "name": "symfony/http-kernel",
@@ -1576,13 +1574,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/taproot/subscriptions.git",
-                "reference": "33f2ed1b1bfde773a28b7c428f08b4713edfc8ab"
+                "url": "https://github.com/Taproot/subscriptions.git",
+                "reference": "ae0482f29b2dd265fc5b8deba6da2fcffc469375"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/taproot/subscriptions/zipball/33f2ed1b1bfde773a28b7c428f08b4713edfc8ab",
-                "reference": "33f2ed1b1bfde773a28b7c428f08b4713edfc8ab",
+                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/ae0482f29b2dd265fc5b8deba6da2fcffc469375",
+                "reference": "ae0482f29b2dd265fc5b8deba6da2fcffc469375",
                 "shasum": ""
             },
             "require": {
@@ -1618,7 +1616,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-06-14 00:33:17"
+            "time": "2014-07-25 09:59:32"
         }
     ],
     "packages-dev": [
@@ -2112,12 +2110,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "e50da0a1af797151266110f432586d062bb873fb"
+                "reference": "82b5ca611e483de4dfc010b21dc63d5e7c8645c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/e50da0a1af797151266110f432586d062bb873fb",
-                "reference": "e50da0a1af797151266110f432586d062bb873fb",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/82b5ca611e483de4dfc010b21dc63d5e7c8645c1",
+                "reference": "82b5ca611e483de4dfc010b21dc63d5e7c8645c1",
                 "shasum": ""
             },
             "require": {
@@ -2146,19 +2144,17 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:06:26"
+            "time": "2014-07-23 19:02:07"
         },
         {
             "name": "symfony/yaml",
@@ -2216,11 +2212,12 @@
         "mf2/mf2": 20,
         "mf2/shim": 20,
         "doctrine/cache": 20,
+        "taproot/archive": 20,
         "taproot/subscriptions": 20,
         "taproot/authentication": 20,
-        "taproot/archive": 20,
         "indieweb/comments": 20
     },
+    "prefer-stable": false,
     "platform": [],
     "platform-dev": []
 }
