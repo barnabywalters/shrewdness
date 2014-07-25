@@ -4,3 +4,4 @@ composer.phar
 config/user.php
 /logs/
 .idea/
+/data/
