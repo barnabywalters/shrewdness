@@ -78,6 +78,179 @@ $app['render'] = $app->protect(function ($template, $__templateData = array(), $
 });
 
 
+function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Http\ClientInterface $client=null, $purifier=null) {
+	if ($client === null) {
+		$client = new Guzzle\Http\Client();
+	}
+
+	if ($purifier === null) {
+		$purifier = function ($value) { return $value; };
+	}
+
+	// Use comment-presentation algorithm to clean up.
+	$cleansed = comments\parse($hEntry);
+	$referencedPosts = [];
+	$referencedPostUrls = []; // Used internally to keep track of what referenced posts have been processed already.
+
+	$indexedContent = M\getPlaintext($hEntry, 'content', $cleansed['text']);
+
+	$displayContent = $purifier(M\getHtml($hEntry, 'content'));
+
+	$cleansed['content'] = $indexedContent;
+	$cleansed['display_content'] = $displayContent;
+
+	// Handle all datetime cases, as per http://indiewebcamp.com/h-entry#How_to_consume_h-entry
+	try {
+		$published = new DateTime($cleansed['published']);
+		$utcPublished = clone $published;
+		$utcPublished->setTimezone(new DateTimeZone('UTC'));
+	} catch (Exception $e) {
+		$published = $utcPublished = false;
+	}
+
+	$inTheFuture = $utcPublished > new DateTime(null, new DateTimeZone('UTC'));
+
+	// DateTime() accepts “false” as a constructor param for some reason.
+	if ((!$published and !$cleansed['published']) or ($utcPublished > new DateTime(null, new DateTimeZone('UTC')))) {
+		// If there’s absolutely no datetime, our best guess has to be “now”.
+		// Additional heuristics could be used in the bizarre case of having a feed where an item without datetime is
+		// published in between two items with datetimes, allowing us to guess the published datetime is between the two,
+		// but until that actually happens it’s not worth coding for.
+		$cleansed['published'] = gmdate('c');
+		$utcPublished = new DateTime(null, new DateTimeZone('UTC'));
+	} else {
+		// “published” is given and parses correctly, into $published.
+		// Currently it’s not trivial to figure out if a given datetime is floating or not, so assume that the timezone
+		// given here is correct for the moment. When this can be determined, follow http://indiewebcamp.com/datetime#implying_timezone_from_webmentions
+	}
+
+	// Store a string representation of published to be indexed+queried upon.
+	$cleansed['published_utc'] = $utcPublished->format(DateTime::W3C);
+
+	if (M\hasProp($hEntry, 'photo')) {
+		$cleansed['photo'] = $purifier(M\getHtml($hEntry, 'photo'));
+	}
+
+	// For every post this post has a relation (in-reply-to, repost-of, like-of etc.), fetch and resolve that URL,
+	// index it as it’s own post (if it doesn’t already exist) and store only a reference to it here.
+	$references = [
+		'in-reply-to' => [],
+		'like-of' => [],
+		'repost-of' => []
+	];
+
+	foreach ($references as $relation => $_) {
+		$refUrls = [];
+		// These will be feed pages not permalink pages so cannot check rels, only microformats properties.
+		if (M\hasProp($hEntry, $relation)) {
+			foreach ($hEntry['properties'][$relation] as $value) {
+				if (is_string($value)) {
+					$refUrls[] = $value;
+				} elseif (is_array($value) and isset($value['html'])) {
+					// e-* properties unlikely to be URLs but try all the same.
+					$refUrls[] = $value['value'];
+				} elseif (M\isMicroformat($value)) {
+					if (M\hasProp($value, 'url')) {
+						$refUrls[] = M\getProp($value, 'url');
+					} elseif (M\hasProp($value, 'uid')) {
+						$refUrls[] = M\getProp($value, 'uid');
+					}
+				} else {
+					// If this happens, the microformats parsing spec has changed. Currently do nothing as we don’t know how to interpret this.
+				}
+			}
+		}
+
+		if ($resolveRelationships) {
+			foreach ($refUrls as $refUrl) {
+				try {
+					$resp = $client->get($refUrl)->send();
+					$refResolvedUrl = $resp->getEffectiveUrl();
+					$refMf = Mf2\parse($resp->getBody(1), $refResolvedUrl);
+					$refHEntries = M\findMicroformatsByType($refMf, 'h-entry');
+					$relatedUrl = $refResolvedUrl;
+					if (count($refHEntries) > 0) {
+						$refHEntry = $refHEntries[0];
+						$refSearchUrl = M\hasProp($refHEntry, 'url') ? M\getProp($refHEntry, 'url') : $refResolvedUrl;
+						if (!in_array($refSearchUrl, $referencedPostUrls)) {
+							list($refCleansed, $_) = processHEntry($refHEntry, $refMf, $refResolvedUrl, false, $client, $purifier);
+							$referencedPosts[] = $refCleansed;
+							$referencedPostUrls[] = $refSearchUrl;
+							$relatedUrl = $refSearchUrl;
+						}
+					}
+
+					$references[$relation][] = $relatedUrl;
+				} catch (Guzzle\Common\Exception\GuzzleException $e) {
+					$references[$relation][] = $refUrl;
+				}
+			}
+		} else {
+			// If we’re not resolving relationships, the most accurate data we have is the data given already.
+			$references[$relation] = $refUrls;
+		}
+
+
+		// Now we have the best possible list of URLs, attach it to $cleansed.
+		$cleansed[$relation] = array_unique($references[$relation]);
+	}
+
+	if (!M\hasProp($hEntry, 'author')) {
+		// No authorship data given, we need to find the author!
+		// TODO: proper /authorship implementation.
+		// TODO: wrap proper /authorship implementation in layer which does purification, simplification, fallback.
+		$potentialAuthor = M\getAuthor($hEntry, $mf, $url);
+
+		if ($potentialAuthor !== null) {
+			$cleansed['author'] = flattenHCard($potentialAuthor, $url);
+		} elseif (!empty($mf['rels']['author'])) {
+			// TODO: look in elasticsearch index for a person with the first rel-author URL then fall back to fetching.
+
+			// Fetch the first author URL and look for an h-card there.
+			$relAuthorMf = Mf2\fetch($mf['rels']['author'][0]);
+			$relAuthorHCards = M\findMicroformatsByType($relAuthorMf, 'h-card');
+			if (count($relAuthorHCards)) {
+				$cleansed['author'] = flattenHCard($relAuthorHCards[0], $url);
+			}
+		}
+
+		// If after all that there’s still no authorship data, fake some.
+		if ($cleansed['author']['name'] === false) {
+			$cleansed['author'] = flattenHCard(['properties' => []], $url);
+			try {
+				$response = $client->head("{$cleansed['author']['url']}/favicon.ico")->send();
+				if (strpos($response->getHeader('content-type'), 'image') !== false) {
+					// This appears to be a valid image!
+					$cleansed['author']['photo'] = $response->getEffectiveUrl();
+				}
+			} catch (Guzzle\Common\Exception\GuzzleException $e) {
+				// No photo fallback could be found.
+			}
+		}
+	}
+
+	// TODO: this will be M\getLocation when it’s ported to the other library.
+	if (($location = getLocation($hEntry)) !== null) {
+		$cleansed['location'] = $location;
+
+		// TODO: do additional reverse lookups of address details if none are provided.
+
+		if (!empty($location['latitude']) and !empty($location['longitude'])) {
+			// If this is a valid point, add a point with mashed names for elasticsearch to index.
+			$cleansed['location_point'] = [
+					'lat' => $location['latitude'],
+					'lon' => $location['longitude']
+			];
+		}
+	}
+
+	// TODO: figure out what other properties need storing/indexing, and whether anything else needs mashing for
+	// elasticsearch to index more easily.
+
+	return [$cleansed, $referencedPosts];
+}
+
+
 /**
  * @param array $resource The Subscriptions Resource array
  * @param boolean $persist default: true Whether or not to actually save parsed results, or just return them.
@@ -94,6 +267,9 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 	/** @var Elasticsearch\Client $es */
 	$es = $app['elasticsearch'];
 
+	/** @var \Guzzle\Http\Client $client */
+	$client = $app['http.client'];
+
 	$url = $resource['url'];
 
 	// Feed Reader Subscription
@@ -103,21 +279,19 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 		// If there are h-entries on the page, for each of them:
 		$hEntries = M\findMicroformatsByType($mf, 'h-entry');
 
-		if (count($hEntries) > 0) {
-			$result['feed-parse'] = [
-				'posts' => []
-			];
-		}
+		$result['feed-parse'] = [
+			'posts' => [],
+			'referenced-posts' => []
+		];
 
 		foreach ($hEntries as $hEntry) {
-			// Use comment-presentation algorithm to clean up.
-			$cleansed = comments\parse($hEntry);
+			$cleansed = [];
 
 			// Merge new topic in with any existing topics if we’ve already seen this piece of content
 			$existingEntryParams = [
 					'index' => 'shrewdness',
 					'type' => 'h-entry',
-					'id' => $cleansed['url']
+					'id' => M\getProp($hEntry, 'url')
 			];
 			if ($es->exists($existingEntryParams)) {
 				$existingEntry = $es->get($existingEntryParams);
@@ -126,140 +300,11 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 				$cleansed['topics'] = [$resource['topic']];
 			}
 
-			$indexedContent = M\getPlaintext($hEntry, 'content', $cleansed['text']);
-
-			$displayContent = $app['purifier']->purify(M\getHtml($hEntry, 'content'));
-
-			$cleansed['content'] = $indexedContent;
-			$cleansed['display_content'] = $displayContent;
-
-			// Handle all datetime cases, as per http://indiewebcamp.com/h-entry#How_to_consume_h-entry
-			try {
-				$published = new DateTime($cleansed['published']);
-				$utcPublished = clone $published;
-				$utcPublished->setTimezone(new DateTimeZone('UTC'));
-			} catch (Exception $e) {
-				$published = $utcPublished = false;
-			}
-
-			$inTheFuture = $utcPublished > new DateTime(null, new DateTimeZone('UTC'));
-
-			// DateTime() accepts “false” as a constructor param for some reason.
-			if ((!$published and !$cleansed['published']) or ($utcPublished > new DateTime(null, new DateTimeZone('UTC')))) {
-				// If there’s absolutely no datetime, our best guess has to be “now”.
-				// Additional heuristics could be used in the bizarre case of having a feed where an item without datetime is
-				// published in between two items with datetimes, allowing us to guess the published datetime is between the two,
-				// but until that actually happens it’s not worth coding for.
-				$cleansed['published'] = gmdate('c');
-				$utcPublished = new DateTime(null, new DateTimeZone('UTC'));
-			} else {
-				// “published” is given and parses correctly, into $published.
-				// Currently it’s not trivial to figure out if a given datetime is floating or not, so assume that the timezone
-				// given here is correct for the moment. When this can be determined, follow http://indiewebcamp.com/datetime#implying_timezone_from_webmentions
-			}
-
-			// Store a string representation of published to be indexed+queried upon.
-			$cleansed['published_utc'] = $utcPublished->format(DateTime::W3C);
-
-			if (M\hasProp($hEntry, 'photo')) {
-				$cleansed['photo'] = $app['purifier']->purify(M\getHtml($hEntry, 'photo'));
-			}
-
-			// TODO: these are going to need some cleaning. If they’re strings, fetching; microformats cleaning, authorship etc.
-			// We also need to look in rel=in-reply-to. like, repost not used as commonly so are lower priority.
-			if (M\hasProp($hEntry, 'in-reply-to')) {
-				$cleansedReplyContexts = [];
-				foreach ($hEntry['properties']['in-reply-to'] as $inReplyTo) {
-					if (is_string($inReplyTo)) {
-						// It’s (hopefully) a URL, fetch it and look for a h-entry.
-						$irtMf = Mf2\fetch($inReplyTo);
-						$irtHEntries = M\findMicroformatsByType($irtMf, 'h-entry');
-						if (count($irtHEntries) == 0) {
-							// This page doesn’t have any microformats, so create a dummy one with just the URL.
-							$irtHCite = [
-								'type' => ['h-cite', 'h-x-dummy-cite'],
-								'properties' => [
-									'url' => [$inReplyTo],
-									'name' => [$inReplyTo]
-								]
-							];
-						} else {
-							$irtHCite = $irtHEntries[0];
-						}
-					} elseif (M\isMicroformat($inReplyTo)) {
-						// They’ve provided an h-cite! How considerate.
-						$irtHCite = $inReplyTo;
-					} else {
-						// uh
-						continue;
-					}
-
-					// Perform normalisations to the derived $irtHEntry, regardless of source.
-					// comments\parse only works with h-entries, so add 'h-entry' to the context h-cite
-					$irtHCite['type'][] = 'h-entry';
-					$irtCleansed = comments\parse($irtHCite);
-					// For the moment that will do for reply contexts. In the future, more work should be done:
-					// Authorship, datetime checking, parsing of recursive in-reply-to properties
-
-					$cleansedReplyContexts[] = $irtCleansed;
-				}
-
-				$cleansed['in-reply-to'] = $cleansedReplyContexts;
-			}
-
-			if (!M\hasProp($hEntry, 'author')) {
-				// No authorship data given, we need to find the author!
-				// TODO: proper /authorship implementation.
-				// TODO: wrap proper /authorship implementation in layer which does purification, simplification, fallback.
-				$potentialAuthor = M\getAuthor($hEntry, $mf, $url);
-
-				if ($potentialAuthor !== null) {
-					$cleansed['author'] = flattenHCard($potentialAuthor, $url);
-				} elseif (!empty($mf['rels']['author'])) {
-					// TODO: look in elasticsearch index for a person with the first rel-author URL then fall back to fetching.
-
-					// Fetch the first author URL and look for an h-card there.
-					$relAuthorMf = Mf2\fetch($mf['rels']['author'][0]);
-					$relAuthorHCards = M\findMicroformatsByType($relAuthorMf, 'h-card');
-					if (count($relAuthorHCards)) {
-						$cleansed['author'] = flattenHCard($relAuthorHCards[0], $url);
-					}
-				}
-
-				// If after all that there’s still no authorship data, fake some.
-				if ($cleansed['author']['name'] === false) {
-					$cleansed['author'] = flattenHCard(['properties' => []], $url);
-					try {
-						$response = $app['http.client']->head("{$cleansed['author']['url']}/favicon.ico")->send();
-						if (strpos($response->getHeader('content-type'), 'image') !== false) {
-							// This appears to be a valid image!
-							$cleansed['author']['photo'] = $response->getEffectiveUrl();
-						}
-					} catch (Guzzle\Common\Exception\GuzzleException $e) {
-						// No photo fallback could be found.
-					}
-				}
-			}
-
-			// TODO: this will be M\getLocation when it’s ported to the other library.
-			if (($location = getLocation($hEntry)) !== null) {
-				$cleansed['location'] = $location;
-
-				// TODO: do additional reverse lookups of address details if none are provided.
-
-				if (!empty($location['latitude']) and !empty($location['longitude'])) {
-					// If this is a valid point, add a point with mashed names for elasticsearch to index.
-					$cleansed['location_point'] = [
-						'lat' => $location['latitude'],
-						'lon' => $location['longitude']
-					];
-				}
-			}
-
-			// TODO: figure out what other properties need storing/indexing, and whether anything else needs mashing for
-			// elasticsearch to index more easily.
+			list($processedHEntry, $referencedPosts) = processHEntry($hEntry, $mf, $url, true, $client, [$app['purifier'], 'purify']);
+			$cleansed = array_merge($cleansed, $processedHEntry);
 
 			$result['feed-parse']['posts'][] = $cleansed;
+			$result['feed-parse']['referenced-posts'] = array_merge($result['feed-parse']['referenced-posts'], $referencedPosts);
 
 			// TODO: actually index $cleansed.
 			if ($persist) {
@@ -269,6 +314,15 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 					'id' => $cleansed['url'],
 					'body' => $cleansed
 				]);
+
+				foreach ($referencedPosts as $referencedPost) {
+					$es->index([
+						'index' => 'shrewdness',
+						'type' => 'h-entry',
+						'id' => $referencedPost['url'],
+						'body' => $referencedPost
+					]);
+				}
 			}
 		}
 	} else {
