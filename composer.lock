@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "78a7f5ca55f20bba3405bb4eadb5e25f",
+    "hash": "ff2304bc9daa454ec3b6f4ad05b374ba",
     "packages": [
         {
             "name": "barnabywalters/mf-cleaner",
@@ -1575,12 +1575,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/subscriptions.git",
-                "reference": "ae0482f29b2dd265fc5b8deba6da2fcffc469375"
+                "reference": "05f53c7a47e115f89cd60a7ee50f2d4d2eb1cee8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/ae0482f29b2dd265fc5b8deba6da2fcffc469375",
-                "reference": "ae0482f29b2dd265fc5b8deba6da2fcffc469375",
+                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/05f53c7a47e115f89cd60a7ee50f2d4d2eb1cee8",
+                "reference": "05f53c7a47e115f89cd60a7ee50f2d4d2eb1cee8",
                 "shasum": ""
             },
             "require": {
@@ -1616,7 +1616,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-07-25 09:59:32"
+            "time": "2014-07-25 11:09:13"
         }
     ],
     "packages-dev": [
@@ -2213,8 +2213,8 @@
         "mf2/shim": 20,
         "doctrine/cache": 20,
         "taproot/archive": 20,
-        "taproot/authentication": 20,
         "taproot/subscriptions": 20,
+        "taproot/authentication": 20,
         "indieweb/comments": 20
     },
     "prefer-stable": false,
