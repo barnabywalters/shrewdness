@@ -101,7 +101,9 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	}
 
 	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
-	saveJson('columns', $columns);
+	if (saveJson('columns', $columns) === false) {
+		$app['logger']->warn('Failed to save updated columns.json', []);
+	}
 
 	// Add post-response crawl task.
 	$app['dispatcher']->addListener('kernel.terminate', function (HttpKernel\Event\PostResponseEvent $event) use ($request, $s, $app) {
