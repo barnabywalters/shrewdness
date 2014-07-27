@@ -111,7 +111,9 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 				'body' => [
 					'query' => [
 						'terms' => [
-							'topics' => $column['sources']
+							'topics' => array_map(function ($source) {
+								return $source['topic'];
+							}, $column['sources'])
 						]
 					],
 					'sort' => [[
