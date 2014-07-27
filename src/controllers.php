@@ -21,9 +21,14 @@ use Exception;
  * @param Elasticsearch\Client $es
  * @param $indexName
  */
-function ensureElasticsearchIndexExists(Elasticsearch\Client $es, $indexName) {
+function ensureElasticsearchIndexExists(Elasticsearch\Client $es, $indexName, $mappings=[]) {
 	if (!$es->indices()->exists(['index' => $indexName])) {
-		$es->indices()->create(['index' => $indexName]);
+		$es->indices()->create([
+			'index' => $indexName,
+			'body' => [
+				'mappings' => $mappings
+			]
+		]);
 	}
 }
 
@@ -46,7 +51,49 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 		/** @var $es \Elasticsearch\Client $es */
 		$es = $app['elasticsearch'];
 
-		ensureElasticsearchIndexExists($es, 'shrewdness');
+		ensureElasticsearchIndexExists($es, 'shrewdness', [
+			'h-entry' => [
+				'properties' => [
+					'author' => [
+						'properties' => [
+							'name' => ['type' => 'string'],
+							'url' => ['type' => 'string', 'index' => 'not_analyzed'],
+							'photo' => ['type' => 'string', 'index' => 'not_analyzed'],
+						]
+					],
+					'content' => ['type' => 'string', 'analyzer' => 'english'],
+					'display_content' => ['type' => 'string'],
+					'in-reply-to' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'like-of' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'repost-of' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'name' => ['type' => 'string'],
+					'published' => ['type' => 'date', 'format' => 'dateOptionalTime'],
+					'published_utc' => ['type' => 'date', 'format' => 'dateOptionalTime'],
+					'text' => ['type' => 'string', 'index' => 'no'],
+					'topics' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'tags' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'type' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'url' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'location' => [
+						'properties' => [
+							'name' => ['type' => 'string'],
+							'latitude' => ['type' => 'float', 'index' => 'no'],
+							'longitude' => ['type' => 'float', 'index' => 'no'],
+							'post-office-box' => ['type' => 'string'],
+							'extended-address' => ['type' => 'string'],
+							'street-address' => ['type' => 'string'],
+							'locality' => ['type' => 'string'],
+							'region' => ['type' => 'string'],
+							'postal-code' => ['type' => 'string'],
+							'country-name' => ['type' => 'string'],
+							'url' => ['type' => 'string', 'index' => 'not_analyzed'],
+							'photo' => ['type' => 'string', 'index' => 'not_analyzed'],
+						]
+					],
+					'location_point' => ['type' => 'geo_point']
+				]
+			]
+		]);
 
 		$columns = loadJson('columns');
 		if ($columns === false) {
@@ -55,6 +102,28 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 				'sources' => []
 			]]];
 			saveJson('columns', $columns);
+		}
+
+		foreach ($columns['columns'] as &$column) {
+			$results = $es->search([
+				'index' => 'shrewdness',
+				'type' => 'h-entry',
+				'body' => [
+					'query' => [
+						'terms' => [
+							'topics' => $column['sources']
+						]
+					],
+					'sort' => [[
+						'published' => ['order' => 'desc']
+					]]
+				]
+			]);
+			$column['items'] = array_map(function ($hit) {
+				$item = $hit['_source'];
+				$item['published'] = new DateTime($item['published']);
+				return $item;
+			}, $results['hits']['hits']);
 		}
 
 		return $app['render']('dashboard.html', [
