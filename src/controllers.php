@@ -118,7 +118,8 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 					],
 					'sort' => [[
 						'published' => ['order' => 'desc']
-					]]
+					]],
+					'size' => 50
 				]
 			]);
 			$column['items'] = array_map(function ($hit) {
