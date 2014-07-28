@@ -74,6 +74,8 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 					'tags' => ['type' => 'string', 'index' => 'not_analyzed'],
 					'type' => ['type' => 'string', 'index' => 'not_analyzed'],
 					'url' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'photo' => ['type' => 'string', 'index' => 'not_analyzed'],
+					'logo' => ['type' => 'string', 'index' => 'not_analyzed'],
 					'location' => [
 						'properties' => [
 							'name' => ['type' => 'string'],

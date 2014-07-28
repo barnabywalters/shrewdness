@@ -214,6 +214,13 @@
 			font-size: 0.923em;
 		}
 
+		.item-logo {
+			width: 1.5em;
+			vertical-align: middle;
+			margin-right: 0.3em;
+			max-width: 2.5em;
+		}
+
 		.item-url {
 			border-bottom: none !important;
 		}

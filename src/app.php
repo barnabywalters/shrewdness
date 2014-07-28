@@ -131,6 +131,10 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
 		$cleansed['photo'] = $purifier(M\getHtml($hEntry, 'photo'));
 	}
 
+	if (M\hasProp($hEntry, 'logo')) {
+		$cleansed['logo'] = $purifier(M\getHtml($hEntry, 'logo'));
+	}
+
 	// For every post this post has a relation (in-reply-to, repost-of, like-of etc.), fetch and resolve that URL,
 	// index it as it’s own post (if it doesn’t already exist) and store only a reference to it here.
 	$references = [

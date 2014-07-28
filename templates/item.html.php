@@ -25,6 +25,10 @@
 	</div>
 
 	<div class="item-foot">
+		<?php if (!empty($item['logo'])): ?>
+		<img class="item-logo" src="<?= $item['logo'] ?>" alt="" />
+		<?php endif ?>
+
 		<a class="item-url" href="<?= trim($item['url']) ?>">
 			<time class="item-published" datetime="<?= trim($item['published']->format(DateTime::W3C)) ?>"><?= $item['published']->format('Y-m-d H:i T') ?></time>
 		</a>
