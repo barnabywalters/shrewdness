@@ -78,6 +78,7 @@
 		.column-header {
 			float: left;
 			padding: 0.4em;
+			width: 100%;
 		}
 
 		.column-name {
@@ -93,6 +94,8 @@
 
 		.column-settings {
 			clear: both;
+			max-height: 20em;
+			overflow-y: scroll;
 		}
 
 		.column-settings-name {
@@ -103,6 +106,28 @@
 		.column-sources {
 			background: rgba(255, 255, 255, 0.78);
 			padding: 0.4em;
+		}
+
+		.column-source {
+			width: 100%;
+			height: 1.6em;
+		}
+
+		.column-source:hover {
+			background: rgba(255, 255, 255, 0.3);
+		}
+
+		.column-source .remove-source {
+			float: right;
+		}
+
+		.new-source-url {
+			width: -moz-calc(100% - 3em)
+		}
+
+		.add-source {
+			width: 3em;
+			height: 2.1em;
 		}
 
 		.column-source-photo {
@@ -254,6 +279,16 @@
 		.properties ul {
 			padding: 0.5em;
 			list-style: none;
+		}
+
+		.collapsing-panel {
+			transition: all 0.5s;
+		}
+
+		.collapsing-panel.collapsed {
+			max-height: 0;
+			overflow: hidden;
+			opacity: 0;
 		}
 	</style>
 	<script src="/js/require.js" data-main="/js/app"></script>

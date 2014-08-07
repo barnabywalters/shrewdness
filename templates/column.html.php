@@ -5,7 +5,7 @@
 		<?php if ($column['id'] !== '_test'): ?>
 		<button class="column-settings-button">Settings</button>
 
-		<div class="column-settings">
+		<div class="column-settings collapsing-panel collapsed">
 			<p class="column-settings-name">Sources:</p>
 			<div class="column-sources">
 				<div class="source-container">

@@ -38,10 +38,18 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 		var self = this;
 		self.el = columnEl;
 		self.id = columnEl.getAttribute('data-column-id');
+		var settingsButton = first('.column-settings-button', self.el);
+		var settingsEl = first('.column-settings', self.el);
 		var sourcesEl = first('.column-sources', self.el);
 		var sourceContainerEl = first('.source-container', self.el);
 		var newSourceUrl = first('.new-source-url', self.el);
 		var newSourceButton = first('.add-source', self.el);
+
+		settingsEl.classList.add('activated');
+
+		bean.on(settingsButton, 'click', function (event) {
+			settingsEl.classList.toggle('collapsed');
+		});
 
 		bean.on(newSourceUrl, 'keyup', function (event) {
 			newSourceButton.disabled = newSourceUrl.value.trim() == '';
