@@ -34,6 +34,32 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 
 	var columnsEl = first('.columns');
 
+	function Item(itemEl) {
+		var self = this;
+		self.el = itemEl;
+		var actionPanelEl = first('.item-action-panel', self.el);
+		var replyButton = first('.reply-button', self.el);
+		var replyTextarea = first('.reply-content', self.el);
+
+		actionPanelEl.classList.add('activated');
+
+		bean.on(replyButton, 'click', function (event) {
+			actionPanelEl.classList.toggle('collapsed');
+			if (!actionPanelEl.classList.contains('collapsed')) {
+				// The panel was just opened.
+				replyTextarea.focus();
+			}
+		});
+
+		bean.on(replyTextarea, 'blur', function (event) {
+			if (actionPanelEl.classList.contains('collapsed')) {
+				return;
+			} else if (replyTextarea.value.trim() == '') {
+				actionPanelEl.classList.add('collapsed');
+			}
+		});
+	}
+
 	function Column(columnEl) {
 		var self = this;
 		self.el = columnEl;
@@ -51,36 +77,42 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 			settingsEl.classList.toggle('collapsed');
 		});
 
-		bean.on(newSourceUrl, 'keyup', function (event) {
-			newSourceButton.disabled = newSourceUrl.value.trim() == '';
+		if (newSourceUrl) {
+			bean.on(newSourceUrl, 'keyup', function (event) {
+				newSourceButton.disabled = newSourceUrl.value.trim() == '';
 
-			if (event.keyCode === 13 && !newSourceButton.disabled) {
-				bean.fire(newSourceButton, 'click');
-			}
-		});
-		bean.fire(newSourceUrl, 'keyup');
-
-		bean.on(newSourceButton, 'click', function (event) {
-			var req = http.open('POST', '/columns/' + self.id + '/sources/');
-			var data = new FormData();
-			data.append('url', newSourceUrl.value);
-
-			var progress = document.createElement('progress');
-			newSourceButton.parentNode.appendChild(progress);
-
-			http.send(req, data).then(function (xhr) {
-				// Success! The response is freshest HTML for the source list.
-				sourceContainerEl.innerHTML = xhr.responseText;
-				newSourceUrl.value = '';
-			}, function (xhrErr) {
-				// If the result is an error, report it effectively
-				console.log('error', xhrErr);
-			}).then(function () {
-				// Turn off progress indicators, re-enable button.
-				progress.parentNode.removeChild(progress);
-				bean.fire(newSourceUrl, 'keyup');
-				console.log('HTTP Done');
+				if (event.keyCode === 13 && !newSourceButton.disabled) {
+					bean.fire(newSourceButton, 'click');
+				}
 			});
+			bean.fire(newSourceUrl, 'keyup');
+
+			bean.on(newSourceButton, 'click', function (event) {
+				var req = http.open('POST', '/columns/' + self.id + '/sources/');
+				var data = new FormData();
+				data.append('url', newSourceUrl.value);
+
+				var progress = document.createElement('progress');
+				newSourceButton.parentNode.appendChild(progress);
+
+				http.send(req, data).then(function (xhr) {
+					// Success! The response is freshest HTML for the source list.
+					sourceContainerEl.innerHTML = xhr.responseText;
+					newSourceUrl.value = '';
+				}, function (xhrErr) {
+					// If the result is an error, report it effectively
+					console.log('error', xhrErr);
+				}).then(function () {
+					// Turn off progress indicators, re-enable button.
+					progress.parentNode.removeChild(progress);
+					bean.fire(newSourceUrl, 'keyup');
+					console.log('HTTP Done');
+				});
+			});
+		}
+
+		var items = map(all('.item', self.el), function (itemEl) {
+			return new Item(itemEl);
 		});
 	}
 

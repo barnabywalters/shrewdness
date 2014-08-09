@@ -160,9 +160,14 @@
 
 		/* Item styles, pasted from intertubes */
 		.item {
-			padding: 0.384em;
-			background: rgba(246, 246, 246, 96);
 			margin-top: 0.384em;
+		}
+
+		.item .item-author,
+		.item .item-content,
+		.item .item-foot {
+			padding: 0.768em;
+			background: rgba(246, 246, 246, 96);
 		}
 
 		.item a, .item a:visited { color: #005885; text-decoration: none; border-bottom: 1px #777 solid; }
@@ -170,7 +175,6 @@
 
 		.item .item-author {
 			font-size: 1.231em;
-			margin: 0.384em;
 		}
 
 		.item .item-author a {
@@ -204,7 +208,8 @@
 		}
 
 		.item .item-content {
-			padding: 0.384em;
+			padding-top: 0;
+			padding-bottom: 0;
 		}
 
 		.item-content p:not(:last-child) {
@@ -237,7 +242,6 @@
 		}
 
 		.item-foot {
-			padding: 0.384em;
 			font-size: 0.923em;
 		}
 
@@ -268,6 +272,27 @@
 
 		.item-foot .post-reply-button {
 			float: right;
+		}
+
+		.item-action-panel {
+			background: #A3DDE7;
+			padding: 0 0.68em;
+		}
+
+		.reply-panel {
+			padding-top: 0.68em;
+		}
+
+		.reply-content {
+			width: 100%;
+			height: 4em;
+			border: 1px solid #555;
+			box-shadow: 0 0 0.1em rgba(0, 0, 0, 0.3) inset;
+			padding: 0.35em;
+		}
+
+		.reply-post-button {
+			margin: 0.5em 0;
 		}
 
 		/* Testing UI Styles */

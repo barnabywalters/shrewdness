@@ -37,4 +37,11 @@
 			<button class="reply-button">Reply</button>
 		</div>
 	</div>
+
+	<div class="item-action-panel collapsing-panel collapsed">
+		<div class="reply-panel">
+			<textarea class="reply-content"></textarea>
+			<p><button class="reply-post-button">Post</button></p>
+		</div>
+	</div>
 </div>
