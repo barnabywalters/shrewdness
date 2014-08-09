@@ -6,6 +6,7 @@
 		<button class="column-settings-button">Settings</button>
 
 		<div class="column-settings collapsing-panel collapsed">
+			<?php if (isset($column['sources'])): ?>
 			<p class="column-settings-name">Sources:</p>
 			<div class="column-sources">
 				<div class="source-container">
@@ -13,6 +14,10 @@
 				</div>
 				<p><input class="new-source-url" /><button class="add-source">+</button></p>
 			</div>
+			<?php elseif (isset($column['search'])): ?>
+				<p class="column-settings-name">Search:</p>
+				<input type="search" class="column-search-term" value="<?= $column['search']['term'] ?>" />
+			<?php endif ?>
 		</div>
 		<?php endif ?>
 	</div>

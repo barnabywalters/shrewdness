@@ -149,6 +149,8 @@
 
 		.column-body {
 			clear: both;
+			overflow-x: hidden;
+			overflow-y: scroll;
 		}
 
 		.new-column-cta {
@@ -282,7 +284,7 @@
 		}
 
 		.collapsing-panel {
-			transition: all 0.5s;
+			transition: all 0.3s;
 		}
 
 		.collapsing-panel.collapsed {
