@@ -18,3 +18,7 @@ $app['encryption.secret'] = '';
 
 // The exact URL of the owner of the site, e.g. “http://waterpigs.co.uk” or “https://example.com”
 $app['owner.url'] = '';
+
+// If using Twitter API proxying, credentials here (optional)
+$app['twitter.token_key'] = '';
+$app['twitter.token_secret'] = '';

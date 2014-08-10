@@ -276,5 +276,18 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 	]);
 });
 
+
+$app->get('/twitter/list/{user}/{list}/', function ($user, $list, Http\Request $request) use ($app) {
+	try {
+		$response = $app['http.client']
+				->get("https://twitter-activitystreams.appspot.com/{$user}/{$list}/@app/?format=html&access_token_key={$app['twitter.token_key']}&access_token_secret={$app['twitter.token_secret']}")
+				->send();
+		echo $response->getBody(true);
+	} catch (Guzzle\Common\Exception\GuzzleException $e) {
+		$app->abort(500);
+	}
+});
+
+
 $app->mount('/subscriptions', Subscriptions\controllers($app, $ensureIsOwner, $app['indexResource']));
 $app->mount('/', Authentication\client($app));
