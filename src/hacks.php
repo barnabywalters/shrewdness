@@ -46,8 +46,8 @@ function authorHCard(array $mf, $url, $defaultPhoto = null) {
 	];
 }
 
-function dataPath($user, $path) {
-	return __DIR__ . "/../data/{$user}/{$path}.json";
+function dataPath($user, $path=null) {
+	return $path === null ? __DIR__ . "/../data/{$user}/" : __DIR__ . "/../data/{$user}/{$path}.json";
 }
 
 // Loads a JSON file in data/, or returns an empty array.

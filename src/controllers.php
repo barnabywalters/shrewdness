@@ -32,21 +32,30 @@ function ensureElasticsearchIndexExists(Elasticsearch\Client $es, $indexName, $m
 	}
 }
 
-$ensureIsOwner = function (Http\Request $request) use ($app) {
+$ensureIsAdmin = function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token === null or $token['me'] != $app['owner.url']) {
 		return $app->abort(401, 'Only the site owner may view this page');
 	}
 };
 
+
+$ensureIsUser = function (Http\Request $request) use ($app) {
+	$token = $request->attributes->get('indieauth.client.token');
+	if ($token === null or !file_exists(dataPath(parse_url($token['me'], PHP_URL_HOST)))) {
+		return $app->abort(401, 'You must be logged in to view this page.');
+	}
+};
+
+
 $app->error(function (Exception $e, $code) use ($app) {
 	return new Http\Response($e->getMessage(), $code);
 });
 
-$app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
+$app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token !== null) {
-		$ensureIsOwner($request);
+		$ensureIsUser($request);
 
 		/** @var $es \Elasticsearch\Client $es */
 		$es = $app['elasticsearch'];
@@ -156,7 +165,8 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 
 
 $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use ($app) {
-	$columns = loadJson('columns');
+	$token = $request->attributes->get('indieauth.client.token');
+	$columns = loadJson($token, 'columns');
 	$column = firstWith($columns['columns'], ['id' => $id]);
 
 	$url = $request->request->get('url');
@@ -197,7 +207,7 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	}
 
 	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
-	if (saveJson('columns', $columns) === false) {
+	if (saveJson($token, 'columns', $columns) === false) {
 		$app['logger']->warn('Failed to save updated columns.json', []);
 	}
 
@@ -234,7 +244,7 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 	$html = $app['render']('sources.html', ['sources' => $column['sources']], false);
 	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
 })->bind('column.sources')
-	->before($ensureIsOwner);
+	->before($ensureIsUser);
 
 
 $app->get('/test/', function (Http\Request $request) use ($app) {
@@ -290,5 +300,5 @@ $app->get('/twitter/list/{user}/{list}/', function ($user, $list, Http\Request $
 });
 
 
-$app->mount('/subscriptions', Subscriptions\controllers($app, $ensureIsOwner, $app['indexResource']));
+$app->mount('/subscriptions', Subscriptions\controllers($app, $ensureIsAdmin, $app['indexResource']));
 $app->mount('/', Authentication\client($app));
