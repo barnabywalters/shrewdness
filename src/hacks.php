@@ -46,20 +46,20 @@ function authorHCard(array $mf, $url, $defaultPhoto = null) {
 	];
 }
 
-function dataPath($path) {
-	return __DIR__ . "/../data/{$path}.json";
+function dataPath($user, $path) {
+	return __DIR__ . "/../data/{$user}/{$path}.json";
 }
 
 // Loads a JSON file in data/, or returns an empty array.
-function loadJson($path) {
-	if (file_exists(dataPath($path))) {
-		return json_decode(file_get_contents(dataPath($path)), true) ?: [];
+function loadJson($token, $path) {
+	if (file_exists(dataPath(parse_url($token['me'], PHP_URL_HOST), $path))) {
+		return json_decode(file_get_contents(dataPath(parse_url($token['me'], PHP_URL_HOST), $path)), true) ?: [];
 	}
 	return false;
 }
 
-function saveJson($path, $json) {
-	return file_put_contents(__DIR__ . "/../data/{$path}.json", json_encode($json, JSON_PRETTY_PRINT));
+function saveJson($token, $path, $json) {
+	return file_put_contents(dataPath(parse_url($token['me'], PHP_URL_HOST), $path), json_encode($json, JSON_PRETTY_PRINT));
 }
 
 

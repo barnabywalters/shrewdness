@@ -97,13 +97,13 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsOwner) {
 			]
 		]);
 
-		$columns = loadJson('columns');
+		$columns = loadJson($token, 'columns');
 		if ($columns === false) {
 			$columns = ['columns' => [[
 				'id' => 'feed',
 				'sources' => []
 			]]];
-			saveJson('columns', $columns);
+			saveJson($token, 'columns', $columns);
 		}
 
 		foreach ($columns['columns'] as &$column) {
@@ -278,9 +278,10 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 
 
 $app->get('/twitter/list/{user}/{list}/', function ($user, $list, Http\Request $request) use ($app) {
+	$columns = loadJson($request->attributes->get('indieauth.client.token'), 'columns');
 	try {
 		$response = $app['http.client']
-				->get("https://twitter-activitystreams.appspot.com/{$user}/{$list}/@app/?format=html&access_token_key={$app['twitter.token_key']}&access_token_secret={$app['twitter.token_secret']}")
+				->get("https://twitter-activitystreams.appspot.com/{$user}/{$list}/@app/?format=html&access_token_key={$columns['twitter']['token_key']}&access_token_secret={$columns['twitter']['token_secret']}")
 				->send();
 		echo $response->getBody(true);
 	} catch (Guzzle\Common\Exception\GuzzleException $e) {
