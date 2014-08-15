@@ -159,7 +159,9 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 			'columns' => $columns['columns']
 		]);
 	} else {
-		return $app['render']('index.html');
+		return $app['render']('index.html', [
+			'nextUrl' => $app['url_generator']->generate('homepage', [], true)
+		]);
 	}
 })->bind('homepage');
 
