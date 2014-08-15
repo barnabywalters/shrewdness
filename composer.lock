@@ -1522,12 +1522,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/authentication.git",
-                "reference": "b4ad6ea1c89fefd90d56a70140298a0d5e267d6f"
+                "reference": "03c19631c2a30fe836c5e5507044c142627ba6e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/authentication/zipball/b4ad6ea1c89fefd90d56a70140298a0d5e267d6f",
-                "reference": "b4ad6ea1c89fefd90d56a70140298a0d5e267d6f",
+                "url": "https://api.github.com/repos/Taproot/authentication/zipball/03c19631c2a30fe836c5e5507044c142627ba6e9",
+                "reference": "03c19631c2a30fe836c5e5507044c142627ba6e9",
                 "shasum": ""
             },
             "require": {
@@ -1558,7 +1558,7 @@
                 }
             ],
             "description": "Makes adding indieauth login (client app) and token generation (server app) to your Silex/Symfony app as easy as it should be.",
-            "time": "2014-08-15 19:30:41"
+            "time": "2014-08-15 20:02:45"
         },
         {
             "name": "taproot/subscriptions",
