@@ -444,7 +444,7 @@
         },
         {
             "name": "indieauth/client",
-            "version": "dev-master",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/indieauth-client-php.git",
@@ -570,12 +570,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "5a909d110bf8a73fc2a7d494c233b30909a22836"
+                "reference": "3cd6ef2603670e540f4bd52f1b869f7c3564aaa1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/5a909d110bf8a73fc2a7d494c233b30909a22836",
-                "reference": "5a909d110bf8a73fc2a7d494c233b30909a22836",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/3cd6ef2603670e540f4bd52f1b869f7c3564aaa1",
+                "reference": "3cd6ef2603670e540f4bd52f1b869f7c3564aaa1",
                 "shasum": ""
             },
             "require": {
@@ -615,7 +615,7 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2014-08-07 16:29:11"
+            "time": "2014-08-16 23:25:55"
         },
         {
             "name": "mf2/shim",
@@ -886,18 +886,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "4c61cc135eda07a37d582a389b453cd4a6843834"
+                "reference": "b69799e14bea3c0e3d0f3e99dabe2026303ef21f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/4c61cc135eda07a37d582a389b453cd4a6843834",
-                "reference": "4c61cc135eda07a37d582a389b453cd4a6843834",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/b69799e14bea3c0e3d0f3e99dabe2026303ef21f",
+                "reference": "b69799e14bea3c0e3d0f3e99dabe2026303ef21f",
                 "shasum": ""
             },
             "require": {
                 "nikic/php-parser": "~0.9.3",
                 "php": ">=5.3.0",
-                "symfony/console": "~2.3, >=2.3.10"
+                "symfony/console": ">=2.3.10, <2.6.0"
             },
             "require-dev": {
                 "phpunit/phpunit": ">=3.7, <4.1",
@@ -939,7 +939,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2014-06-21 03:00:51"
+            "time": "2014-08-16 06:49:39"
         },
         {
             "name": "silex/silex",
@@ -1029,17 +1029,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "dev-master",
+            "version": "2.5.x-dev",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "919345e2757aa3d3aca1d1ce5a8f53f65d1990ef"
+                "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/919345e2757aa3d3aca1d1ce5a8f53f65d1990ef",
-                "reference": "919345e2757aa3d3aca1d1ce5a8f53f65d1990ef",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
+                "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
                 "shasum": ""
             },
             "require": {
@@ -1047,18 +1047,16 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1",
-                "symfony/process": "~2.1"
+                "symfony/event-dispatcher": "~2.1"
             },
             "suggest": {
                 "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/process": ""
+                "symfony/event-dispatcher": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1082,7 +1080,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-14 16:37:29"
+            "time": "2014-08-14 16:10:54"
         },
         {
             "name": "symfony/debug",
@@ -1522,12 +1520,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/authentication.git",
-                "reference": "03c19631c2a30fe836c5e5507044c142627ba6e9"
+                "reference": "9e0ff859c10e583ecdf1379ba7c8221ff9babd4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/authentication/zipball/03c19631c2a30fe836c5e5507044c142627ba6e9",
-                "reference": "03c19631c2a30fe836c5e5507044c142627ba6e9",
+                "url": "https://api.github.com/repos/Taproot/authentication/zipball/9e0ff859c10e583ecdf1379ba7c8221ff9babd4f",
+                "reference": "9e0ff859c10e583ecdf1379ba7c8221ff9babd4f",
                 "shasum": ""
             },
             "require": {
@@ -1558,7 +1556,7 @@
                 }
             ],
             "description": "Makes adding indieauth login (client app) and token generation (server app) to your Silex/Symfony app as easy as it should be.",
-            "time": "2014-08-15 20:02:45"
+            "time": "2014-08-16 23:54:52"
         },
         {
             "name": "taproot/subscriptions",
@@ -1566,12 +1564,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/subscriptions.git",
-                "reference": "b0d97f2d6ea417a7e7db50697e28a33da8b14606"
+                "reference": "7d5049fb5e08d9754a0dca56c00ea18ed4ee042d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/b0d97f2d6ea417a7e7db50697e28a33da8b14606",
-                "reference": "b0d97f2d6ea417a7e7db50697e28a33da8b14606",
+                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/7d5049fb5e08d9754a0dca56c00ea18ed4ee042d",
+                "reference": "7d5049fb5e08d9754a0dca56c00ea18ed4ee042d",
                 "shasum": ""
             },
             "require": {
@@ -1607,7 +1605,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-07-25 15:34:12"
+            "time": "2014-08-16 23:59:05"
         }
     ],
     "packages-dev": [
