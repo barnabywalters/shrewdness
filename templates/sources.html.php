@@ -11,6 +11,6 @@
 		<?php else: ?>
 			<?= $source['topic'] ?>
 		<?php endif ?>
-		<button class="remove-source">x</button>
+		<button class="remove-source" data-url="<?= $source['topic'] ?>">x</button>
 	</p>
 <?php endforeach ?>

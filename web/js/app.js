@@ -109,6 +109,20 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 					console.log('HTTP Done');
 				});
 			});
+
+			bean.on(sourceContainerEl, 'click', 'button.remove-source', function (event) {
+				var buttonEl = event.target;
+				var req = http.open('POST', '/columns/' + self.id + '/sources/');
+				var data = new FormData();
+				data.append('url', buttonEl.getAttribute('data-url'));
+				data.append('mode', 'unsubscribe');
+				http.send(req, data).then(function (xhr) {
+					sourceContainerEl.innerHTML = xhr.responseText;
+				}, function (xhrErr) {
+					// If the result is an error, report it.
+					console.log('error', xhrErr);
+				});
+			});
 		}
 
 		var items = map(all('.item', self.el), function (itemEl) {

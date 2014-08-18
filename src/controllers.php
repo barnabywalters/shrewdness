@@ -178,70 +178,84 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 
 	$url = Authentication\ensureUrlHasHttp($url);
 
-	list($subscription, $err) = Subscriptions\subscribe($app, $url);
-	if ($err !== null) {
-		$app['logger']->warn('HTTP Error whilst trying to subscribe to a feed', [
-			'feed URL' => $url,
-			'exception class' => get_class($err),
-			'message' => $err->getMessage()
-		]);
+	if ($request->request->get('mode', 'subscribe') === 'subscribe') {
+		list($subscription, $err) = Subscriptions\subscribe($app, $url);
+		if ($err !== null) {
+			$app['logger']->warn('HTTP Error whilst trying to subscribe to a feed', [
+					'feed URL' => $url,
+					'exception class' => get_class($err),
+					'message' => $err->getMessage()
+			]);
 
-		return $app->abort(500, "Subscribing to {$url} failed.");
-	}
-
-	// From the fetched feed index page, find a profile (if any) and build the source to add to the column definition.
-	$mf = $subscription['resource']['mf2'];
-	$profile = authorHCard($mf, $url);
-	$source = [
-			'topic' => $subscription['topic'],
-			'profile' => $profile
-	];
-
-	$found = false;
-	foreach ($column['sources'] as $i => $s) {
-		if ($s['topic'] == $source['topic']) {
-			$found = true;
-			// Update any profile details from re-subscribing.
-			$column['sources'][$i] = $source;
-			break;
-		}
-	}
-	if (!$found) {
-		$column['sources'][] = $source;
-	}
-
-	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
-	if (saveJson($token, 'columns', $columns) === false) {
-		$app['logger']->warn('Failed to save updated columns.json', []);
-	}
-
-	// Add post-response crawl task.
-	$app['dispatcher']->addListener('kernel.terminate', function (HttpKernel\Event\PostResponseEvent $event) use ($request, $s, $app) {
-		if ($event->getRequest() !== $request) {
-			// Only execute this code after the request it was started from, not other requests.
-			return;
+			return $app->abort(500, "Subscribing to {$url} failed.");
 		}
 
-		// If this topic isn’t already being crawled, start a crawl, maintaining a cache key to prevent duplicate crawls.
-		$crawlingKey = "crawling_{$s['topic']}";
-		if (!$app['cache']->contains($crawlingKey)) {
-			$refreshCache = function ($resource) use ($app, $crawlingKey) {
-				$app['logger']->info("Crawling {$resource['url']}", []);
-				$app['cache']->save($crawlingKey, true, 10);
-			};
+		// From the fetched feed index page, find a profile (if any) and build the source to add to the column definition.
+		$mf = $subscription['resource']['mf2'];
+		$profile = authorHCard($mf, $url);
+		$source = [
+				'topic' => $subscription['topic'],
+				'profile' => $profile
+		];
 
-			list($subscription, $err) = Subscriptions\subscribeAndCrawl($app, $s['topic'], $refreshCache);
-			if ($err !== null) {
-				$app['logger']->warn('Subscriptions\\subscribeAndCrawl produced an error:', [
-					'subscription' => $s,
-					'error class' => get_class($err),
-					'error' => $err
-				]);
+		$found = false;
+		foreach ($column['sources'] as $i => $s) {
+			if ($s['topic'] == $source['topic']) {
+				$found = true;
+				// Update any profile details from re-subscribing.
+				$column['sources'][$i] = $source;
+				break;
+			}
+		}
+		if (!$found) {
+			$column['sources'][] = $source;
+		}
+
+		$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
+		if (saveJson($token, 'columns', $columns) === false) {
+			$app['logger']->warn('Failed to save updated columns.json', []);
+		}
+
+		// Add post-response crawl task.
+		$app['dispatcher']->addListener('kernel.terminate', function (HttpKernel\Event\PostResponseEvent $event) use ($request, $subscription, $app) {
+			if ($event->getRequest() !== $request) {
+				// Only execute this code after the request it was started from, not other requests.
+				return;
 			}
 
-			$app['cache']->delete($crawlingKey);
+			// If this topic isn’t already being crawled, start a crawl, maintaining a cache key to prevent duplicate crawls.
+			$crawlingKey = "crawling_{$subscription['topic']}";
+			if (!$app['cache']->contains($crawlingKey)) {
+				$refreshCache = function ($resource) use ($app, $crawlingKey) {
+					$app['logger']->info("Crawling {$resource['url']}", []);
+					$app['cache']->save($crawlingKey, true, 10);
+				};
+
+				list($subscription, $err) = Subscriptions\subscribeAndCrawl($app, $subscription['topic'], $refreshCache);
+				if ($err !== null) {
+					$app['logger']->warn('Subscriptions\\subscribeAndCrawl produced an error:', [
+							'subscription' => $subscription,
+							'error class' => get_class($err),
+							'error' => $err
+					]);
+				}
+
+				$app['cache']->delete($crawlingKey);
+			}
+		});
+	} else {
+		// mode === unsubscribe
+		$column['sources'] = array_filter($column['sources'], function ($source) use ($url) {
+			return $source['topic'] !== $url;
+		});
+
+		$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
+		if (saveJson($token, 'columns', $columns) === false) {
+			$app['logger']->warn('Failed to save updated columns.json', []);
 		}
-	});
+
+		// TODO: check for usage in other columns and actually unsubscribe from the feed if this was the last reference.
+	}
 
 	// Build the HTML to add to the sources list. Explicitly calculating Content-length to satisfy XMLHttpRequest, which
 	// stays in “Downloading” mode until the number of bytes received equals Content-length.
