@@ -174,6 +174,36 @@ function fetchColumnItems($app, $column) {
 }
 
 
+$app->post('/columns/', function (Http\Request $request) use ($app) {
+	$token = $request->attributes->get('indieauth.client.token');
+	$columns = loadJson($token, 'columns');
+
+	$newColType = $request->request->get('type', 'subscribe');
+	$column = [
+		'id' => uniqid(),
+		'name' => 'New Column'
+	];
+
+	if ($newColType === 'subscribe') {
+		$column['sources'] = [];
+	} elseif ($newColType === 'search') {
+		$column['search'] = [
+			'term' => '',
+			'order' => 'score'
+		];
+	} else {
+		return $app->abort(400, "Unknown column type {$request->request->get('type')} given!");
+	}
+
+	$columns['columns'][] = $column;
+	saveJson($token, 'columns', $columns);
+
+	$html = $app['render']('column.html', ['column' => $column]);
+	return new Http\Response($html, 201, ['Content-length' => strlen($html)]);
+})->bind('columns')
+	->before($ensureIsUser);
+
+
 $app->get('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
 	// TODO: turn this into a converter which can be applied to multiple handlers.
 	$token = $request->attributes->get('indieauth.client.token');

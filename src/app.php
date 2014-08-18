@@ -301,7 +301,7 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 					'type' => 'h-entry',
 					'id' => M\getProp($hEntry, 'url')
 			];
-			if ($es->exists($existingEntryParams)) {
+			if ($existingEntryParams['id'] !== null and $es->exists($existingEntryParams)) {
 				$existingEntry = $es->get($existingEntryParams);
 				$cleansed['topics'] = array_unique(array_merge(@($existingEntry['_source']['topics'] ?: []), [$resource['topic']]));
 			} else {

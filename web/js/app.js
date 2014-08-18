@@ -153,10 +153,33 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 		enhanceItems();
 	}
 
+	function NewColumn(columnEl) {
+		self.el = columnEl;
+		bean.on(self.el, 'click', '.new-column-cta button', function (event) {
+			var buttonEl = event.target;
+			var req = http.open('POST', '/columns/');
+			var data = new FormData();
+			data.append('type', buttonEl.value);
+			http.send(req, data).then(function (respXhr) {
+				var lastColumnEl = first('.column:nth-last-of-type(2)');
+				var incomingDoc = document.implementation.createHTMLDocument();
+				incomingDoc.documentElement.innerHTML = respXhr.responseText;
+				var newColEl = first('.column', incomingDoc);
+				lastColumnEl.parentNode.insertBefore(newColEl, lastColumnEl.nextSibling);
+				columns.push(new Column(newColEl));
+				expandColumnContainer();
+			}, function (errXhr) {
+				console.log('HTTP Error when creating new ' + buttonEl.value + ' column:', errXhr);
+			});
+		});
+	}
+
 	// Activate all the already-existing columns.
 	var columns = map(all('.editable-column', columnsEl), function (columnEl) {
 		return new Column(columnEl);
 	});
+
+	var newColumn = NewColumn(first('.new-column'));
 
 	// Debug handle for columns object.
 	console.log(columns);
