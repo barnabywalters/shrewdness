@@ -1,19 +1,17 @@
 <div class="item <?= $item['name'] ? 'named-item' : '' ?>">
 	<div class="item-author">
-		<a href="<?= $item['author']['url'] ?>">
-			<?php if ($item['author']['photo']): ?>
-			<img class="item-author-photo" alt="" src="<?= $item['author']['photo'] ?>">
-			<?php endif ?>
+		<?php if ($item['author']['photo']): ?>
+		<a href="<?= $item['author']['url'] ?>"><img class="item-author-photo" alt="" src="<?= $item['author']['photo'] ?>"></a>
+		<?php endif ?>
 
-			<?php if ($item['name']): ?>
-			<div class="item-name-container">
-				<span class="author-name"><?= trim($item['author']['name']) ?></span>
-				<h1 class="item-name"><?= trim($item['name']) ?></h1>
-			</div>
-			<?php else: ?>
-			<?= trim($item['author']['name']) ?>
-			<?php endif ?>
-		</a>
+		<?php if ($item['name']): ?>
+		<div class="item-name-container">
+			<a href="<?= $item['author']['url'] ?>" class="author-name"><?= trim($item['author']['name']) ?></a>
+			<h1 class="item-name"><a href="<?= $item['url'] ?>"><?= trim($item['name']) ?></a></h1>
+		</div>
+		<?php else: ?>
+			<a href="<?= $item['author']['url'] ?>"><?= trim($item['author']['name']) ?></a>
+		<?php endif ?>
 	</div>
 
 	<?php if (isset($item['photo']) and strpos($item['display_content'], $item['photo']) === false): ?>
