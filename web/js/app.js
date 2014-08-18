@@ -60,6 +60,7 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 		});
 	}
 
+	// TODO: start moving some of the stuff in this massive init handler to separate methods.
 	function Column(columnEl) {
 		var self = this;
 		self.el = columnEl;
@@ -70,6 +71,8 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 		var sourceContainerEl = first('.source-container', self.el);
 		var newSourceUrl = first('.new-source-url', self.el);
 		var newSourceButton = first('.add-source', self.el);
+		var columnBodyEl = first('.column-body', self.el);
+		var items = [];
 
 		settingsEl.classList.add('activated');
 
@@ -99,9 +102,11 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 					// Success! The response is freshest HTML for the source list.
 					sourceContainerEl.innerHTML = xhr.responseText;
 					newSourceUrl.value = '';
+
+					refreshFeed();
 				}, function (xhrErr) {
 					// If the result is an error, report it effectively
-					console.log('error', xhrErr);
+					console.log('HTTP Error subscribing to ' + newSourceUrl.value, xhrErr);
 				}).then(function () {
 					// Turn off progress indicators, re-enable button.
 					progress.parentNode.removeChild(progress);
@@ -118,16 +123,34 @@ define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
 				data.append('mode', 'unsubscribe');
 				http.send(req, data).then(function (xhr) {
 					sourceContainerEl.innerHTML = xhr.responseText;
+					refreshFeed();
 				}, function (xhrErr) {
 					// If the result is an error, report it.
-					console.log('error', xhrErr);
+					console.log('HTTP Error unsubscribing from ' + buttonEl.getAttribute('data-url'), xhrErr);
 				});
 			});
 		}
 
-		var items = map(all('.item', self.el), function (itemEl) {
-			return new Item(itemEl);
-		});
+		var refreshFeed = function () {
+			var req = http.open('GET', '/columns/' + self.id + '/');
+			http.send(req).then(function (respXhr) {
+				var incomingDoc = document.implementation.createHTMLDocument();
+				incomingDoc.documentElement.innerHTML = respXhr.responseText;
+				columnBodyEl.innerHTML = first('.column-body', incomingDoc).innerHTML;
+			}, function (errXhr) {
+				console.log('HTTP Error fetching feed items', errXhr);
+			});
+
+			enhanceItems();
+		};
+
+		var enhanceItems = function () {
+			items = map(all('.item', self.el), function (itemEl) {
+				return new Item(itemEl);
+			});
+		};
+
+		enhanceItems();
 	}
 
 	// Activate all the already-existing columns.

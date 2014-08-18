@@ -116,43 +116,7 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 		}
 
 		foreach ($columns['columns'] as &$column) {
-			$query = [
-				'index' => 'shrewdness',
-				'type' => 'h-entry',
-				'body' => [
-					'query' => [],
-					'sort' => [[
-						'published' => ['order' => 'desc']
-					]],
-					'size' => 50
-				]
-			];
-
-			if (isset($column['sources'])) {
-				$query['body']['query']['terms'] = [
-					'topics' => array_map(function ($source) {
-						return $source['topic'];
-					}, $column['sources'])
-				];
-			} elseif (isset($column['search'])) {
-				// Considered a multi_match query here, not sure if that’s going to hinder the use case of searching for URLs.
-				// For the moment sticking with the most basic match query. In the future optimise specifically, optimising
-				// generally only when problems occur or objectively better solutions are found.
-				$query['body']['query']['match'] = [
-					'_all' => $column['search']['term']
-				];
-
-				if (isset($column['search']['order']) and $column['search']['order'] == 'score') {
-					$query['body']['sort'] = ['_score'];
-				} // Otherwise leave default ordering by published on.
-			}
-
-			$results = $es->search($query);
-			$column['items'] = array_map(function ($hit) {
-				$item = $hit['_source'];
-				$item['published'] = new DateTime($item['published']);
-				return $item;
-			}, $results['hits']['hits']);
+			$column['items'] = fetchColumnItems($app, $column);
 		}
 
 		return $app['render']('dashboard.html', [
@@ -164,6 +128,64 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 		]);
 	}
 })->bind('homepage');
+
+
+function fetchColumnItems($app, $column) {
+	/* @var Elasticsearch\Client $es */
+	$es = $app['elasticsearch'];
+
+	$query = [
+			'index' => 'shrewdness',
+			'type' => 'h-entry',
+			'body' => [
+					'query' => [],
+					'sort' => [[
+							'published' => ['order' => 'desc']
+					]],
+					'size' => 50
+			]
+	];
+
+	if (isset($column['sources'])) {
+		$query['body']['query']['terms'] = [
+				'topics' => array_map(function ($source) {
+					return $source['topic'];
+				}, $column['sources'])
+		];
+	} elseif (isset($column['search'])) {
+		// Considered a multi_match query here, not sure if that’s going to hinder the use case of searching for URLs.
+		// For the moment sticking with the most basic match query. In the future optimise specifically, optimising
+		// generally only when problems occur or objectively better solutions are found.
+		$query['body']['query']['match'] = [
+				'_all' => $column['search']['term']
+		];
+
+		if (isset($column['search']['order']) and $column['search']['order'] == 'score') {
+			$query['body']['sort'] = ['_score'];
+		} // Otherwise leave default ordering by published on.
+	}
+
+	$results = $es->search($query);
+	return array_map(function ($hit) {
+		$item = $hit['_source'];
+		$item['published'] = new DateTime($item['published']);
+		return $item;
+	}, $results['hits']['hits']);
+}
+
+
+$app->get('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
+	// TODO: turn this into a converter which can be applied to multiple handlers.
+	$token = $request->attributes->get('indieauth.client.token');
+	$columns = loadJson($token, 'columns');
+	$column = firstWith($columns['columns'], ['id' => $id]);
+
+	$column['items'] = fetchColumnItems($app, $column);
+
+	$html = $app['render']('column.html', ['column' => $column]);
+	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
+})->bind('column')
+	->before($ensureIsUser);
 
 
 $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use ($app) {

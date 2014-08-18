@@ -199,7 +199,7 @@
 
 		.item.named-item .item-name-container {
 			display: inline-block;
-			width: 21.5em;
+			width: 16em;
 			vertical-align: top;
 		}
 
