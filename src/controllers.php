@@ -176,6 +176,8 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 		return $app->abort(400, 'Provide a ‘url’ parameter to add to sources');
 	}
 
+	$url = Authentication\ensureUrlHasHttp($url);
+
 	list($subscription, $err) = Subscriptions\subscribe($app, $url);
 	if ($err !== null) {
 		$app['logger']->warn('HTTP Error whilst trying to subscribe to a feed', [
