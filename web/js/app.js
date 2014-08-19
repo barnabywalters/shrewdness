@@ -108,12 +108,28 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		var newSourceUrl = first('.new-source-url', self.el);
 		var newSourceButton = first('.add-source', self.el);
 		var columnBodyEl = first('.column-body', self.el);
+		var deleteColumnButton = first('.delete-column-button', self.el);
 		var items = [];
 
 		settingsEl.classList.add('activated');
 
 		bean.on(settingsButton, 'click', function (event) {
 			settingsEl.classList.toggle('collapsed');
+		});
+
+		bean.on(deleteColumnButton, 'click', function () {
+			if (deleteColumnButton.getAttribute('state') == 'deleting') {
+				var req = http.open('DELETE', '/columns/' + self.id + '/');
+				http.send(req).then(function (respXhr) {
+					// TODO: some sort of fancy animated exit so it’s not too abrupt.
+					self.el.parentNode.removeChild(self.el);
+				}, function (errXhr) {
+					console.log('HTTP Error whilst deleting column', errXhr);
+				})
+			} else {
+				deleteColumnButton.setAttribute('state', 'deleting');
+				deleteColumnButton.textContent = 'Click again to confirm deletion';
+			}
 		});
 
 		if (newSourceUrl) {

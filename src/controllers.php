@@ -265,6 +265,18 @@ $app->get('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
 	->before($ensureIsUser);
 
 
+$app->delete('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
+	$token = $request->attributes->get('indieauth.client.token');
+	$columns = loadJson($token, 'columns');
+	$columns['columns'] = array_filter($columns['columns'], function ($column) use ($id) {
+		return $column['id'] != $id;
+	});
+	saveJson($token, 'columns', $columns);
+
+	return new Http\Response('', 200, ['Content-length' => 0]);
+})->before($ensureIsUser);
+
+
 $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	$columns = loadJson($token, 'columns');

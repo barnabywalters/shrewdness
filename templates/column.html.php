@@ -18,6 +18,8 @@
 				<p class="column-settings-name">Search:</p>
 				<input type="search" class="column-search-term" value="<?= $column['search']['term'] ?>" />
 			<?php endif ?>
+
+			<p class="delete-column"><button class="delete-column-button">Delete Column</button></p>
 		</div>
 		<?php endif ?>
 	</div>

@@ -147,6 +147,12 @@
 			width: 1.8em;
 		}
 
+		.delete-column {
+			background: rgba(255, 100, 100, 0.3);
+			margin-top: 0.5em;
+			padding: 0.5em;
+		}
+
 		.column-body {
 			clear: both;
 			overflow-x: hidden;
