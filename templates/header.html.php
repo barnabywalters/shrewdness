@@ -207,6 +207,11 @@
 			font-size: 1.2307em;
 		}
 
+		.item .item-photo {
+			background: rgba(255, 255, 255, 0.9);
+			box-shadow: 0 0 1em #777 inset;
+		}
+
 		.item .item-content {
 			padding-top: 0;
 			padding-bottom: 0;
