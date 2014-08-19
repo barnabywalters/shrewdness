@@ -174,6 +174,53 @@ function fetchColumnItems($app, $column) {
 }
 
 
+$app->post('/micropub/', function (Http\Request $request) use ($app) {
+	// Currently all micropub postings are new notes
+	// Get the current user’s micropub endpoint and access token
+	$token = $request->attributes->get('indieauth.client.token');
+	$accessToken = $token['access_token'];
+	$micropubEndpoint = $token['micropub_endpoint'];
+
+	$data = $request->request->all();
+	$data['h'] = 'entry';
+	$data['access_token'] = $accessToken;
+	$loggableData = $data;
+	$loggableData['access_token'] = 'Unlogged string of length ' . strlen($data['access_token']);
+
+	$client = new Guzzle\Http\Client();
+	$app['logger']->info('Posting reply to micropub endpoint', [
+		'endpoint' => $micropubEndpoint,
+		'data' => $data
+	]);
+
+	try {
+		$resp = $client->post($micropubEndpoint)->addPostFields($data)->send();
+
+		if ($resp->isError()) {
+			$app['logger']->warn('Got error whilst posting to micropub endpoint', ['response' => $resp]);
+			return $app->json([
+					'error' => 'Micropub post failed with error code ' . $resp->getStatus()
+			], 500);
+		}
+
+		return $app->json([
+				'message' => 'Successfully posted to micropub endpoint'
+		]);
+	} catch (Guzzle\Common\Exception\GuzzleException $e) {
+		$app['logger']->warn('Intertubes: micropub POST request failed', [
+				'endpoint' => $micropubEndpoint,
+				'data' => $data,
+				'message' => $e->getMessage()
+		]);
+
+		return $app->json([
+			'error' => 'Micropub POST request failed!'
+		], 500);
+	}
+})->bind('micropub')
+	->before($ensureIsUser);
+
+
 $app->post('/columns/', function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	$columns = loadJson($token, 'columns');

@@ -42,7 +42,9 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		self.el = itemEl;
 		var actionPanelEl = first('.item-action-panel', self.el);
 		var replyButton = first('.reply-button', self.el);
+		var replyPostButton = first('.reply-post-button', self.el);
 		var replyTextarea = first('.reply-content', self.el);
+		var url = first('.item-url', self.el).href;
 
 		actionPanelEl.classList.add('activated');
 
@@ -60,6 +62,37 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 			} else if (replyTextarea.value.trim() == '') {
 				actionPanelEl.classList.add('collapsed');
 			}
+		});
+
+		bean.on(replyTextarea, 'keyup', function () {
+			replyPostButton.disabled = replyTextarea.value.trim() == '';
+		});
+		bean.fire(replyTextarea, 'keyup');
+
+		// TODO: also post on command+return.
+		bean.on(replyPostButton, 'click', function () {
+			if (replyPostButton.disabled) {
+				return;
+			}
+
+			var req = http.open('POST', '/micropub/');
+			var data = new FormData();
+			data.append('h', 'entry');
+			data.append('content', replyTextarea.value);
+			data.append('in-reply-to', url);
+			replyPostButton.disabled = true;
+			replyPostButton.textContent = 'Posting…';
+			http.send(req, data).then(function (respXhr) {
+				replyTextarea.value = '';
+				replyPostButton.textContent = 'Posted!';
+				setTimeout(function () {
+					replyPostButton.textContent = 'Post';
+					bean.fire(replyTextarea, 'blur');
+				}, 3000);
+			}, function (errXhr) {
+				console.log('HTTP Error when sending a micropub reply', data, errXhr);
+				replyPostButton.textContent = 'Post Failed';
+			});
 		});
 	}
 
