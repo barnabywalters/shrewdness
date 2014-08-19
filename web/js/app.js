@@ -1,11 +1,14 @@
 'use strict';
 
 requirejs.config({
-	baseUrl: '/js'
+	baseUrl: '/js',
+	paths: {
+		'es6-promise': 'promise'
+	}
 });
 
-define(['sortable', 'bean', 'http'], function (Sortable, bean, http) {
-	console.log('Application started successfully');
+define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, http, promise) {
+	console.log('Application started successfully', promise);
 	// DOM convenience functions.
 	var first = function (selector, context) { return (context || document).querySelector(selector); };
 	var all = function (selector, context) { return (context || document).querySelectorAll(selector); };

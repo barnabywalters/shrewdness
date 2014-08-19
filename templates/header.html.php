@@ -324,6 +324,7 @@
 			opacity: 0;
 		}
 	</style>
+	<script src="/js/promise.js"></script>
 	<script src="/js/require.js" data-main="/js/app"></script>
 </head>
 <body>
