@@ -107,6 +107,8 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		var sourceContainerEl = first('.source-container', self.el);
 		var newSourceUrl = first('.new-source-url', self.el);
 		var newSourceButton = first('.add-source', self.el);
+		var searchTermEl = first('.column-search-term', self.el);
+		var searchTermTimeout;
 		var columnBodyEl = first('.column-body', self.el);
 		var deleteColumnButton = first('.delete-column-button', self.el);
 		var items = [];
@@ -180,6 +182,23 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 					// If the result is an error, report it.
 					console.log('HTTP Error unsubscribing from ' + buttonEl.getAttribute('data-url'), xhrErr);
 				});
+			});
+		} else if (searchTermEl) {
+			var saveSearchTerm = function () {
+				console.log('saveSearchTerm called');
+				var req = http.open('POST', '/columns/' + self.id + '/search/');
+				var data = new FormData();
+				data.append('term', searchTermEl.value);
+				http.send(req, data).then(function (respXhr) {
+					refreshFeed();
+				}, function (errXhr) {
+					console.log('HTTP Error when saving search term', errXhr);
+				});
+			};
+
+			bean.on(searchTermEl, 'keyup', function () {
+				clearTimeout(searchTermTimeout);
+				searchTermTimeout = setTimeout(saveSearchTerm, 500);
 			});
 		}
 

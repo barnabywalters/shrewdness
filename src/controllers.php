@@ -277,6 +277,22 @@ $app->delete('/columns/{id}/', function ($id, Http\Request $request) use ($app) 
 })->before($ensureIsUser);
 
 
+// TODO: no reason to duplicate code between these two handlers. Need to move them both into one column-settings-updating
+// handler which can scale to arbitrary future column types.
+$app->post('/columns/{id}/search/', function ($id, Http\Request $request) use ($app) {
+	$token = $request->attributes->get('indieauth.client.token');
+	$columns = loadJson($token, 'columns');
+	$column = firstWith($columns['columns'], ['id' => $id]);
+
+	$column['search']['term'] = $request->request->get('term', $column['search']['term']);
+
+	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
+	saveJson($token, 'columns', $columns);
+
+	return new Http\Response('', 200, ['Content-length' => 0]);
+})->before($ensureIsUser);
+
+
 $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	$columns = loadJson($token, 'columns');
