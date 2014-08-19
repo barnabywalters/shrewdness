@@ -316,20 +316,24 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 
 			// TODO: actually index $cleansed.
 			if ($persist) {
-				$es->index([
-					'index' => 'shrewdness',
-					'type' => 'h-entry',
-					'id' => $cleansed['url'],
-					'body' => $cleansed
-				]);
-
-				foreach ($referencedPosts as $referencedPost) {
+				if ($cleansed['url']) {
 					$es->index([
 						'index' => 'shrewdness',
 						'type' => 'h-entry',
-						'id' => $referencedPost['url'],
-						'body' => $referencedPost
+						'id' => $cleansed['url'],
+						'body' => $cleansed
 					]);
+				}
+
+				foreach ($referencedPosts as $referencedPost) {
+					if ($referencedPost['url']) {
+						$es->index([
+							'index' => 'shrewdness',
+							'type' => 'h-entry',
+							'id' => $referencedPost['url'],
+							'body' => $referencedPost
+						]);
+					}
 				}
 			}
 		}
