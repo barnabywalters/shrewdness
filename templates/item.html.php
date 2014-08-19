@@ -15,7 +15,9 @@
 	</div>
 
 	<?php if (isset($item['photo']) and strpos($item['display_content'], $item['photo']) === false): ?>
-	<img class="item-photo" src="<?= $item['photo'] ?>" alt="" /><?php endif ?><div class="item-content">
+	<img class="item-photo" src="<?= $item['photo'] ?>" alt="" /><?php endif ?>
+	
+	<div class="item-content">
 		<?= trim($item['display_content']) ?>
 	</div>
 

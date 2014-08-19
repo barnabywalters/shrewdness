@@ -210,6 +210,7 @@
 		.item .item-photo {
 			background: rgba(255, 255, 255, 0.9);
 			box-shadow: 0 0 1em #777 inset;
+			display: block;
 		}
 
 		.item .item-content {
