@@ -412,6 +412,8 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 				// Meh.
 			}
 		}
+		// Hide topics to keep subscription URLs private.
+		$item['topics'] = [];
 		return $item;
 	}, $indexResourceResult['feed-parse']['posts']);
 
