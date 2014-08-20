@@ -96,6 +96,49 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		});
 	}
 
+	function InlineEdit(el) {
+		var self = this;
+		var contentEl = first('.inline-edit-content', el);
+		var inputEl = first('.inline-edit-input', el);
+		self.el = el;
+		self.editing = false;
+		self.value = inputEl.value = contentEl.textContent;
+
+		var setEditing = function (state) {
+			if (state) {
+				self.editing = true;
+				self.el.classList.add('editing');
+				inputEl.focus();
+			} else {
+				self.value = inputEl.value;
+				bean.fire(self, 'change');
+			}
+		};
+
+		bean.on(self, 'change', function () {
+			self.editing = false;
+			self.el.classList.remove('editing');
+			contentEl.textContent = inputEl.value = self.value;
+		});
+
+		bean.on(contentEl, 'click', function () {
+			if (!self.editing) {
+				setEditing(true);
+			}
+		});
+
+		bean.on(inputEl, 'blur', function () {
+			setEditing(false);
+		});
+
+		bean.on(inputEl, 'keyup', function (event) {
+			// TODO: should Esc blur without changing?
+			if (['Enter', 'Esc'].indexOf(event.key) !== -1) {
+				bean.fire(inputEl, 'blur');
+			}
+		});
+	}
+
 	// TODO: start moving some of the stuff in this massive init handler to separate methods.
 	function Column(columnEl) {
 		var self = this;
@@ -111,9 +154,22 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		var searchTermTimeout;
 		var columnBodyEl = first('.column-body', self.el);
 		var deleteColumnButton = first('.delete-column-button', self.el);
+		var columnNameEl = first('.column-name', self.el);
+		var columnName = new InlineEdit(columnNameEl);
 		var items = [];
 
 		settingsEl.classList.add('activated');
+
+		bean.on(columnName, 'change', function (event) {
+			var req = http.open('POST', '/columns/' + self.id + '/');
+			var data = new FormData();
+			data.append('name', columnName.value);
+			http.send(req, data).then(function (respXhr) {
+				console.log('Name change successful!');
+			}, function (errXhr) {
+				console.log('HTTP Error whilst changing column name:', errXhr);
+			});
+		});
 
 		bean.on(settingsButton, 'click', function (event) {
 			settingsEl.classList.toggle('collapsed');
@@ -189,6 +245,12 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 				var req = http.open('POST', '/columns/' + self.id + '/search/');
 				var data = new FormData();
 				data.append('term', searchTermEl.value);
+
+				if (columnName.value.search('Search: ') === 0) {
+					columnName.value = 'Search: ' + searchTermEl.value;
+					bean.fire(columnName, 'change');
+				}
+
 				http.send(req, data).then(function (respXhr) {
 					refreshFeed();
 				}, function (errXhr) {

@@ -33,6 +33,19 @@
 			font-weight: normal;
 		}
 
+		.inline-edit {
+			cursor: pointer;
+		}
+		.inline-edit .inline-edit-input {
+			display: none;
+		}
+		.inline-edit.editing .inline-edit-input {
+			display: inline-block;
+		}
+		.inline-edit.editing .inline-edit-content {
+			display: none;
+		}
+
 		.x-scroll-wrapper {
 			width: 100%;
 			height: 100%;

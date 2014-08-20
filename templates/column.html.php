@@ -1,6 +1,6 @@
 <div class="column orderable-column editable-column" data-column-id="<?= $column['id'] ?>">
 	<div class="column-header">
-		<h1 class="column-name"><?= isset($column['name']) ? $column['name'] : 'New Column' ?></h1>
+		<h1 class="column-name inline-edit"><span class="inline-edit-content"><?= isset($column['name']) ? $column['name'] : 'New Column' ?></span><input class="inline-edit-input" /></h1>
 
 		<?php if ($column['id'] !== '_test'): ?>
 		<button class="column-settings-button">Settings</button>
