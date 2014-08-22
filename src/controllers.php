@@ -160,7 +160,7 @@ function fetchColumnItems($app, $column) {
 				'_all' => $column['search']['term']
 		];
 
-		if (isset($column['search']['order']) and $column['search']['order'] == 'score') {
+		if (isset($column['search']['order']) and $column['search']['order'] == 'relevance') {
 			$query['body']['sort'] = ['_score'];
 		} // Otherwise leave default ordering by published on.
 	}
@@ -236,7 +236,7 @@ $app->post('/columns/', function (Http\Request $request) use ($app) {
 	} elseif ($newColType === 'search') {
 		$column['search'] = [
 			'term' => '',
-			'order' => 'score'
+			'order' => 'relevance'
 		];
 	} else {
 		return $app->abort(400, "Unknown column type {$request->request->get('type')} given!");
@@ -298,7 +298,12 @@ $app->post('/columns/{id}/search/', function ($id, Http\Request $request) use ($
 	$columns = loadJson($token, 'columns');
 	$column = firstWith($columns['columns'], ['id' => $id]);
 
+	if (empty($column['search'])) {
+		return $app->abort(400, 'Search configuration cannot be saved on a non-search column.');
+	}
+	
 	$column['search']['term'] = $request->request->get('term', $column['search']['term']);
+	$column['search']['order'] = $request->request->get('order', $column['search']['order']);
 
 	$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
 	saveJson($token, 'columns', $columns);

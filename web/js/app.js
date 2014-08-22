@@ -151,6 +151,7 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		var newSourceUrl = first('.new-source-url', self.el);
 		var newSourceButton = first('.add-source', self.el);
 		var searchTermEl = first('.column-search-term', self.el);
+		var searchOrderEl = first('.column-search-order', self.el);
 		var searchTermTimeout;
 		var columnBodyEl = first('.column-body', self.el);
 		var deleteColumnButton = first('.delete-column-button', self.el);
@@ -261,6 +262,16 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 			bean.on(searchTermEl, 'keyup', function () {
 				clearTimeout(searchTermTimeout);
 				searchTermTimeout = setTimeout(saveSearchTerm, 500);
+			});
+			
+			bean.on(searchOrderEl, 'change', function () {
+				var req = http.open('POST', '/columns/' + self.id + '/search/');
+				var data = new FormData();
+				data.append('order', searchOrderEl.value);
+				http.send(req, data).then(
+					function (respXhr) { console.log('Saved order state'); refreshFeed(); },
+					function (errXhr) { console.log('HTTP Error while saving search column order', errXhr); }
+				); 
 			});
 		}
 
