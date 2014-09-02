@@ -72,7 +72,7 @@ $console->register('resubscribe')
 			/** @var Subscriptions\PushHub $dh */
 			$dh = $app['subscriptions.defaulthub'];
 
-			$rq = new Routing\RequestContext($app['baseurl']);
+			$rq = new Routing\RequestContext(null, null, $app['host']);
 			$app['url_generator']->setContext($rq);
 
 			foreach ($ss->getSubscriptions() as $subscription) {
