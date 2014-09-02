@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\HttpKernel;
+use Symfony\Component\Routing;
 
 use Psy;
 use Exception;
@@ -70,6 +71,9 @@ $console->register('resubscribe')
 			$ss = $app['subscriptions.storage'];
 			/** @var Subscriptions\PushHub $dh */
 			$dh = $app['subscriptions.defaulthub'];
+
+			$rq = new Routing\RequestContext($app['baseurl']);
+			$app['url_generator']->setContext($rq);
 
 			foreach ($ss->getSubscriptions() as $subscription) {
 				if ($input->getOption('unsubscribe')) {
