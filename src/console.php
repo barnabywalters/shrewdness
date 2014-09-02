@@ -92,7 +92,10 @@ $console->register('resubscribe')
 				}
 
 				$output->writeln("Re-subscribing to {$subscription['topic']} (ID {$subscription['id']})");
-				list($newSub, $err) = Subscriptions\subscribe($app, $subscription['topic']);
+				try {
+					list($newSub, $err) = Subscriptions\subscribe($app, $subscription['topic']);
+				} catch (\Guzzle\Common\Exception\GuzzleException $err) {
+				}
 				if ($err) {
 					$output->writeln(" -> ERROR: {$err->getMessage()}");
 				}
