@@ -108,4 +108,39 @@ $console->register('resubscribe')
 		});
 
 
+$console->register('prune')
+	->setDescription('Unsubscribe from any feeds which are no longer in anyone’s columns')
+	->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+			/** @var Subscriptions\PushHub $dh */
+			$dh = $app['subscriptions.defaulthub'];
+			$rq = new Routing\RequestContext(null, null, $app['host']);
+			$app['url_generator']->setContext($rq);
+
+			$allTopics = [];
+			foreach (glob(__DIR__ . '/../data/*') as $userPath) {
+				$config = json_decode(file_get_contents("{$userPath}/columns.json"));
+				foreach ($config['columns'] as $column) {
+					$allTopics = array_unique(array_merge($allTopics, array_map(function ($source) {
+						return $source['topic'];
+					}, $column['sources'])));
+				}
+			}
+
+			$subscriptions = $app['subscriptions.storage']->getSubscriptions();
+
+			foreach ($subscriptions as $subscription) {
+				if (!in_array($allTopics, $subscription['topic'])) {
+					if ($subscription['hub'] == $dh->getUrl()) {
+						$unsubhub = $dh;
+					} else {
+						$unsubhub = new Subscriptions\PushHub($subscription['hub']);
+					}
+					$callback = $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true);
+					$unsubhub->unsubscribe($subscription['topic'], $callback);
+					$output->writeln("Unsubscribed from {$subscription['topic']} at {$unsubhub}");
+				}
+			}
+		});
+
+
 return $console;
