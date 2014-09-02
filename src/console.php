@@ -120,16 +120,18 @@ $console->register('prune')
 			foreach (glob(__DIR__ . '/../data/*') as $userPath) {
 				$config = json_decode(file_get_contents("{$userPath}/columns.json"), true);
 				foreach ($config['columns'] as $column) {
-					$allTopics = array_unique(array_merge($allTopics, array_map(function ($source) {
-						return $source['topic'];
-					}, $column['sources'])));
+					if (!empty($column['sources']) and is_array($column['sources'])) {
+						$allTopics = array_unique(array_merge($allTopics, array_map(function ($source) {
+							return $source['topic'];
+						}, $column['sources'])));
+					}
 				}
 			}
 
 			$subscriptions = $app['subscriptions.storage']->getSubscriptions();
 
 			foreach ($subscriptions as $subscription) {
-				if (!in_array($allTopics, $subscription['topic'])) {
+				if (!in_array($subscription['topic'], $allTopics)) {
 					if ($subscription['hub'] == $dh->getUrl()) {
 						$unsubhub = $dh;
 					} else {
