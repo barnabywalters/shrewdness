@@ -4,6 +4,8 @@ namespace Taproot;
 
 use DateTime;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\HttpKernel;
 
 use Psy;
+use Exception;
 
 /** @var $app \Silex\Application */
 
@@ -57,5 +60,45 @@ $console->register('shell')
 			'client' => new LoginableClient($app)
 		]);
 	});
-	
+
+
+$console->register('resubscribe')
+	->setDescription('Resubscribe to all subscriptions')
+	->addOption('unsubscribe', 'u', InputArgument::OPTIONAL, 'Unsubscribe from each feed before re-subscribing', False)
+	->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+			/** @var Subscriptions\SubscriptionStorage $ss */
+			$ss = $app['subscriptions.storage'];
+			/** @var Subscriptions\PushHub $dh */
+			$dh = $app['subscriptions.defaulthub'];
+
+			foreach ($ss->getSubscriptions() as $subscription) {
+				if ($input->getOption('unsubscribe')) {
+					$output->writeln("Unsubscribing from {$subscription['topic']}");
+
+					if ($subscription['hub'] == $dh->getUrl()) {
+						$unsubhub = $dh;
+					} else {
+						$unsubhub = new Subscriptions\PushHub($subscription['hub']);
+					}
+
+					$output->writeln(" -> Unsubscribing from hub: {$unsubhub}");
+
+					$callback = $app['url_generator']->generate('subscriptions.id.ping', ['id' => $subscription['id']], true);
+
+					$result = $unsubhub->unsubscribe($subscription['topic'], $callback);
+					if ($result instanceof Exception) {
+						$output->writeln(" -> ERROR: {$result->getMessage()}");
+					}
+				}
+
+				$output->writeln("Re-subscribing to {$subscription['topic']} (ID {$subscription['id']})");
+				list($newSub, $err) = Subscriptions\subscribe($app, $subscription['topic']);
+				if ($err) {
+					$output->writeln(" -> ERROR: {$err->getMessage()}");
+				}
+				$output->writeln('');
+			}
+		});
+
+
 return $console;

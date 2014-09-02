@@ -260,8 +260,10 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
  * @param boolean $persist default: true Whether or not to actually save parsed results, or just return them.
  */
 $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($app) {
+	$loggableResource = $resource;
+	$loggableResource['content'] = $loggableResource['mf2'] = 'Truncated for logging';
 	$app['logger']->info('Indexing Resource', [
-		'resource' => $resource
+		'resource' => $loggableResource
 	]);
 
 	$result = [];
