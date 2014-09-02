@@ -458,7 +458,7 @@ $app->get('/twitter/list/{user}/{list}/', function ($user, $list, Http\Request $
 		$response = $app['http.client']
 				->get("https://twitter-activitystreams.appspot.com/{$user}/{$list}/@app/?format=html&access_token_key={$app['twitter.token_key']}&access_token_secret={$app['twitter.token_secret']}")
 				->send();
-		echo $response->getBody(true);
+		return $response->getBody(true);
 	} catch (Guzzle\Common\Exception\GuzzleException $e) {
 		$app->abort(500);
 	}
