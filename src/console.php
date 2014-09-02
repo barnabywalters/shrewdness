@@ -118,7 +118,7 @@ $console->register('prune')
 
 			$allTopics = [];
 			foreach (glob(__DIR__ . '/../data/*') as $userPath) {
-				$config = json_decode(file_get_contents("{$userPath}/columns.json"));
+				$config = json_decode(file_get_contents("{$userPath}/columns.json"), true);
 				foreach ($config['columns'] as $column) {
 					$allTopics = array_unique(array_merge($allTopics, array_map(function ($source) {
 						return $source['topic'];
