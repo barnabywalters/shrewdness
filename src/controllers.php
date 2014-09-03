@@ -262,7 +262,10 @@ $app->get('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
 
 	$column['items'] = fetchColumnItems($app, $column, $request->query->get('from', 0), $request->query->get('size', 10));
 
-	$html = $app['render']('column.html', ['column' => $column]);
+	$html = $app['render']('column.html', [
+		'column' => $column,
+		'token' => $token
+	]);
 	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
 })->bind('column')
 	->before($ensureIsUser);
