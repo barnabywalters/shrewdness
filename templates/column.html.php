@@ -19,8 +19,8 @@
 				<input type="search" class="column-search-term" value="<?= $column['search']['term'] ?>" />
 				
 				<select class="column-search-order">
-					<option value="relevance" <?= $column['search']['order'] === 'relevance' ? 'checked' : '' ?>>by relevance</option>
-					<option value="published" <?= $column['search']['order'] === 'published' ? 'checked' : '' ?>>by date</option>
+					<option value="relevance" <?= $column['search']['order'] === 'relevance' ? 'selected' : '' ?>>by relevance</option>
+					<option value="published" <?= $column['search']['order'] === 'published' ? 'selected' : '' ?>>by date</option>
 				</select>
 			<?php endif ?>
 
