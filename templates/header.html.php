@@ -54,8 +54,6 @@
 		}
 
 		.micropub-support {
-			font-family: "courier new", monospace; /* yeah yeah i know */
-			font-variant: small-caps;
 			font-size: 0.6em;
 			display: inline-block;
 			background: #97DBF6;
