@@ -40,11 +40,12 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 	function Item(itemEl) {
 		var self = this;
 		self.el = itemEl;
+		self.url = first('.item-url', self.el).href;
+
 		var actionPanelEl = first('.item-action-panel', self.el);
 		var replyButton = first('.reply-button', self.el);
 		var replyPostButton = first('.reply-post-button', self.el);
 		var replyTextarea = first('.reply-content', self.el);
-		var url = first('.item-url', self.el).href;
 
 		actionPanelEl.classList.add('activated');
 
@@ -79,7 +80,7 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 			var data = new FormData();
 			data.append('h', 'entry');
 			data.append('content', replyTextarea.value);
-			data.append('in-reply-to', url);
+			data.append('in-reply-to', self.url);
 			replyPostButton.disabled = true;
 			replyPostButton.textContent = 'Posting…';
 			http.send(req, data).then(function (respXhr) {
@@ -152,12 +153,14 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 		var newSourceButton = first('.add-source', self.el);
 		var searchTermEl = first('.column-search-term', self.el);
 		var searchOrderEl = first('.column-search-order', self.el);
-		var searchTermTimeout;
 		var columnBodyEl = first('.column-body', self.el);
 		var deleteColumnButton = first('.delete-column-button', self.el);
 		var columnNameEl = first('.column-name', self.el);
 		var columnName = new InlineEdit(columnNameEl);
 		var items = [];
+		var searchTermTimeout;
+		var refreshInterval;
+		var itemLoadingInProgress = false;
 
 		settingsEl.classList.add('activated');
 
@@ -189,6 +192,31 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 				deleteColumnButton.setAttribute('state', 'deleting');
 				deleteColumnButton.textContent = 'Click again to confirm deletion';
 			}
+		});
+
+		bean.on(self.el, 'scroll', function (event) {
+			if (self.el.scrollHeight - (self.el.scrollTop + self.el.offsetHeight) > items[items.length-1].el.offsetHeight) {
+				return;
+			}
+			console.log(itemLoadingInProgress);
+			if (itemLoadingInProgress) {
+				return;
+			}
+
+			// The user has scrolled the last item in the column into view. Load earlier items.
+			var req = http.open('GET', '/columns/' + self.id + '/?from=' + items.length);
+			itemLoadingInProgress = true;
+			http.send(req).then(function (respXhr) {
+				var incomingDoc = document.implementation.createHTMLDocument();
+				incomingDoc.documentElement.innerHTML = respXhr.responseText;
+				each(all('.item', incomingDoc), function (itemEl) {
+					columnBodyEl.appendChild(document.importNode(itemEl, true));
+					items.push(new Item(itemEl));
+				});
+			}, function (errXhr) {
+				console.log('HTTP Error whilst fetching older items', errXhr);
+			}).then(function () { itemLoadingInProgress = false; });
+
 		});
 
 		if (newSourceUrl) {
@@ -253,7 +281,7 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 				}
 
 				http.send(req, data).then(function (respXhr) {
-					refreshFeed();
+					refreshFeed(true);
 				}, function (errXhr) {
 					console.log('HTTP Error when saving search term', errXhr);
 				});
@@ -269,21 +297,43 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 				var data = new FormData();
 				data.append('order', searchOrderEl.value);
 				http.send(req, data).then(
-					function (respXhr) { console.log('Saved order state'); refreshFeed(); },
+					function (respXhr) { console.log('Saved order state'); refreshFeed(true); },
 					function (errXhr) { console.log('HTTP Error while saving search column order', errXhr); }
 				); 
 			});
 		}
 
-		var refreshFeed = function () {
+		// Either loads new items in, or completely clears the feed, depending on whether or not clear is set.
+		var refreshFeed = function (clear) {
+			if (itemLoadingInProgress) {
+				return;
+			}
+
 			var req = http.open('GET', '/columns/' + self.id + '/');
+			itemLoadingInProgress = true;
 			http.send(req).then(function (respXhr) {
-				var incomingDoc = document.implementation.createHTMLDocument();
+				var incomingDoc = document.implementation.createHTMLDocument(),
+						finishedImporting = false,
+						firstExistingItem;
 				incomingDoc.documentElement.innerHTML = respXhr.responseText;
-				columnBodyEl.innerHTML = first('.column-body', incomingDoc).innerHTML;
+
+				if (clear || items.length == 0) {
+					columnBodyEl.innerHTML = first('.column-body', incomingDoc).innerHTML;
+				} else {
+					firstExistingItem = items[0];
+					each(all('.item', incomingDoc), function (itemEl) {
+						if (finishedImporting || first('.item-url', itemEl).href == firstExistingItem.url) {
+							finishedImporting = true;
+							return;
+						} else {
+							columnBodyEl.insertBefore(document.importNode(itemEl, true), firstExistingItem.el);
+							items.unshift(new Item(itemEl));
+						}
+					});
+				}
 			}, function (errXhr) {
 				console.log('HTTP Error fetching feed items', errXhr);
-			});
+			}).then(function () { itemLoadingInProgress = false; });
 
 			enhanceItems();
 		};
@@ -294,6 +344,8 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 			});
 		};
 
+		// TODO: re-implement this as a space-wide status checker which checks all columns for new content at once, or even an eventsource (somehow).
+		refreshInterval = window.setInterval(refreshFeed, 15000);
 		enhanceItems();
 	}
 

@@ -128,6 +128,11 @@ $console->register('prune')
 				}
 			}
 
+			$output->writeln("All topics in use:");
+			foreach ($allTopics as $topic) {
+				$output->writeln(" -> {$topic}");
+			}
+
 			$subscriptions = $app['subscriptions.storage']->getSubscriptions();
 
 			foreach ($subscriptions as $subscription) {

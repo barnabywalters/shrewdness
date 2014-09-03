@@ -130,7 +130,7 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 })->bind('homepage');
 
 
-function fetchColumnItems($app, $column) {
+function fetchColumnItems($app, $column, $from=0, $size=10) {
 	/* @var Elasticsearch\Client $es */
 	$es = $app['elasticsearch'];
 
@@ -138,11 +138,12 @@ function fetchColumnItems($app, $column) {
 			'index' => 'shrewdness',
 			'type' => 'h-entry',
 			'body' => [
-					'query' => [],
-					'sort' => [[
-							'published' => ['order' => 'desc']
-					]],
-					'size' => 50
+				'query' => [],
+				'sort' => [[
+						'published' => ['order' => 'desc']
+				]],
+				'size' => $size,
+				'from' => $from
 			]
 	];
 
@@ -257,7 +258,7 @@ $app->get('/columns/{id}/', function ($id, Http\Request $request) use ($app) {
 	$columns = loadJson($token, 'columns');
 	$column = firstWith($columns['columns'], ['id' => $id]);
 
-	$column['items'] = fetchColumnItems($app, $column);
+	$column['items'] = fetchColumnItems($app, $column, $request->query->get('from', 0), $request->query->get('size', 10));
 
 	$html = $app['render']('column.html', ['column' => $column]);
 	return new Http\Response($html, 200, ['Content-length' => strlen($html)]);
