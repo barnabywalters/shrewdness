@@ -31,7 +31,7 @@
 	<div class="column-body">
 		<?php if (isset($column['items'])): ?>
 		<?php foreach ($column['items'] as $item): ?>
-		<?= $render('item.html', ['item' => $item]) ?>
+		<?= $render('item.html', ['item' => $item, 'token' => $token]) ?>
 		<?php endforeach ?>
 		<?php endif ?>
 	</div>

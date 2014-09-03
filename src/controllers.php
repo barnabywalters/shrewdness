@@ -120,7 +120,9 @@ $app->get('/', function (Http\Request $request) use ($app, $ensureIsUser) {
 		}
 
 		return $app['render']('dashboard.html', [
-			'columns' => $columns['columns']
+			'columns' => $columns['columns'],
+			'token' => $token,
+			'logoutUrl' => $app['url_generator']->generate('logout')
 		]);
 	} else {
 		return $app['render']('index.html', [

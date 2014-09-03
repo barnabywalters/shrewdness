@@ -49,13 +49,15 @@ define(['sortable', 'bean', 'http', 'es6-promise'], function (Sortable, bean, ht
 
 		actionPanelEl.classList.add('activated');
 
-		bean.on(replyButton, 'click', function (event) {
-			actionPanelEl.classList.toggle('collapsed');
-			if (!actionPanelEl.classList.contains('collapsed')) {
-				// The panel was just opened.
-				replyTextarea.focus();
-			}
-		});
+		if (replyButton) {
+			bean.on(replyButton, 'click', function (event) {
+				actionPanelEl.classList.toggle('collapsed');
+				if (!actionPanelEl.classList.contains('collapsed')) {
+					// The panel was just opened.
+					replyTextarea.focus();
+				}
+			});
+		}
 
 		bean.on(replyTextarea, 'blur', function (event) {
 			if (actionPanelEl.classList.contains('collapsed')) {

@@ -33,6 +33,39 @@
 			font-weight: normal;
 		}
 
+		.header {
+			background: rgba(255, 255, 255, 0.2);
+			position: relative;
+			color: rgb(187, 187, 187);
+			font-size: 1.25em;
+			height: 2.5em;
+			margin-bottom: 0.7em;
+			padding: 0.5em 0.5em 0 0.5em;
+		}
+
+		.header .user {
+			display: inline-block;
+			right: 0.5em;
+			position: absolute;
+		}
+
+		.inline-form {
+			display: inline-block;
+		}
+
+		.micropub-support {
+			font-family: "courier new", monospace; /* yeah yeah i know */
+			font-variant: small-caps;
+			font-size: 0.6em;
+			display: inline-block;
+			background: #97DBF6;
+			color: #008393;
+			border-radius: 1em;
+			padding: 0.2em;
+			vertical-align: middle;
+			text-align: center;
+		}
+
 		.inline-edit {
 			cursor: pointer;
 		}

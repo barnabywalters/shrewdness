@@ -36,7 +36,9 @@ $app['subscriptions.defaulthub'] = function () use ($app) {
 };
 
 $app['http.client'] = function () use ($app) {
-	return new Guzzle\Http\Client();
+	$client = new Guzzle\Http\Client();
+	$client->setUserAgent('Shrewdness (Guzzle) http://indiewebcamp.com/Shrewdness');
+	return $client;
 };
 
 $app['encryption'] = function () use ($app) {
