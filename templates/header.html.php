@@ -91,6 +91,11 @@
 			overflow-y: scroll;
 		}
 
+		.space {
+			height: -moz-calc(100% - (3.125em + 0.875em));
+			height: -webkit-calc(100% - (3.125em + 0.875em));
+		}
+
 		.columns {
 			height: 100%;
 		}

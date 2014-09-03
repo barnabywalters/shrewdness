@@ -14,7 +14,7 @@
 	</div>
 </div>
 
-<div class="x-scroll-wrapper">
+<div class="space x-scroll-wrapper">
 	<div class="columns">
 		<?php foreach ($columns as $column): ?>
 			<?= $render('column.html', ['column' => $column, 'token' => $token]) ?>
