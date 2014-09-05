@@ -359,12 +359,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "f5777175f60fe93ffe8fc0d10439bd15077aa702"
+                "reference": "8adb88bd8acdd1c5300712f8027d8c04bdea2470"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/f5777175f60fe93ffe8fc0d10439bd15077aa702",
-                "reference": "f5777175f60fe93ffe8fc0d10439bd15077aa702",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/8adb88bd8acdd1c5300712f8027d8c04bdea2470",
+                "reference": "8adb88bd8acdd1c5300712f8027d8c04bdea2470",
                 "shasum": ""
             },
             "require": {
@@ -391,7 +391,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-08-31 12:07:52"
+            "time": "2014-09-03 01:28:31"
         },
         {
             "name": "illuminate/encryption",
@@ -442,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "b73a4b08459a31373d785ef52433ca7bc085607e"
+                "reference": "097fbe10c10ddee445b8b8e8e54d642402198b98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/b73a4b08459a31373d785ef52433ca7bc085607e",
-                "reference": "b73a4b08459a31373d785ef52433ca7bc085607e",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/097fbe10c10ddee445b8b8e8e54d642402198b98",
+                "reference": "097fbe10c10ddee445b8b8e8e54d642402198b98",
                 "shasum": ""
             },
             "require": {
@@ -482,7 +482,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-09-01 18:02:10"
+            "time": "2014-09-03 00:31:25"
         },
         {
             "name": "indieauth/client",
@@ -1244,12 +1244,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "66996cff6d0de1168f99e460464cd3fb35c192f5"
+                "reference": "cec87359655f901a11de336576851d3957449947"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/66996cff6d0de1168f99e460464cd3fb35c192f5",
-                "reference": "66996cff6d0de1168f99e460464cd3fb35c192f5",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/cec87359655f901a11de336576851d3957449947",
+                "reference": "cec87359655f901a11de336576851d3957449947",
                 "shasum": ""
             },
             "require": {
@@ -1288,7 +1288,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-18 09:01:49"
+            "time": "2014-09-03 09:00:14"
         },
         {
             "name": "symfony/http-kernel",
@@ -1297,12 +1297,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "473c33d12709b7dfceb608c7b634bebc1ab4b06c"
+                "reference": "18bce9aefd7fb009bb21e6ec61d64d421e9d30df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/473c33d12709b7dfceb608c7b634bebc1ab4b06c",
-                "reference": "473c33d12709b7dfceb608c7b634bebc1ab4b06c",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/18bce9aefd7fb009bb21e6ec61d64d421e9d30df",
+                "reference": "18bce9aefd7fb009bb21e6ec61d64d421e9d30df",
                 "shasum": ""
             },
             "require": {
@@ -1359,7 +1359,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-31 03:22:04"
+            "time": "2014-09-03 12:51:22"
         },
         {
             "name": "symfony/routing",
@@ -1434,12 +1434,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "dd5649bbabaaa9a5ed6fe76de720b046cead1382"
+                "reference": "d234eea02581c28f77d1aee06b1f4d6b47618e83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/dd5649bbabaaa9a5ed6fe76de720b046cead1382",
-                "reference": "dd5649bbabaaa9a5ed6fe76de720b046cead1382",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/d234eea02581c28f77d1aee06b1f4d6b47618e83",
+                "reference": "d234eea02581c28f77d1aee06b1f4d6b47618e83",
                 "shasum": ""
             },
             "require": {
@@ -1487,7 +1487,7 @@
             ],
             "description": "Symfony Security Component - Core Library",
             "homepage": "http://symfony.com",
-            "time": "2014-08-26 14:16:42"
+            "time": "2014-09-03 09:22:23"
         },
         {
             "name": "tantek/cassis",
@@ -1560,12 +1560,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/authentication.git",
-                "reference": "9e0ff859c10e583ecdf1379ba7c8221ff9babd4f"
+                "reference": "e1f6e556f55f202d52571847215930717dbd2c19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/authentication/zipball/9e0ff859c10e583ecdf1379ba7c8221ff9babd4f",
-                "reference": "9e0ff859c10e583ecdf1379ba7c8221ff9babd4f",
+                "url": "https://api.github.com/repos/Taproot/authentication/zipball/e1f6e556f55f202d52571847215930717dbd2c19",
+                "reference": "e1f6e556f55f202d52571847215930717dbd2c19",
                 "shasum": ""
             },
             "require": {
@@ -1596,7 +1596,7 @@
                 }
             ],
             "description": "Makes adding indieauth login (client app) and token generation (server app) to your Silex/Symfony app as easy as it should be.",
-            "time": "2014-08-16 23:54:52"
+            "time": "2014-09-05 07:42:07"
         },
         {
             "name": "taproot/subscriptions",
