@@ -419,7 +419,10 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 
 $app->get('/test/', function (Http\Request $request) use ($app) {
 	if (!$request->query->has('url')) {
-		return $app['render']('test.html', ['column' => null]);
+		return $app['render']('test.html', [
+			'column' => null,
+			'token' => []
+		]);
 	}
 
 	$url = Authentication\ensureUrlHasHttp($request->query->get('url'));
@@ -454,7 +457,8 @@ $app->get('/test/', function (Http\Request $request) use ($app) {
 		'html' => $resp->getBody(true),
 		'mf' => $resource['mf2'],
 		'cleansed' => $cleansed,
-		'url' => $url
+		'url' => $url,
+		'token' => []
 	]);
 });
 

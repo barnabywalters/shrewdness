@@ -5,7 +5,7 @@
 <div class="x-scroll-wrapper test-columns">
 	<?php if ($column !== null): ?>
 	<div class="columns">
-		<?= $render('column.html', ['column' => $column]) ?>
+		<?= $render('column.html', ['column' => $column, 'token' => $token]) ?>
 
 		<div class="column light-column test-cleansed-column y-scroll-wrapper">
 			<?php foreach ($cleansed as $post): ?>
