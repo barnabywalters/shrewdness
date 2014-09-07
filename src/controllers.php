@@ -475,5 +475,45 @@ $app->get('/twitter/list/{user}/{list}/', function ($user, $list, Http\Request $
 });
 
 
+
+// Temporary demo URL for IWC UK 2014
+$app->get('/locations/', function (Http\Request $request) use ($app) {
+	/** @var $es \Elasticsearch\Client $es */
+	$es = $app['elasticsearch'];
+
+	$query = [
+		'index' => 'shrewdness',
+		'type' => 'h-entry',
+		'body' => [
+				'query' => ['match_all' => []],
+				'sort' => [[
+						'published' => ['order' => 'desc']
+				]],
+				'filter' => [
+					'exists' => ['field' => 'location_point']
+				],
+				'size' => 1000,
+				'from' => 0
+		]
+	];
+
+	$response = $es->search($query);
+	$results = array_map(function ($hit) {
+		$item = $hit['_source'];
+		$item['published'] = new DateTime($item['published']);
+		return $item;
+	}, $response['hits']['hits']);
+
+	$authorLocations = [];
+	foreach ($results as $hEntry) {
+		$authorLocations[$hEntry['author']['url']][] = $hEntry;
+	}
+
+	return $app['render']('locations.html', [
+		'authorLocations' => $authorLocations
+	], false);
+});
+
+
 $app->mount('/subscriptions', Subscriptions\controllers($app, $ensureIsAdmin, $app['indexResource']));
 $app->mount('/', Authentication\client($app));
