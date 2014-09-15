@@ -47,6 +47,39 @@
             "time": "2014-05-16 15:25:47"
         },
         {
+            "name": "dnoegel/php-xdg-base-dir",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dnoegel/php-xdg-base-dir.git",
+                "reference": "ba8101af98d18f59f3b79b901f7e50426a54a43a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dnoegel/php-xdg-base-dir/zipball/ba8101af98d18f59f3b79b901f7e50426a54a43a",
+                "reference": "ba8101af98d18f59f3b79b901f7e50426a54a43a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "XdgBaseDir\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "implementation of xdg base directory specification for php",
+            "time": "2014-09-04 09:43:01"
+        },
+        {
             "name": "doctrine/cache",
             "version": "dev-master",
             "source": {
@@ -359,12 +392,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "8adb88bd8acdd1c5300712f8027d8c04bdea2470"
+                "reference": "c2e34230f82e44d3c17b62334b31e483a165bde8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/8adb88bd8acdd1c5300712f8027d8c04bdea2470",
-                "reference": "8adb88bd8acdd1c5300712f8027d8c04bdea2470",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/c2e34230f82e44d3c17b62334b31e483a165bde8",
+                "reference": "c2e34230f82e44d3c17b62334b31e483a165bde8",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +406,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.3-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -391,7 +424,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-09-03 01:28:31"
+            "time": "2014-09-15 04:06:11"
         },
         {
             "name": "illuminate/encryption",
@@ -399,24 +432,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/encryption.git",
-                "reference": "bd325f717e1a92b9a95c072fd7c19f140ef0a36c"
+                "reference": "6942923418bb794f99859871b75c8cdd576cddb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/encryption/zipball/bd325f717e1a92b9a95c072fd7c19f140ef0a36c",
-                "reference": "bd325f717e1a92b9a95c072fd7c19f140ef0a36c",
+                "url": "https://api.github.com/repos/illuminate/encryption/zipball/6942923418bb794f99859871b75c8cdd576cddb6",
+                "reference": "6942923418bb794f99859871b75c8cdd576cddb6",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "4.3.*",
-                "illuminate/support": "4.3.*",
+                "illuminate/contracts": "5.0.*",
+                "illuminate/support": "5.0.*",
                 "php": ">=5.4.0",
                 "symfony/security-core": "2.6.*"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.3-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -434,7 +467,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-08-22 18:43:48"
+            "time": "2014-09-11 19:16:42"
         },
         {
             "name": "illuminate/support",
@@ -442,16 +475,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "097fbe10c10ddee445b8b8e8e54d642402198b98"
+                "reference": "d4352ca092bc12c7e24bf389b6cc322ec77e043f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/097fbe10c10ddee445b8b8e8e54d642402198b98",
-                "reference": "097fbe10c10ddee445b8b8e8e54d642402198b98",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/d4352ca092bc12c7e24bf389b6cc322ec77e043f",
+                "reference": "d4352ca092bc12c7e24bf389b6cc322ec77e043f",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "4.3.*",
+                "illuminate/contracts": "5.0.*",
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -461,7 +494,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.3-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -482,7 +515,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-09-03 00:31:25"
+            "time": "2014-09-12 21:43:02"
         },
         {
             "name": "indieauth/client",
@@ -720,12 +753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "12545cda2f7a0bd82a110f742ef455fe735e60cf"
+                "reference": "b3f039339d7a8173c7b441dbaa572ccacb712b54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/12545cda2f7a0bd82a110f742ef455fe735e60cf",
-                "reference": "12545cda2f7a0bd82a110f742ef455fe735e60cf",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b3f039339d7a8173c7b441dbaa572ccacb712b54",
+                "reference": "b3f039339d7a8173c7b441dbaa572ccacb712b54",
                 "shasum": ""
             },
             "require": {
@@ -784,36 +817,36 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-07-31 22:12:22"
+            "time": "2014-09-10 15:41:01"
         },
         {
             "name": "nikic/php-parser",
-            "version": "0.9.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "ef70767475434bdb3615b43c327e2cae17ef12eb"
+                "reference": "2b96ab8edccd5a0d0e7a826a7dc53c421ae64f94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ef70767475434bdb3615b43c327e2cae17ef12eb",
-                "reference": "ef70767475434bdb3615b43c327e2cae17ef12eb",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/2b96ab8edccd5a0d0e7a826a7dc53c421ae64f94",
+                "reference": "2b96ab8edccd5a0d0e7a826a7dc53c421ae64f94",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
-                "php": ">=5.2"
+                "php": ">=5.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.9-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "PHPParser": "lib/"
-                }
+                "files": [
+                    "lib/bootstrap.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -829,7 +862,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2014-07-23 18:24:17"
+            "time": "2014-09-12 12:48:23"
         },
         {
             "name": "pimple/pimple",
@@ -928,25 +961,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "b69799e14bea3c0e3d0f3e99dabe2026303ef21f"
+                "reference": "6672a73232c69e2da53fb09746ec7887c90eace6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/b69799e14bea3c0e3d0f3e99dabe2026303ef21f",
-                "reference": "b69799e14bea3c0e3d0f3e99dabe2026303ef21f",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/6672a73232c69e2da53fb09746ec7887c90eace6",
+                "reference": "6672a73232c69e2da53fb09746ec7887c90eace6",
                 "shasum": ""
             },
             "require": {
-                "nikic/php-parser": "~0.9.3",
+                "dnoegel/php-xdg-base-dir": "dev-master@dev",
+                "nikic/php-parser": "~1.0@dev",
                 "php": ">=5.3.0",
                 "symfony/console": ">=2.3.10, <2.6.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7, <4.1",
+                "phpunit/phpunit": ">=3.7, <4.3",
                 "symfony/finder": "~2.1"
             },
             "suggest": {
-                "ext-pcntl": "Enabling the PCNTL extension makes PsySH a lot happier :)"
+                "ext-pcntl": "Enabling the PCNTL extension makes PsySH a lot happier :)",
+                "ext-posix": "If you have PCNTL, you'll want the POSIX extension as well.",
+                "ext-readline": "Enables support for arrow-key history navigation, and showing and manipulating command history."
             },
             "bin": [
                 "bin/psysh"
@@ -954,7 +990,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1.0-dev"
+                    "dev-master": "0.2.0-dev"
                 }
             },
             "autoload": {
@@ -981,7 +1017,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2014-08-16 06:49:39"
+            "time": "2014-09-10 05:21:45"
         },
         {
             "name": "silex/silex",

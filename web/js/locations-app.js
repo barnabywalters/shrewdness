@@ -17,8 +17,8 @@ define(['bean', 'leaflet'], function (bean, L) {
 	var all = function (selector, context) { return (context || document).querySelectorAll(selector); };
 	var each = function (els, callback) { return Array.prototype.forEach.call(els, callback); };
 
-	var tileUrl = 'http://{s}.tiles.mapbox.com/v3/barnabywalters.i9img0ac/{z}/{x}/{y}.png';
-	var mapAttribution = 'Map data <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://opendatacommons.org/licenses/odbl/1.0/">ODBL</a>, tiles by <a href="https://mapbox.com">Mapbox</a>';
+	var tileUrl = 'https://{s}.tiles.mapbox.com/v3/barnabywalters.i9img0ac/{z}/{x}/{y}.png';
+	var mapAttribution = 'Map data <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://opendatacommons.org/licenses/odbl/1.0/">ODBL</a>, tiles by <a href="https://mapbox.com">Mapbox</a>';
 
 
 	var mapEl = document.getElementById('map');
