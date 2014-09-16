@@ -156,11 +156,9 @@ function fetchColumnItems($app, $column, $from=0, $size=10) {
 				}, $column['sources'])
 		];
 	} elseif (isset($column['search'])) {
-		// Considered a multi_match query here, not sure if that’s going to hinder the use case of searching for URLs.
-		// For the moment sticking with the most basic match query. In the future optimise specifically, optimising
-		// generally only when problems occur or objectively better solutions are found.
-		$query['body']['query']['match'] = [
-				'_all' => $column['search']['term']
+		$query['body']['query']['multi_match'] = [
+			'query' => $column['search']['term'],
+			'fields' => ['content', 'name^3', 'tags^2', 'location.name', 'author.name']
 		];
 
 		if (isset($column['search']['order']) and $column['search']['order'] == 'relevance') {
