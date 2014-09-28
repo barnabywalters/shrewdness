@@ -129,6 +129,11 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
 		// given here is correct for the moment. When this can be determined, follow http://indiewebcamp.com/datetime#implying_timezone_from_webmentions
 	}
 
+	// There’s some case causing $utcPublished to still be false and I can’t be bothered to debug it right now, so here’s a fix.
+	if ($utcPublished === false) {
+		$utcPublished = new DateTime(null, new DateTimeZone('UTC'));
+	}
+
 	// Store a string representation of published to be indexed+queried upon.
 	$cleansed['published_utc'] = $utcPublished->format(DateTime::W3C);
 
