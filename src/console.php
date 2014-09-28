@@ -161,7 +161,7 @@ $console->register('prune')
 					$output->writeln("Fetching {$subscription['topic']}");
 					list($context, $err) = Subscriptions\manualFetch($app, $subscription['topic'], $app['http.client']);
 					if ($err === null) {
-						$output->writeln(" -> Successfully fetched");
+						$output->writeln(" -> Successfully fetched.");
 					} else {
 						$output->writeln(" -> <error>Error:</error> {$err->getMessage()}");
 					}
