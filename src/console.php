@@ -72,7 +72,7 @@ $console->register('resubscribe')
 			/** @var Subscriptions\PushHub $dh */
 			$dh = $app['subscriptions.defaulthub'];
 
-			$rq = new Routing\RequestContext(null, null, $app['host']);
+			$rq = new Routing\RequestContext(null, null, $app['host'], 'https');
 			$app['url_generator']->setContext($rq);
 
 			foreach ($ss->getSubscriptions() as $subscription) {
@@ -113,7 +113,7 @@ $console->register('prune')
 	->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
 			/** @var Subscriptions\PushHub $dh */
 			$dh = $app['subscriptions.defaulthub'];
-			$rq = new Routing\RequestContext(null, null, $app['host']);
+			$rq = new Routing\RequestContext(null, null, $app['host'], 'https');
 			$app['url_generator']->setContext($rq);
 
 			$allTopics = [];
