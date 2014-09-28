@@ -1639,12 +1639,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/subscriptions.git",
-                "reference": "d2bac5964f63cad7df23e629b3d529b3119c9d9d"
+                "reference": "964b62745dfb9781f46e52b40e25c9b7830d89bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/d2bac5964f63cad7df23e629b3d529b3119c9d9d",
-                "reference": "d2bac5964f63cad7df23e629b3d529b3119c9d9d",
+                "url": "https://api.github.com/repos/Taproot/subscriptions/zipball/964b62745dfb9781f46e52b40e25c9b7830d89bb",
+                "reference": "964b62745dfb9781f46e52b40e25c9b7830d89bb",
                 "shasum": ""
             },
             "require": {
@@ -1680,7 +1680,7 @@
                 }
             ],
             "description": "Easily subscribe to web content.",
-            "time": "2014-09-28 20:07:45"
+            "time": "2014-09-28 20:15:54"
         }
     ],
     "packages-dev": [

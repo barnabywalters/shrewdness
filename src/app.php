@@ -321,7 +321,6 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 			$result['feed-parse']['posts'][] = $cleansed;
 			$result['feed-parse']['referenced-posts'] = array_merge($result['feed-parse']['referenced-posts'], $referencedPosts);
 
-			// TODO: actually index $cleansed.
 			if ($persist) {
 				try {
 					// Error reporting state variables.
