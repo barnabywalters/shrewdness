@@ -323,24 +323,33 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 
 			// TODO: actually index $cleansed.
 			if ($persist) {
-				if ($cleansed['url']) {
-					$es->index([
-						'index' => 'shrewdness',
-						'type' => 'h-entry',
-						'id' => $cleansed['url'],
-						'body' => $cleansed
-					]);
-				}
-
-				foreach ($referencedPosts as $referencedPost) {
-					if ($referencedPost['url']) {
+				try {
+					// Error reporting state variables.
+					$currentPostIndex = 'posts';
+					$currentPostUrl = $cleansed['url'];
+					if ($cleansed['url']) {
 						$es->index([
-							'index' => 'shrewdness',
-							'type' => 'h-entry',
-							'id' => $referencedPost['url'],
-							'body' => $referencedPost
+								'index' => 'shrewdness',
+								'type' => 'h-entry',
+								'id' => $cleansed['url'],
+								'body' => $cleansed
 						]);
 					}
+
+					$currentPostIndex = 'referenced-posts';
+					foreach ($referencedPosts as $referencedPost) {
+						if ($referencedPost['url']) {
+							$currentPostUrl = $referencedPost['url'];
+							$es->index([
+									'index' => 'shrewdness',
+									'type' => 'h-entry',
+									'id' => $referencedPost['url'],
+									'body' => $referencedPost
+							]);
+						}
+					}
+				} catch (Exception $e) {
+					$result['errors'][$currentPostIndex][$currentPostUrl] = $e->getMessage();
 				}
 			}
 		}
