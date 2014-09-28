@@ -32,7 +32,8 @@ $app['subscriptions.storage'] = $app->share(function () use ($app) {
 });
 
 $app['subscriptions.defaulthub'] = function () use ($app) {
-	return new Subscriptions\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
+	return new Subscriptions\InertHub();
+	#return new Subscriptions\SuperfeedrHub($app['superfeedr.username'], $app['superfeedr.password']);
 };
 
 $app['http.client'] = function () use ($app) {

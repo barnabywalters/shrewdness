@@ -3,6 +3,7 @@
 namespace Taproot;
 
 use DateTime;
+use Exception;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Routing;
 
 use Psy;
-use Exception;
 
 /** @var $app \Silex\Application */
 
@@ -148,6 +148,25 @@ $console->register('prune')
 				}
 			}
 		});
+
+	$console->register('poll')
+		->setDescription('Polls any feeds subscribed to with a URL of inert-hub')
+		->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+				/** @var Subscriptions\SubscriptionStorage */
+				$storage = $app['subscriptions.storage'];
+				/** @var Subscriptions\PushHub $defaultHub */
+				$defaultHub = $app['subscriptions.defaulthub'];
+
+				foreach ($storage->getSubscriptionsForHub($defaultHub->getUrl()) as $subscription) {
+					$output->writeln("Fetching {$subscription['topic']}");
+					list($context, $err) = Subscriptions\manualFetch($app, $subscription['topic'], $app['http.client']);
+					if ($err === null) {
+						$output->writeln(" -> Successfully fetched");
+					} else {
+						$output->writeln(" -> <error>Error:</error> {$err->getMessage()}");
+					}
+				}
+			});
 
 
 return $console;
