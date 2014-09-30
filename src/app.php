@@ -38,7 +38,11 @@ $app['subscriptions.defaulthub'] = function () use ($app) {
 
 $app['http.client'] = function () use ($app) {
 	$client = new Guzzle\Http\Client(null, [
-		'ssl.certificate_authority' => __DIR__ . '/../mozilla-ca-certs.pem'
+		'ssl.certificate_authority' => __DIR__ . '/../mozilla-ca-certs.pem',
+		'request.options' => [
+			'timeout' => 10,
+			'connect_timeout' => 2
+		]
 	]);
 	$client->setUserAgent('Shrewdness (Guzzle) http://indiewebcamp.com/Shrewdness');
 	return $client;
