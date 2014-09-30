@@ -1,6 +1,6 @@
 <?php
 
-namespace Taproot;
+namespace Taproot\Shrewdness;
 
 use DateTime;
 use Exception;
