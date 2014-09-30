@@ -180,3 +180,13 @@ function flattenHCard($hCard, $url) {
 
 	return $author;
 }
+
+function removeScheme($url) {
+	if (substr($url, 0, 8) === 'https://') {
+		return substr($url, 8);
+	} elseif (substr($url, 0, 7) === 'http://') {
+		return substr($url, 7);
+	} else {
+		return $url;
+	}
+}

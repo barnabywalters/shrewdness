@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel;
 use Symfony\Component\Routing;
 
 use Psy;
+use Elasticsearch;
 
 /** @var $app \Silex\Application */
 
@@ -107,7 +108,6 @@ $console->register('resubscribe')
 			}
 		});
 
-
 $console->register('prune')
 	->setDescription('Unsubscribe from any feeds which are no longer in anyone’s columns')
 	->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
@@ -166,6 +166,73 @@ $console->register('prune')
 						$output->writeln(" -> <error>Error:</error> {$err->getMessage()}");
 					}
 				}
+			});
+
+	$console->register('index:remove-schemes')
+		->setDescription('A batch job which iterates over the whole index, removing URL schemes from document IDs.')
+		->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+				/** @var Elasticsearch\Client $es */
+				$es = $app['elasticsearch'];
+
+				$prefixSearch = [
+					'index' => 'shrewdness',
+					'body' => [
+						'query' => [
+							'prefix' => [
+								'_id' => 'http'
+							]
+						],
+						'size' => 500
+					]
+				];
+
+				while (true) {
+					$batchDocCount = 0;
+					$output->writeln("Fetching next results.");
+					$urlPrefixedResults = $es->search($prefixSearch);
+
+					if (empty($urlPrefixedResults['hits']['hits'])) {
+						break;
+					}
+
+					$bulk = ['index' => 'shrewdness'];
+
+					foreach ($urlPrefixedResults['hits']['hits'] as $hit) {
+						if (parse_url($hit['_id'], PHP_URL_SCHEME) === null) {
+							continue;
+						}
+						$batchDocCount += 1;
+						$newDocument = $hit['_source'];
+						$newId = removeScheme($hit['_id']);
+
+						$output->writeln("Reindexing {$hit['_id']} as {$newId}");
+
+						$bulk['body'][] = [
+							'delete' => [
+								'_index' => $hit['_index'],
+								'_type' => $hit['_type'],
+								'_id' => $hit['_id']
+							]
+						];
+						$bulk['body'][] = [
+							'index' => [
+								'_id' => $newId,
+								'_type' => $hit['_type']
+							]
+						];
+						$bulk['body'][] = $newDocument;
+					}
+
+					if ($batchDocCount > 0) {
+						$output->writeln("Executing bulk query…");
+						$es->bulk($bulk);
+						sleep(1);
+					} else {
+						break;
+					}
+				}
+
+				$output->writeln("Completed");
 			});
 
 

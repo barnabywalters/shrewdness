@@ -311,7 +311,7 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 			$existingEntryParams = [
 					'index' => 'shrewdness',
 					'type' => 'h-entry',
-					'id' => M\getProp($hEntry, 'url')
+					'id' => removeScheme(M\getProp($hEntry, 'url'))
 			];
 			if ($existingEntryParams['id'] !== null and $es->exists($existingEntryParams)) {
 				$existingEntry = $es->get($existingEntryParams);
@@ -335,7 +335,7 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 						$es->index([
 								'index' => 'shrewdness',
 								'type' => 'h-entry',
-								'id' => $cleansed['url'],
+								'id' => removeScheme($cleansed['url']),
 								'body' => $cleansed
 						]);
 					}
@@ -347,7 +347,7 @@ $app['indexResource'] = $app->protect(function ($resource, $persist=true) use ($
 							$es->index([
 									'index' => 'shrewdness',
 									'type' => 'h-entry',
-									'id' => $referencedPost['url'],
+									'id' => removeScheme($referencedPost['url']),
 									'body' => $referencedPost
 							]);
 						}
