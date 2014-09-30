@@ -34,7 +34,7 @@
 			<?php if (!empty($token['micropub_endpoint'])): ?>
 			<button class="reply-button">Reply</button>
 			<?php else: ?>
-			<action do="reply" with="<?= $item['url'] ?>"></action>
+			<indie-action do="reply" with="<?= $item['url'] ?>"></indie-action>
 			<?php endif ?>
 		</div>
 	</div>
