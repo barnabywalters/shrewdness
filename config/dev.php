@@ -8,6 +8,8 @@ require __DIR__.'/prod.php';
 // enable the debug mode
 $app['debug'] = true;
 
+$app['indieauth.securecookies'] = false;
+
 $app->register(new MonologServiceProvider(), array(
 	'monolog.logfile' => __DIR__.'/../logs/silex_dev.log',
 ));

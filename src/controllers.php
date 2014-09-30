@@ -32,6 +32,14 @@ function ensureElasticsearchIndexExists(Elasticsearch\Client $es, $indexName, $m
 	}
 }
 
+// If there’s an authentication issue, ensure the user is logged out afterwards.
+$app['dispatcher']->addListener('kernel.response', function (HttpKernel\Event\FilterResponseEvent $event) use ($app) {
+	if (in_array($event->getResponse()->getStatusCode(), [401, 403])) {
+		$app['indieauth']->logoutResponse($event->getResponse());
+	}
+});
+
+
 $ensureIsAdmin = function (Http\Request $request) use ($app) {
 	$token = $request->attributes->get('indieauth.client.token');
 	if ($token === null or $token['me'] != $app['owner.url']) {
@@ -45,6 +53,17 @@ $ensureIsUser = function (Http\Request $request) use ($app) {
 	if ($token === null or !file_exists(dataPath(parse_url($token['me'], PHP_URL_HOST)))) {
 		return $app->abort(401, 'You must be logged in to view this page.');
 	}
+
+	$user = loadJson($token, 'columns');
+	if (isset($user['requiresSecureLogin']) and $user['requiresSecureLogin'] === true) {
+		if (parse_url($token['me'], PHP_URL_SCHEME) !== 'https') {
+			return $app->abort(401, 'You must log in securely, using a URL beginning with https.');
+		}
+	} else {
+		$user['requiresSecureLogin'] = parse_url($token['me'], PHP_URL_SCHEME) === 'https';
+		saveJson($token, 'columns', $user);
+	}
+
 };
 
 

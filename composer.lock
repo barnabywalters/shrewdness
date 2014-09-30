@@ -85,12 +85,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "cf483685798a72c93bf4206e3dd6358ea07d64e7"
+                "reference": "f7a1d660c521461b835dc31af0f6c9836769e917"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/cf483685798a72c93bf4206e3dd6358ea07d64e7",
-                "reference": "cf483685798a72c93bf4206e3dd6358ea07d64e7",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/f7a1d660c521461b835dc31af0f6c9836769e917",
+                "reference": "f7a1d660c521461b835dc31af0f6c9836769e917",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2014-09-17 14:24:04"
+            "time": "2014-09-29 13:28:56"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -392,12 +392,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "6def607789475449485707c9924f813c8662173c"
+                "reference": "10599f378f53ac641c2c4fe0d2f82497f2fdea16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/6def607789475449485707c9924f813c8662173c",
-                "reference": "6def607789475449485707c9924f813c8662173c",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/10599f378f53ac641c2c4fe0d2f82497f2fdea16",
+                "reference": "10599f378f53ac641c2c4fe0d2f82497f2fdea16",
                 "shasum": ""
             },
             "require": {
@@ -424,7 +424,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-09-27 18:01:57"
+            "time": "2014-09-28 18:58:21"
         },
         {
             "name": "illuminate/encryption",
@@ -753,12 +753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "b3f039339d7a8173c7b441dbaa572ccacb712b54"
+                "reference": "ec3961874c43840e96da3a8a1ed20d8c73d7e5aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b3f039339d7a8173c7b441dbaa572ccacb712b54",
-                "reference": "b3f039339d7a8173c7b441dbaa572ccacb712b54",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/ec3961874c43840e96da3a8a1ed20d8c73d7e5aa",
+                "reference": "ec3961874c43840e96da3a8a1ed20d8c73d7e5aa",
                 "shasum": ""
             },
             "require": {
@@ -817,7 +817,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-09-10 15:41:01"
+            "time": "2014-09-30 13:30:58"
         },
         {
             "name": "nikic/php-parser",
@@ -825,12 +825,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "16dff7c2e67a425540b03e82f7f36105e121ad07"
+                "reference": "99df8b86ae0089a2b395880963b882f594f55f89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/16dff7c2e67a425540b03e82f7f36105e121ad07",
-                "reference": "16dff7c2e67a425540b03e82f7f36105e121ad07",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/99df8b86ae0089a2b395880963b882f594f55f89",
+                "reference": "99df8b86ae0089a2b395880963b882f594f55f89",
                 "shasum": ""
             },
             "require": {
@@ -862,7 +862,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2014-09-28 11:14:37"
+            "time": "2014-09-30 18:55:58"
         },
         {
             "name": "pimple/pimple",
@@ -1164,12 +1164,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Debug.git",
-                "reference": "c44089df79e02eba3b3f742e17f7d695bc12bb85"
+                "reference": "20fd1a87b9a9dc172470c346c0d48c83a2b3adbf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/c44089df79e02eba3b3f742e17f7d695bc12bb85",
-                "reference": "c44089df79e02eba3b3f742e17f7d695bc12bb85",
+                "url": "https://api.github.com/repos/symfony/Debug/zipball/20fd1a87b9a9dc172470c346c0d48c83a2b3adbf",
+                "reference": "20fd1a87b9a9dc172470c346c0d48c83a2b3adbf",
                 "shasum": ""
             },
             "require": {
@@ -1211,7 +1211,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "http://symfony.com",
-            "time": "2014-09-28 16:08:29"
+            "time": "2014-09-29 14:48:41"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1469,12 +1469,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "1c2831d5ecfedb5fc47d1f978f4f4f4ad53b6cf8"
+                "reference": "cd35c9337766e0f0f14f2968371e1922d93ea880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/1c2831d5ecfedb5fc47d1f978f4f4f4ad53b6cf8",
-                "reference": "1c2831d5ecfedb5fc47d1f978f4f4f4ad53b6cf8",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/cd35c9337766e0f0f14f2968371e1922d93ea880",
+                "reference": "cd35c9337766e0f0f14f2968371e1922d93ea880",
                 "shasum": ""
             },
             "require": {
@@ -1522,7 +1522,7 @@
             ],
             "description": "Symfony Security Component - Core Library",
             "homepage": "http://symfony.com",
-            "time": "2014-09-28 16:08:29"
+            "time": "2014-09-29 07:38:25"
         },
         {
             "name": "tantek/cassis",
@@ -1595,12 +1595,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/authentication.git",
-                "reference": "8f925c54265c555aa8b55636d50ca0e79f11a0f0"
+                "reference": "b93d406297c71ad50e3047dd12df6be4b38d663c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/authentication/zipball/8f925c54265c555aa8b55636d50ca0e79f11a0f0",
-                "reference": "8f925c54265c555aa8b55636d50ca0e79f11a0f0",
+                "url": "https://api.github.com/repos/Taproot/authentication/zipball/b93d406297c71ad50e3047dd12df6be4b38d663c",
+                "reference": "b93d406297c71ad50e3047dd12df6be4b38d663c",
                 "shasum": ""
             },
             "require": {
@@ -1631,7 +1631,7 @@
                 }
             ],
             "description": "Makes adding indieauth login (client app) and token generation (server app) to your Silex/Symfony app as easy as it should be.",
-            "time": "2014-09-16 20:17:24"
+            "time": "2014-09-30 23:21:08"
         },
         {
             "name": "taproot/subscriptions",
