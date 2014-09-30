@@ -17,6 +17,7 @@ use Symfony\Component\Routing;
 
 use Psy;
 use Elasticsearch;
+use Taproot\Subscriptions;
 
 /** @var $app \Silex\Application */
 
