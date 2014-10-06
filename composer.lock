@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barnabywalters/php-mf-cleaner.git",
-                "reference": "52d9c1d034e565d154f14b8a9912c65b60b6832a"
+                "reference": "c899761f5e9803514a19258a4f6b3399b4df91c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barnabywalters/php-mf-cleaner/zipball/52d9c1d034e565d154f14b8a9912c65b60b6832a",
-                "reference": "52d9c1d034e565d154f14b8a9912c65b60b6832a",
+                "url": "https://api.github.com/repos/barnabywalters/php-mf-cleaner/zipball/c899761f5e9803514a19258a4f6b3399b4df91c9",
+                "reference": "c899761f5e9803514a19258a4f6b3399b4df91c9",
                 "shasum": ""
             },
             "require-dev": {
@@ -44,7 +44,7 @@
                 }
             ],
             "description": "Cleans up microformats2 array structures",
-            "time": "2014-10-06 21:16:49"
+            "time": "2014-10-06 22:05:31"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

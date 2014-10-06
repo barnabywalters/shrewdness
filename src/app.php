@@ -213,7 +213,7 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
 		$cleansed[$relation] = array_unique($references[$relation]);
 	}
 
-	if (!M\hasProp($hEntry, 'author')) {
+	if (!M\hasProp($hEntry, 'author') or !M\isMicroformat($hEntry['properties']['author'][0])) {
 		// No authorship data given, we need to find the author!
 		// TODO: proper /authorship implementation.
 		// TODO: wrap proper /authorship implementation in layer which does purification, simplification, fallback.
@@ -224,11 +224,16 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
 		} elseif (!empty($mf['rels']['author'])) {
 			// TODO: look in elasticsearch index for a person with the first rel-author URL then fall back to fetching.
 
-			// Fetch the first author URL and look for an h-card there.
+			// Fetch the first author URL and look for a representative h-card there.
 			$relAuthorMf = Mf2\fetch($mf['rels']['author'][0]);
 			$relAuthorHCards = M\findMicroformatsByType($relAuthorMf, 'h-card');
-			if (count($relAuthorHCards)) {
-				$cleansed['author'] = flattenHCard($relAuthorHCards[0], $url);
+			foreach ($relAuthorHCards as $raHCard) {
+				$relMes = @($relAuthorMf['rels']['me'] ?: []);
+				if ((M\getProp($raHCard, 'url') === M\getProp($raHCard, 'url')) === $mf['rels']['author'][0]) {
+					$cleansed['author'] = flattenHCard($raHCard, $mf['rels']['author'][0]);
+				} elseif (M\hasProp($raHCard, 'url') and count(array_intersect($raHCard['properties']['url'], $relMes)) > 0) {
+					$cleansed['author'] = flattenHCard($raHCard, $mf['rels']['author'][0]);
+				}
 			}
 		}
 
