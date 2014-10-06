@@ -414,9 +414,9 @@ $app->post('/columns/{id}/sources/', function ($id, Http\Request $request) use (
 		});
 	} else {
 		// mode === unsubscribe
-		$column['sources'] = array_filter($column['sources'], function ($source) use ($url) {
+		$column['sources'] = array_values(array_filter($column['sources'], function ($source) use ($url) {
 			return $source['topic'] !== $url;
-		});
+		}));
 
 		$columns['columns'] = replaceFirstWith($columns['columns'], ['id' => $id], $column);
 		if (saveJson($token, 'columns', $columns) === false) {
