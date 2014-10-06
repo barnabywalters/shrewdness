@@ -219,7 +219,7 @@ function processHEntry($hEntry, $mf, $url, $resolveRelationships=true, Guzzle\Ht
 		// TODO: wrap proper /authorship implementation in layer which does purification, simplification, fallback.
 		$potentialAuthor = M\getAuthor($hEntry, $mf, $url);
 
-		if ($potentialAuthor !== null) {
+		if (M\isMicroformat($potentialAuthor)) {
 			$cleansed['author'] = flattenHCard($potentialAuthor, $url);
 		} elseif (!empty($mf['rels']['author'])) {
 			// TODO: look in elasticsearch index for a person with the first rel-author URL then fall back to fetching.
