@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barnabywalters/php-mf-cleaner.git",
-                "reference": "c899761f5e9803514a19258a4f6b3399b4df91c9"
+                "reference": "bcff8d93004c1196f51d626c0db46ea74074c0fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barnabywalters/php-mf-cleaner/zipball/c899761f5e9803514a19258a4f6b3399b4df91c9",
-                "reference": "c899761f5e9803514a19258a4f6b3399b4df91c9",
+                "url": "https://api.github.com/repos/barnabywalters/php-mf-cleaner/zipball/bcff8d93004c1196f51d626c0db46ea74074c0fd",
+                "reference": "bcff8d93004c1196f51d626c0db46ea74074c0fd",
                 "shasum": ""
             },
             "require-dev": {
@@ -44,7 +44,7 @@
                 }
             ],
             "description": "Cleans up microformats2 array structures",
-            "time": "2014-10-06 22:05:31"
+            "time": "2014-10-06 23:15:46"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -392,12 +392,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "827203575e92ededa7ce5cfefad765b2403bdafc"
+                "reference": "f24a6d06b71968947209674718bcb6a58bc8f65c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/827203575e92ededa7ce5cfefad765b2403bdafc",
-                "reference": "827203575e92ededa7ce5cfefad765b2403bdafc",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/f24a6d06b71968947209674718bcb6a58bc8f65c",
+                "reference": "f24a6d06b71968947209674718bcb6a58bc8f65c",
                 "shasum": ""
             },
             "require": {
@@ -424,7 +424,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-10-02 19:54:21"
+            "time": "2014-10-09 16:39:14"
         },
         {
             "name": "illuminate/encryption",
@@ -475,12 +475,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "e3b87143014f6ab3162c298cf2b4dd12959072df"
+                "reference": "f7f170c787de176932320e5291d5968a4394a1a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/e3b87143014f6ab3162c298cf2b4dd12959072df",
-                "reference": "e3b87143014f6ab3162c298cf2b4dd12959072df",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/f7f170c787de176932320e5291d5968a4394a1a3",
+                "reference": "f7f170c787de176932320e5291d5968a4394a1a3",
                 "shasum": ""
             },
             "require": {
@@ -515,7 +515,7 @@
                     "email": "taylorotwell@gmail.com"
                 }
             ],
-            "time": "2014-09-30 13:42:10"
+            "time": "2014-10-08 21:36:16"
         },
         {
             "name": "indieauth/client",
@@ -825,12 +825,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "f8678ad7e9c06fb82b26ae5d5cea14077fbce7fe"
+                "reference": "767f23c3a98bd5e90ac222784b64baee283f9c0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/f8678ad7e9c06fb82b26ae5d5cea14077fbce7fe",
-                "reference": "f8678ad7e9c06fb82b26ae5d5cea14077fbce7fe",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/767f23c3a98bd5e90ac222784b64baee283f9c0c",
+                "reference": "767f23c3a98bd5e90ac222784b64baee283f9c0c",
                 "shasum": ""
             },
             "require": {
@@ -862,7 +862,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2014-10-01 10:18:18"
+            "time": "2014-10-11 19:47:11"
         },
         {
             "name": "pimple/pimple",
@@ -1025,12 +1025,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "be10a76303a1323a2e5709151ede97f60820b307"
+                "reference": "2603afb3d2d902a3dbc19075d91f0b39a9d46c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/be10a76303a1323a2e5709151ede97f60820b307",
-                "reference": "be10a76303a1323a2e5709151ede97f60820b307",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/2603afb3d2d902a3dbc19075d91f0b39a9d46c40",
+                "reference": "2603afb3d2d902a3dbc19075d91f0b39a9d46c40",
                 "shasum": ""
             },
             "require": {
@@ -1044,7 +1044,6 @@
             "require-dev": {
                 "doctrine/dbal": "~2.2",
                 "monolog/monolog": "~1.4,>=1.4.1",
-                "phpunit/phpunit": "~3.7",
                 "swiftmailer/swiftmailer": "5.*",
                 "symfony/browser-kit": ">=2.3,<2.6-dev",
                 "symfony/config": ">=2.3,<2.6-dev",
@@ -1100,7 +1099,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2014-09-26 09:33:25"
+            "time": "2014-10-12 12:14:54"
         },
         {
             "name": "symfony/console",
@@ -1402,12 +1401,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "e7913afef5d809b25b78c2bc23ecff132784a90b"
+                "reference": "dbc92bceefe69b9de84d2ef1148436dcf82e1c03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/e7913afef5d809b25b78c2bc23ecff132784a90b",
-                "reference": "e7913afef5d809b25b78c2bc23ecff132784a90b",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/dbc92bceefe69b9de84d2ef1148436dcf82e1c03",
+                "reference": "dbc92bceefe69b9de84d2ef1148436dcf82e1c03",
                 "shasum": ""
             },
             "require": {
@@ -1460,7 +1459,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2014-10-01 05:50:18"
+            "time": "2014-10-09 16:00:03"
         },
         {
             "name": "symfony/security-core",
@@ -1469,12 +1468,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "cd35c9337766e0f0f14f2968371e1922d93ea880"
+                "reference": "e9030aec262e7d697e2f66d7f47db6164cc360c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/cd35c9337766e0f0f14f2968371e1922d93ea880",
-                "reference": "cd35c9337766e0f0f14f2968371e1922d93ea880",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/e9030aec262e7d697e2f66d7f47db6164cc360c0",
+                "reference": "e9030aec262e7d697e2f66d7f47db6164cc360c0",
                 "shasum": ""
             },
             "require": {
@@ -1522,7 +1521,7 @@
             ],
             "description": "Symfony Security Component - Core Library",
             "homepage": "http://symfony.com",
-            "time": "2014-09-29 07:38:25"
+            "time": "2014-10-10 16:59:52"
         },
         {
             "name": "tantek/cassis",
