@@ -356,6 +356,26 @@
 			margin: 0.5em 0;
 		}
 
+		.item-reply-context {
+			padding: 0.768em;
+			margin-left: 0.768em;
+			margin-right: 0.768em;
+			font-size: 0.9em;
+			background: rgba(246, 246, 246, 0.7);
+		}
+
+		.item-reply-context .item-reply-context-author-photo {
+			max-height: 1.5em;
+			margin-right: 0.1em;
+			position: relative;
+			bottom: -0.3em;
+		}
+
+		.item-reply-context .item-reply-context-content:link {
+			border-bottom: none;
+			color: #222 !important;
+		}
+
 		/* Testing UI Styles */
 		.test-columns .codemirror,
 		.test-columns .CodeMirror {

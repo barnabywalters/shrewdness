@@ -170,9 +170,11 @@ function fetchColumnItems($app, $column, $from=0, $size=10) {
 
 	if (isset($column['sources'])) {
 		$query['body']['query']['terms'] = [
-				'topics' => array_map(function ($source) {
-					return $source['topic'];
-				}, $column['sources'])
+				'topics' => array_reduce($column['sources'], function ($topics, $source) {
+					// Match posts found in both http and https topics.
+					$plainTopic = removeScheme($source['topic']);
+					return array_merge(["https://{$plainTopic}", "http://{$plainTopic}"], $topics);
+				}, [])
 		];
 	} elseif (isset($column['search'])) {
 		$query['body']['query']['multi_match'] = [
@@ -186,9 +188,21 @@ function fetchColumnItems($app, $column, $from=0, $size=10) {
 	}
 
 	$results = $es->search($query);
-	return array_map(function ($hit) {
+	return array_map(function ($hit) use ($es) {
 		$item = $hit['_source'];
 		$item['published'] = new DateTime($item['published']);
+		foreach (['in-reply-to', 'like-of', 'repost-of'] as $field) {
+			$item[$field] = array_map(function ($url) use ($es) {
+				$results = $es->search(['index' => 'shrewdness', 'type' => 'h-entry', 'body' => [
+					'query' => [
+						'term' => [
+							'url' => $url
+						]
+					]
+				]]);
+				return @($results['hits']['hits'][0]['_source'] ?: $url);
+			}, $item[$field]);
+		}
 		return $item;
 	}, $results['hits']['hits']);
 }
